@@ -66,6 +66,7 @@ TEMPLATES = [
         'DIRS': [
             # os.path.join(BASE_DIR, 'pconnectacc', 'templates/'),
             os.path.join(BASE_DIR, 'taskcontrol', 'templates/'),
+            # os.path.join(BASE_DIR, 'taskcontrol', 'notifications/'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {

@@ -1,24 +1,39 @@
 from taskcontrol.models import *
 from django.db.models import F ,Q
 from datetime import datetime, timedelta
+from django.shortcuts import render,redirect
 
 def notification(request):
+    # Filter EngagementDetail
+    # #notification condition
+    # ## status not equal 'Done'
+    # ## Reviewer of approver
+    # ## owner and near deadline or before deadline folow by notifation day
 
-    review_noti = EngagementDetail.objects.exclude(
-                        status='DONE'
-                ).filter(
-                    Q(engagement__reviewer= request.user) |
-                    Q(engagement__approver= request.user)  
-                )
-    other_result = EngagementDetail.objects.filter(
-                        Q(deadline__lte=datetime.now()) |
-                        Q(deadline__range=[datetime.now() - timedelta(days=1)*F('notification') , datetime.now() ]) &
-                        Q(create_by=request.user)
-                    )
-    result_noti = review_noti | other_result
-    user_id = request.user.id
-    return {
-        'count': result_noti.count(),
-        'notification_detail': result_noti,
-        'get_user': user_id
-    }
+    # Check auth
+    if request.user.is_authenticated:
+        # Filter
+        noti_result =   EngagementDetail.objects.filter(
+                            Q(create_by=request.user) &
+                            (
+                                Q(deadline__gte=datetime.now()) |
+                                Q(deadline__range=[datetime.now() - timedelta(days=1)*F('notification'),datetime.now()])
+                            ) |
+                                Q(engagement__reviewer= request.user) |
+                                Q(engagement__approver= request.user)  
+                        ).exclude(
+                            status='DONE'
+                        )
+        user_id = request.user.id
+        return {
+            'count': noti_result.count(),
+            'notification_detail': noti_result,
+            'get_user': user_id
+        }
+    else :
+        return {
+            'count': 0,
+            'notification_detail': [],
+            'get_user': 1
+        }
+    

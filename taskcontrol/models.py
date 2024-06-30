@@ -240,7 +240,6 @@ class EngagementDetail(models.Model):
     type = models.CharField(max_length=255, default=None, null=True, blank=True)
     deadline = models.DateField(null=True, blank=True)
     notification = models.CharField(max_length=255, default=None, null=True, blank=True)
-    # notification_day = models.DateField(null=True, blank=True)
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     review_by = models.BooleanField(default=False)
@@ -255,18 +254,6 @@ class EngagementDetail(models.Model):
     completed_at = models.DateTimeField(blank=True, null=True)
     voide_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True, related_name='engagement_detail_voide_by')
     voide_at = models.DateTimeField(default=timezone.now)
-
-    # @property
-    # def cal_notification_day(self):
-    #     if self.deadline:
-    #         a = timedelta(days=int(self.notification))
-    #         b = datetime.strptime(self.deadline, "%Y-%m-%d").date()
-    #         noti_day = b-a
-    #         return noti_day
-        
-    # def save(self, *args, **kwargs):
-    #       self.notification_day = self.cal_notification_day
-    #       super(EngagementDetail, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'engagement_detail'
