@@ -1,0 +1,111 @@
+{% extends 'task/index.html' %} {% block content %}
+<div class="row">
+    <div class="col-5">
+        <div class="card">
+            <div class="card-body">
+                <div class="h5 pb-2 mb-4 text-primary fw-semibold border-bottom border-primary">ตั้งค่าหมวดหมู่งาน</div>
+                <form class="mb-4" method="post" action="{% url 'taskcontrol:create_category' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="category_name_th" class="form-label">หมวดหมู่งาน :</label>
+                        <input type="text" class="form-control" name="category_name_th" id="category_name_th" required>
+                        <button type="reset" class="btn btn-light">ล้างข้อมูล</button>
+                        <button type="submit" class="btn btn-primary">เพิ่มข้อมูล</button>
+                    </div>
+                </form>
+                <div class="table-responsive mb-4">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width:30px;">#</th>
+                                <th>ชื่อหมวดหมู่งาน</th>
+                                <th style="width:10px;" class="text-center"><i class="fa-solid fa-gears"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-group-divider">
+                            {% for category in engagement_categories %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ category.name_th }}</td>
+                                <td style="width:10px;" class="text-center">
+                                    <form method="post" action="{% url 'taskcontrol:delete_category' category.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-link" onclick="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบหมวดหมู่งานนี้?')">
+                                            <i class="fa-regular fa-trash-can" style="color: #ff0000;"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <span class="badge text-bg-danger">Admin เท่านั้นที่สามารถลบได้</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <div class="h5 pb-2 mb-4 text-primary fw-semibold border-bottom border-primary">ตั้งค่าประเภทงาน</div>
+                <form class="mb-4" method="post" action="{% url 'taskcontrol:create_type' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="category_id" class="form-label">หมวดหมู่งาน :</label>
+                        <select name="category_id" id="category_id" class="form-select">
+                            <option value="" selected disabled>-- กรุณาเลือก --</option>
+                            {% for category in engagement_categories %}
+                                <option value="{{ category.id }}">{{ category.name_th }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="type_name_th" class="form-label">ประเภทงาน:</label>
+                        <input type="text" name="type_name_th" id="type_name_th" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary">เพิ่มข้อมูล</button>
+                    <button type="reset" class="btn btn-light">ล้างข้อมูล</button>
+                </form>
+
+                <div class="table-responsive">
+                    <table id="category-table" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width:30px;">#</th>
+                                <th>ประเภทงาน</th>
+                                <th>หมวดหมู่งาน</th>
+                                <th style="width:10px;" class="text-center"><i class="fa-solid fa-gears"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-group-divider">
+                            {% for type in engagement_types %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ type.name_th }}</td>
+                                <td>{{ type.category.name_th }}</td>
+                                <td style="width:10px;" class="text-center"><i class="fa-regular fa-trash-can" style="color: #ff0000;"></i></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        const dataTable = $("#category-table").DataTable({
+            "language": {
+                "search": "ค้นหา",
+                "lengthMenu": "แสดง _MENU_ รายการ",
+                "info": "แสดง _START_ ถึง _END_ จากทั้งหมด _TOTAL_ รายการ",
+                "paginate": {
+                    "previous": "ก่อนหน้า",
+                    "next": "ถัดไป"
+                }
+            }
+        });
+    });
+</script>
+{% endblock content %}

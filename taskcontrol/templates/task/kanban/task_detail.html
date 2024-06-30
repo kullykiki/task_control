@@ -1,0 +1,54 @@
+<div class="row">
+    <div class="col-8">
+        <div class="title">{{ detail.engagement.client.company_name }}</div>
+        {% if detail.engagement.job_code %}
+            <div class="sub-title"># {{ detail.engagement.job_code }}</div>
+        {% endif %}
+        {% if detail.number %}
+            <div class="sub-title">{{ detail.number }}</div>
+        {% endif %}
+    </div>
+    <div class="col-4 text-end">
+        {% if detail.engagement %}
+            <i class="fi fi-br-up-right-from-square icon" style="color:#0085FF; cursor: pointer;" onclick="openEngagementModal('{{ detail.engagement.job_code }}')"></i>
+        {% endif %}
+    </div>
+</div>
+<div class="date text-end">
+    <i class="fi fi-br-calendar-day"></i> {{ detail.create_at|date:'d/m/Y' }}
+</div>
+<div class="detail">
+    <i class="fi fi-ss-thumbtack" style="color: #f42a2a;"></i> : {{ detail.engagement_category.name_th }} <i class="fa-solid fa-angle-right"></i> {{ detail.engagement_type.name_th }}
+</div>
+<div class="detail">
+    {% if detail.engagement.administrator %}
+        <i class="fi fi-rr-user"></i> : {{ detail.engagement.administrator.first_name }} {{ detail.engagement.administrator.last_name }}
+    {% else %}
+        <i class="fi fi-br-user"></i> : -
+    {% endif %}
+</div>
+<div class="detail">
+    {% if detail.engagement.reviewer %}
+        <i class="fi fi-rr-member-search"></i> : {{ detail.engagement.reviewer.first_name }} {{ detail.engagement.reviewer.last_name }}
+    {% else %}
+        <i class="fi fi-rr-member-search"></i> : -
+    {% endif %}
+</div>
+<div class="detail">
+    {% if detail.engagement.approver %}
+        <i class="fi fi-rr-user-trust"></i> : {{ detail.engagement.approver.first_name }} {{ detail.engagement.approver.last_name }}
+    {% else %}
+        <i class="fi fi-rr-user-trust"></i> : -
+    {% endif %}
+</div>
+<div class="detail">
+    <i class="fi fi-rr-calendar-clock"></i> :
+    {% if detail.days_remaining >= 0 %}
+        <span class="fw-semibold">{{ detail.days_remaining }} วัน</span>
+    {% else %}
+        <span class="fw-semibold" style="color: #f70009;">{{ detail.days_remaining }} วัน</span>
+    {% endif %}
+</div>
+<div class="deadline text-end">
+    <i class="fi fi-br-clock-three"></i> {{ detail.deadline|date:'d/m/Y' }}
+</div>

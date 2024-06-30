@@ -1,0 +1,68 @@
+{% extends 'task/index.html' %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card">
+        <div class="card-body">
+            <ul class="nav">
+                <li class="nav-item">
+                    <a href="{% url 'taskcontrol:manage_category' %}" class="content-button nav-link active"
+                        aria-current="page">Category</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'taskcontrol:manage_type' %}" class="content-button nav-link">Link</a>
+                </li>
+            </ul>
+            <h1>Category</h1>
+            <form class="mb-4" id="add-category-form" method="post" action="{% url 'taskcontrol:manage_category' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="category_name_th" class="form-label">หมวดงาน :</label>
+                    <input type="text" class="form-control" name="category_name_th" id="category_name_th" required />
+                </div>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-outline-success"><i class="fa-solid fa-plus"></i>
+                        เพิ่มหมวดงาน</button>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table id="category-table" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="text-center" style="width: 8%;">#</th>
+                            <th class="text-start">หมวดงาน</th>
+                            <th class="text-center" style="width: 10%;"><i class="fa-solid fa-gears"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        {% for category in engagement_categories %}
+                        <tr data-category-id="{{ category.id }}">
+                            <td class="text-center">{{ forloop.counter }}</td>
+                            <td class="text-start">{{ category.name_th }}</td>
+                            <td class="text-center align-middle">
+                                <div class="btn-group align-top">
+                                    <button type="button" class="btn btn-sm btn-outline-warning edit-category-button"
+                                        data-bs-toggle="modal" data-bs-target="#updateCategoryModal"><i
+                                            class="fa-solid fa-pen-to-square"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

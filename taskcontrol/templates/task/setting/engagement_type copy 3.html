@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+     <meta name="description" content="DataTables SearchPanes v2.0.0 viewCount displays 0 with Orthogonal type">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.bootstrap5.css">
+     <link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/2.3.1/css/searchPanes.bootstrap5.css">
+     <link rel="stylesheet" href="https://cdn.datatables.net/select/2.0.1/css/select.bootstrap5.css">
+     {% extends 'task/index.html' %}
+     {% block content %}
+     <style>
+          th {
+               font-size: 13.5px;
+          }
+
+          td {
+               font-size: 14px;
+               vertical-align: middle;
+          }
+
+          div.dtsp-panesContainer div.dtsp-searchPane div.dt-container, div.dtsp-panesContainer div.dtsp-searchPane div.dataTables_wrapper {
+               border: 2px #ced4da solid;
+               border-radius: 4px;
+          }
+
+          div.dtsp-panesContainer div.dtsp-searchPane div.dt-container,
+          div.dtsp-panesContainer div.dtsp-searchPane div.dataTables_wrapper {
+               max-height: 110px;
+               /* ปรับขนาดสูงสุดของ SearchPanes */
+               overflow-y: auto;
+               /* เพิ่มการเลื่อนแถบข้างหลังเมื่อเกินขนาดสูงสุด */
+          }
+
+          div.dtsp-panesContainer div.dtsp-searchPane div.dt-container>div.row.mt-2,
+          div.dtsp-panesContainer div.dtsp-searchPane div.dataTables_wrapper>div.row.mt-2 {
+               margin: 5px !important;
+               /* ปรับขนาดขอบของ SearchPanes */
+          }
+
+          div.dtsp-searchPane div.dt-container div.dt-scroll-body {
+               height: auto !important;
+               /* ให้ความสูงของหน้าต่างค้นหาปรับตามเนื้อหา */
+          }
+
+          table.table.dataTable>tbody>tr.selected>* {
+               box-shadow: inset 0 0 0 9999px #5d87ff30;
+               border-radius: 4px;
+               color: #5a6a85;
+               font-weight: 500;
+          }
+
+          .bg-secondary {
+               --bs-bg-opacity: 1;
+               background-color: #5d87ff !important;
+          }
+
+          div.dtsp-panesContainer div.dtsp-searchPanes div.dtsp-searchPane {
+               flex-grow: 1;
+               flex-shrink: 0;
+               font-size: 13px;
+               margin-top: 0px !important;
+          }
+
+          div.dtsp-panesContainer div.dtsp-searchPane div.dt-container div.dtsp-nameCont span.badge,
+          div.dtsp-panesContainer div.dtsp-searchPane div.dataTables_wrapper div.dtsp-nameCont span.badge {
+               min-width: 1px;
+               line-height: 0.75em;
+               margin-top: 0.5px;
+          }
+
+          div.dtsp-searchPane div.dt-container div.dt-scroll-body div.dtsp-nameCont span.dtsp-name,
+          div.dtsp-searchPane div.dt-container div.dataTables_scrollBody div.dtsp-nameCont span.dtsp-name,
+          div.dtsp-searchPane div.dataTables_wrapper div.dt-scroll-body div.dtsp-nameCont span.dtsp-name,
+          div.dtsp-searchPane div.dataTables_wrapper div.dataTables_scrollBody div.dtsp-nameCont span.dtsp-name {
+               text-overflow: ellipsis;
+               overflow: hidden;
+               display: inline-block;
+               vertical-align: middle;
+               white-space: nowrap;
+               flex-grow: 1;
+               text-align: left;
+               font-size: 13px;
+               color: #2a3547;
+          }
+     </style>
+</head>
+
+<body>
+     <div class="card">
+          <div class="d-flex justify-content-end mt-2 mx-2">
+               <div class="btn-group">
+                    <a href="{% url 'taskcontrol:manage_category' %}" class="btn btn-outline-primary" aria-current="page"><i class="fa-solid fa-quote-left"></i> หมวดหมู่งาน</a>
+                    <a href="{% url 'taskcontrol:manage_type' %}" class="btn btn-primary">ประเภทงาน <i class="fa-solid fa-quote-right"></i></a>
+               </div>
+          </div>
+          <div class="card-body">
+               <form id="create-form" method="post" action="{% url 'taskcontrol:manage_type' %}">
+                    {% csrf_token %}
+                    <div class="row mb-2">
+                         <div class="col-3">
+                              <label for="category_id" class="form-label">เลือกหมวดหมู่งาน :</label>
+                              <select name="category_id" id="category_id" class="form-select" required>
+                                   <option value="" selected disabled>-- กรุณาเลือก --</option>
+                                   {% for category in engagement_categories %}
+                                   <option value="{{ category.id }}">{{ category.name_th }}</option>
+                                   {% endfor %}
+                              </select>
+                         </div>
+                         <div class="col-4">
+                              <label for="type_name_th" class="form-label">ประเภทงาน :</label>
+                              <input type="text" name="type_name_th" id="type_name_th" class="form-control" required>
+                         </div>
+                         <div class="col-3">
+                              <label for="type_description" class="form-label">คำอธิบาย :</label>
+                              <input type="text" name="type_description" id="type_description" class="form-control">
+                         </div>
+                         <div class="col-2" style="display: flex; align-items: flex-end;">
+                              <button type="submit" class="btn btn-outline-success" id="create-btn">
+                                   <i class="fa-solid fa-plus"></i> เพิ่มใหม่
+                              </button>
+                         </div>
+                    </div>
+               </form>
+
+               <div class="table-responsive">
+                    <table id="type_table" class="table table-sm" style="width: 100%;">
+                         <thead class="table-light">
+                              <tr>
+                                   <th class="text-center" style="width: 5%;">#</th>
+                                   <th>ประเภทงาน</th>
+                                   <th>หมวดหมู่งาน</th>
+                                   <th>คำอธิบาย</th>
+                                   <th class="text-center" style="width: 10%;"><i class="fa-solid fa-gears"></i></th>
+                              </tr>
+                         </thead>
+                         <tbody>
+                              {% for type in engagement_types %}
+                              <tr>
+                                   <td class="text-center" style="width: 5%;">{{ forloop.counter }}</td>
+                                   <td>{{ type.name_th }}</td>
+                                   <td>{{ type.category.name_th }}</td>
+                                   <td>{{ type.description }}</td>
+                                   <td class="text-center">
+                                        <div class="btn-group">
+                                             <button type="button" class="btn btn-outline-warning btn-sm"
+                                                  data-bs-toggle="modal" data-bs-target="#updateModal{{ type.id }}">
+                                                  <i class="fa-solid fa-pen-to-square"></i>
+                                             </button>
+                                             <button type="button" class="btn btn-outline-danger btn-sm delete-btn"
+                                                  data-type-id="{{ type.id }}"
+                                                  data-delete-url="{% url 'taskcontrol:delete_type' type_id=type.id %}">
+                                                  <i class="fa-solid fa-trash-can"></i>
+                                             </button>
+                                        </div>
+                                   </td>
+                              </tr>
+                              <!-- Modal for updating engagement type -->
+                              <div class="modal fade" id="updateModal{{ type.id }}" tabindex="-1"
+                                   aria-labelledby="updateModalLabel" aria-hidden="true">
+                                   <div class="modal-dialog">
+                                        <div class="modal-content">
+                                             <div class="modal-header">
+                                                  <h5 class="modal-title text-dark fw-semibold" id="updateModalLabel"><i class="fa-solid fa-pen-to-square" style="color: #ffbc35;"></i>&nbsp;แก้ไขหมวดงาน & ประเภทงาน
+                                                  </h5>
+                                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                             </div>
+                                             <div class="modal-body">
+                                                  <form id="update-form-{{ type.id }}" method="post"
+                                                       action="{% url 'taskcontrol:update_type' type.id %}">
+                                                       {% csrf_token %}
+                                                       <input type="hidden" name="type_id" value="{{ type.id }}">
+                                                       <div class="mb-3">
+                                                            <label for="category_id" class="form-label">เลือกหมวดหมู่งาน :</label>
+                                                            <select name="category_id"
+                                                                 id="new_category_id_{{ type.id }}" class="form-select">
+                                                                 {% for category in engagement_categories %}
+                                                                 <option value="{{ category.id }}"
+                                                                      {% if category.id == type.category.id %} selected {% endif %}>{{ category.name_th }}</option>
+                                                                 {% endfor %}
+                                                            </select>
+                                                       </div>
+                                                       <div class="mb-3">
+                                                            <label for="new_type_name_th" class="form-label">ประเภทงาน :</label>
+                                                            <input type="text" name="new_type_name_th" id="new_type_name_th_{{ type.id }}" class="form-control" value="{{ type.name_th }}">
+                                                       </div>
+                                                       <div class="mb-3">
+                                                            <label for="new_type_description" class="form-label">คำอธิบาย :</label>
+                                                            <textarea name="new_type_description" id="new_type_description_{{ type.id }}" class="form-control">{{ type.description }}</textarea>
+                                                       </div>
+
+                                                       <div class="modal-footer text-end">
+                                                            <button type="submit" class="btn btn-outline-warning">บันทึกแก้ไข</button>
+                                                       </div>
+                                                  </form>
+                                             </div>
+                                        </div>
+                                   </div>
+                              </div>
+                              {% endfor %}
+                         </tbody>
+                    </table>
+               </div>
+          </div>
+     </div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.0.5/js/dataTables.bootstrap5.js"></script>
+<script src="https://cdn.datatables.net/searchpanes/2.3.1/js/dataTables.searchPanes.js"></script>
+<script src="https://cdn.datatables.net/searchpanes/2.3.1/js/searchPanes.bootstrap5.js"></script>
+<script src="https://cdn.datatables.net/select/2.0.1/js/dataTables.select.js"></script>
+<script src="https://cdn.datatables.net/select/2.0.1/js/select.bootstrap5.js"></script>
+
+<script>
+     document.addEventListener("DOMContentLoaded", function() {
+          const deleteButtons = document.querySelectorAll(".delete-btn");
+          deleteButtons.forEach(button => {
+               button.addEventListener("click", function() {
+                    handleDelete(this);
+               });
+          });
+     });
+
+     function handleDelete(button) {
+          const typeId = button.getAttribute("data-type-id");
+          const confirmation = confirm("ต้องการลบประเภทงานนี้ ?");
+          if (confirmation) {
+               const deleteUrl = button.getAttribute("data-delete-url");
+               fetch(deleteUrl, {
+                         method: 'POST',
+                         headers: {
+                              'X-CSRFToken': getCookie('csrftoken')
+                         }
+                    })
+                    .then(response => {
+                         if (!response.ok) {
+                              throw new Error('Network response was not ok');
+                         }
+                         location.reload();
+                    })
+                    .catch(error => {
+                         console.error('There was a problem with the fetch operation:', error);
+                    });
+          }
+     }
+
+     function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+               const cookies = document.cookie.split(';');
+               for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                         break;
+                    }
+               }
+          }
+          return cookieValue;
+     }
+</script>
+<script>
+     $('#type_table').DataTable({
+          layout: {
+               top1: 'searchPanes'
+          },
+          language: {
+               search: "ค้นหา",
+               lengthMenu: "แสดง _MENU_ รายการ",
+               info: "แสดง _START_ ถึง _END_ จากทั้งหมด _TOTAL_ รายการ",
+               paginate: {
+                    previous: "ก่อนหน้า",
+                    next: "ถัดไป"
+               }
+          },
+          searchPanes: {
+               layout: 'columns-1',
+               collapseAllMessage: "ซ่อนตัวกรอง",
+               showMessage: "แสดงตัวกรอง",
+               clearMessage: "ล้างตัวกรอง"
+          }
+     });
+     
+</script>
+{% endblock content %}
+</html>

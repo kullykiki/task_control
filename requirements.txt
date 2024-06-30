@@ -1,0 +1,17 @@
+asgiref==3.8.1
+crispy-bootstrap4==2024.1
+Django==5.0.3
+django-crispy-forms==2.1
+humanize==4.9.0
+mysqlclient==2.2.4
+gunicorn==21.2.0
+pillow==10.2.0
+pip==24.0
+packaging==24.0
+python-dateutil==2.9.0.post0
+python-dotenv==1.0.1
+six==1.16.0
+setuptools==59.6.0
+sqlparse==0.4.4
+typing_extensions==4.6.3
+tzdata==2023.3

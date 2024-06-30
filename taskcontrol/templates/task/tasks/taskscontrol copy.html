@@ -1,0 +1,36 @@
+{% extends 'tasks/base.html' %}
+{% block content %}
+    <div class="card card-side bg-base-100 shadow-xl m-7">
+        <div class="card-body">
+            <div>
+                <div class="join">
+                    <button class="btn join-item">เดดไลน์</button>
+                    <button class="btn join-item">คนดูแล</button>
+                    <button class="btn join-item">ประเภทงาน</button>
+                    <button class="btn join-item">Period</button>
+
+                    <div>
+                        <div>
+                        <input class="input input-bordered join-item" placeholder="Search"/>
+                        </div>
+                    </div>
+                    <select class="select select-bordered join-item">
+                        <option disabled selected>Filter</option>
+                        <option>Sci-fi</option>
+                        <option>Drama</option>
+                        <option>Action</option>
+                    </select>
+                    <div>
+                        <button class="btn join-item">Search</button>
+                    </div>
+                </div>
+
+                <!--table-->
+                <div class="grid gap-6 mb-6 md:grid-cols-5">
+                    <div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </div>
+{% endblock content %}

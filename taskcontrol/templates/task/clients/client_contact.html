@@ -1,0 +1,628 @@
+{% extends 'task/index.html' %} 
+{% block content %}
+{% load static %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+    .card {
+        margin-top: 1rem;
+    }
+
+    .card, .card-body {
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+        background-color: #eaf4ff;
+        border-radius: 20px;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .mx-auto {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .pl-0 {
+        padding-left: 0;
+    }
+
+    .mt-3 {
+        margin-top: 2rem;
+    }
+
+    .d-none {
+        display: none;
+    }
+
+    .form-step {
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+        border-radius: 20px;
+        margin-top: 1rem;
+        padding: 2rem;
+        background-color: #fff;
+    }
+
+    ul.form-stepper {
+        counter-reset: section;
+        margin-bottom: 1.5rem;
+    }
+
+    ul.form-stepper .form-stepper-circle {
+        position: relative;
+    }
+
+    ul.form-stepper .form-stepper-circle span {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateY(-50%) translateX(-50%);
+    }
+
+    .form-stepper-horizontal {
+        position: relative;
+        display: flex;
+        justify-content: space-around;
+    }
+
+    ul.form-stepper>li:not(:last-of-type) {
+        margin-bottom: 0.625rem;
+        transition: margin-bottom 0.4s;
+    }
+
+    .form-stepper-horizontal>li:not(:last-of-type) {
+        margin-bottom: 0 !important;
+    }
+
+    .form-stepper-horizontal li {
+        position: relative;
+        display: flex;
+        flex: 1;
+        align-items: baseline;
+        flex-wrap: nowrap;
+        transition: 0.5s;
+    }
+
+    .form-stepper-horizontal li:not(:last-child):after {
+        position: relative;
+        flex: 1;
+        height: 1px;
+        content: "";
+        top: 32%;
+    }
+
+    .form-stepper-horizontal li:after {
+        background-color: #5d87ff;
+    }
+
+    .form-stepper-horizontal li.form-stepper-completed:after {
+        background-color: #0277ff;
+    }
+
+    .form-stepper-horizontal li:last-child {
+        flex: unset;
+    }
+
+    ul.form-stepper li a .form-stepper-circle {
+        display: inline-block;
+        margin-right: 0;
+        line-height: 1.7rem;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.38);
+        border-radius: 50%;
+    }
+
+    .form-stepper .form-stepper-active .form-stepper-circle {
+        background-color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-active .label {
+        color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-active .form-stepper-circle:hover {
+        background-color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-unfinished .form-stepper-circle {
+        background-color: #f5f5f5;
+
+    }
+
+    .form-stepper .form-stepper-completed .form-stepper-circle {
+        background-color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-completed .label {
+        color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-completed .form-stepper-circle:hover {
+        background-color: #0277ff !important;
+    }
+
+    .form-stepper .label {
+        font-size: 14.5px;
+        font-weight: 500;
+        margin-top: 0.5rem;
+    }
+
+    .form-stepper a {
+        cursor: default;
+    }
+
+    .number-lable {
+        color: #333944;
+        font-size: 12.5px;
+        font-weight: 600;
+    }
+
+    .number-step {
+        color: #205aff;
+        font-weight: 700;
+        font-size: 18px;
+    }
+
+    .text-muted {
+        --bs-text-opacity: 1;
+        color: #205aff !important;
+    }
+
+    .status-open{
+        color: #fff;
+        font-weight: 600;
+        background-color: #53c536;
+        border-radius: 8px;
+    }
+    .status-close{
+        color: #fff;
+        font-weight: 600;
+        background-color: #ff5258;
+        border-radius: 8px;
+    }
+
+    .regis-true {
+        color: #53c536;
+    }
+
+    .regis-false{
+        color: #ff5258;
+    }
+
+    td {
+        font-size: 14.5px;
+    }
+</style>
+
+{% if error_message %}
+    <div class="alert alert-danger">{{ error_message }}</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-body">
+        <div id="multi-step-form-container">
+            <ul class="form-stepper form-stepper-horizontal text-center mx-auto pl-0 ">
+                <!-- Step 1 -->
+                <li class="form-stepper-unfinished text-center form-stepper-list">
+                    <a class="mx-2">
+                        <span class="number-step"><i class="fi fi-sr-skill-user"></i></span>
+                        <div class="number-lable">ข้อมูลลูกค้า</div>
+                        <span class="form-stepper-circle text-muted">
+                            <span><i class="fa-solid fa-circle-check fa-lg"></i></span>
+                        </span>
+                    </a>
+                </li>
+                <!-- Step 2 -->
+                <li class="form-stepper-unfinished text-center form-stepper-list">
+                    <a class="mx-2">
+                        <span class="number-step"><i class="fi fi-sr-comment-user"></i></span>
+                        <div class="number-lable"> ผู้ติดต่อ</div>
+                        <span class="form-stepper-circle text-muted">
+                            <span><i class="fa-regular fa-circle-dot fa-lg"></i></span>
+                        </span>
+                    </a>
+                </li>
+                <!-- Step 3 -->
+                <li class="form-stepper-unfinished text-center form-stepper-list">
+                    <a class="mx-2">
+                        <span class="number-step"><i class="fi fi-sr-user-lock"></i></span>
+                        <div class="number-lable">รหัสผ่าน</div>
+                        <span class="form-stepper-circle text-muted">
+                            <span><i class="fa-regular fa-circle fa-lg"></i></span>
+                        </span>
+                    </a>
+                </li>
+                <!-- Step 4 -->
+                <li class="form-stepper-unfinished text-center form-stepper-list">
+                    <a class="mx-2">
+                        <span class="number-step"><i class="fi fi-sr-document"></i></span>
+                        <div class="number-lable">แนบไฟล์</div>
+                        <span class="form-stepper-circle text-muted">
+                            <span><i class="fa-regular fa-circle fa-lg"></i></span>
+                        </span>
+                    </a>
+                </li>
+            </ul>
+
+            <section class="form-step">
+                <!-- Button trigger modal -->
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-4">
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <i class="fa-solid fa-plus"></i> เพิ่มผู้ติดต่อใหม่
+                    </button>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                {% if error_message %}
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ error_message }}
+                                    </div>
+                                {% endif %}
+                                <form id="createContactForm" method="post" action="{% url 'taskcontrol:create_contact' client_id=client.id %}">
+                                    {% csrf_token %}
+                                    <div class="h5 pb-2 mb-4 text-primary border-bottom border-primary"> ผู้ติดต่อ
+                                        <i class="fas fa-chevron-left"></i>
+                                        {{ client.company_name }}
+                                        <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label for="ct_name" class="form-label fw-semibold">ชื่อ :</label>
+                                            <input type="text" name="ct_name" id="ct_name" class="form-control" required/>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="ct_position" class="form-label fw-semibold">ตำแหน่ง :</label>
+                                            <input type="text" name="ct_position" id="ct_position" class="form-control" required/>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="ct_phone" class="form-label fw-semibold">เบอร์ติดต่อ :</label>
+                                            <input type="text" name="ct_phone" id="ct_phone" class="form-control" maxlength="10" required/>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label for="" class="form-label fw-semibold">อีเมล :</label>
+                                            <input type="text" name="ct_email" id="ct_email" class="form-control" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="" class="form-label fw-semibold">ไลน์ :</label>
+                                            <input type="text" name="ct_line" id="ct_line" class="form-control" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="" class="form-label fw-semibold">ช่องทางติดต่ออื่นๆ :</label>
+                                            <input type="text" name="ct_other" id="ct_other" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-12">
+                                            <label for="" class="form-label fw-semibold">ที่อยู่&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                            <input type="checkbox" class="form-check-input" name="ct_address2" id="ct_address2"
+                                                value="{{ client.company_address.address }} {{ client.company_address.subdistrict.name_th }} {{ client.company_address.district.name_th }} {{ client.company_address.province.name_th }} {{ client.company_address.subdistrict.zipcode }}"
+                                                onchange="copyCompanyAddress()" />
+                                            <label for="ct_address2"
+                                                class="form-label fw-semibold">&nbsp;ใช้ที่อยู่เหมือนบริษัท</label>
+                                            <input type="text" class="form-control" name="ct_address" id="ct_address" />
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <select name="ct_province" id="province2" class="form-select">
+                                                <option value selected disabled hidden>จังหวัด</option>
+                                                {% for p in provinces %}
+                                                <option value="{{ p.id }}">{{ p.name_th }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <select name="ct_district" id="district2" class="form-select">
+                                                <option value="" selected disabled hidden>อำเภอ/เขต</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <select name="ct_subdistrict" id="subdistrict2" class="form-select">
+                                                <option value="" selected disabled hidden>ตำบล/แขวง/รหัสไปรษณีย์</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                                <button type="button" id="submitContactBtn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> เพิ่มผู้ติดต่อ</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive mb-4">
+                    <table id="contact-table" class="table">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 5%;">#</th>
+                                <th style="width: 20%;">ผู้ติดต่อ</th>
+                                <th style="width: 5%;">ตำแหน่ง</th>
+                                <th style="width: 10%; text-align: center;"><i class="fa-solid fa-phone-volume"></i></th>
+                                <th style="width: 10%; text-align: center;"><i class="fa-solid fa-inbox"></i></th>
+                                <th style="width: 10%; text-align: center;"><i class="fa-brands fa-line"></i></th>
+                                <th style="width: 25%; text-align: center;"><i class="fa-solid fa-map-location-dot"></i></th>
+                                <th style="width: 10%; text-align: center;"><i class="fa-solid fa-comment-dots"></i></th>
+                                <th style="width: 5%; text-align: center;"><i class="fa-solid fa-gears"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-group-divider">
+                            {% for c in contacts %}
+                            <tr>
+                                <td class="text-center">{{ forloop.counter }}</td>
+                                <td>
+                                    {% if c.name %}
+                                    {{ c.name }}
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    {% if c.position %}
+                                    {{ c.position }}
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if c.phone %}
+                                    {{ c.phone }}
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if c.email %}
+                                    {{ c.email }}
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if c.line %}
+                                    {{ c.line }}
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if c.address.address %}
+                                    {{ c.address.address }}
+                                    {{ c.address.subdistrict.name_th }}
+                                    {{ c.address.district.name_th }}
+                                    {{ c.address.province.name_th }}
+                                    {{ c.address.subdistrict.zipcode }}
+                                    {% elif c.address.address2 %}
+                                    {{ c.address.address2 }}
+                                    {{ c.address.subdistrict.name_th }}
+                                    {{ c.address.district.name_th }}
+                                    {{ c.address.province.name_th }}
+                                    {{ c.address.subdistrict.zipcode }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if c.other %}
+                                    {{ c.other }}
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-outline-danger btn-sm delete-contact-btn" data-contact-id="{{ c.id }}"><i class="fa-regular fa-trash-can"></i></button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <input type="hidden" id="delete-contact-url" value="{% url 'taskcontrol:delete_contact' contact_id=0 %}">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{% url 'taskcontrol:record_client' client_id=client.id %}" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left-long"></i> ย้อนกลับ</a>
+                    <a href="{% url 'taskcontrol:create_password' client_id=client.id %}" class="btn btn-dark">ถัดไป <i class="fa-solid fa-arrow-right-long"></i></a>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    const getDistrictUrl = "{% url 'taskcontrol:GetDistrict' %}";
+    const getSubdistrictUrl = "{% url 'taskcontrol:GetSubdistrict' %}";
+</script>
+
+<script>
+    function copyCompanyAddress() {
+        var checkbox = document.getElementById("ct_address2");
+        var addressInput = document.getElementById("ct_address");
+        var provinceSelect = document.getElementById("province2");
+        var districtSelect = document.getElementById("district2");
+        var subdistrictSelect = document.getElementById("subdistrict2");
+
+        if (checkbox.checked) {
+            var companyAddress = checkbox.value;
+            addressInput.value = companyAddress;
+
+            provinceSelect.disabled = true;
+            districtSelect.disabled = true;
+            subdistrictSelect.disabled = true;
+        } else {
+            addressInput.value = "";
+
+            provinceSelect.disabled = false;
+            districtSelect.disabled = false;
+            subdistrictSelect.disabled = false;
+        }
+    }
+
+    $(function () {
+        $('#province2').change(function () {
+            $("#district2").empty();
+            $.ajax({
+                url: getDistrictUrl,
+                data: { province_id: $(this).val() },
+                success: function (data) {
+                    $("#district2").append('<option value selected disabled hidden>อำเภอ/เขต</option>');
+                    $.each(data, function (index, value) {
+                        $("#district2").append('<option value="' + data[index].id + '">' + data[index].name_th + '</option>');
+                    });
+                }
+            });
+        });
+
+        $('#district2').change(function () {
+            $('#subdistrict2').empty();
+            $.ajax({
+                url: getSubdistrictUrl,
+                data: { district_id: $(this).val() },
+                success: function (data) {
+                    $('#subdistrict2').append('<option value selected disabled hidden>ตำบล/แขวง/รหัสไปรษณีย์</option>');
+                    $.each(data, function (i, v) {
+                        $('#subdistrict2').append('<option value="' + data[i].id + '">' + data[i].name_th + ' ' + data[i].zipcode + '</option>');
+                    });
+                }
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        $("#createContactForm").on("submit", function (event) {
+            event.preventDefault();
+            var name = $("#ct_name").val();
+            var position = $("#ct_position").val();
+            var phone = $("#ct_phone").val();
+            var email = $("#ct_email").val();
+            var line = $("#ct_line").val();
+            var other = $("#ct_other").val();
+            var address = $("#ct_address").val();
+            var address2 = $("#ct_address2").val();
+            var province = $("#province2").val();
+            var district = $("#district2").val();
+            var subdistrict = $("#subdistrict2").val();
+            var data = {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                name: name,
+                position: position,
+                phone: phone,
+                email: email,
+                line: line,
+                other: other,
+                address: address,
+                address2: address2,
+                province: province,
+                district: district,
+                subdistrict: subdistrict
+            };
+            $.ajax({
+                type: 'POST',
+                url: "{{ create_contact_url }}",
+                data: data,
+                success: function (response) {
+                    console.log(response);
+                    window.location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    });
+
+    
+    $(document).ready(function () {
+        $('#submitContactBtn').on('click', function () {
+            var csrftoken = $('input[name="csrfmiddlewaretoken"]').val();
+
+            // ดึงค่าที่กรอกในฟอร์ม
+            var ct_name = $("#ct_name").val().trim();
+            var ct_position = $("#ct_position").val().trim();
+            var ct_phone = $("#ct_phone").val().trim();
+            
+            // เช็คความถูกต้องของข้อมูล
+            if (ct_name === '' || ct_position === '' || ct_phone === '') {
+                alert('กรุณากรอกข้อมูลให้ครบทุกช่อง');
+                return;
+            }
+            
+            $.ajax({
+                url: $('#createContactForm').attr('action'),
+                type: 'POST',
+                data: $('#createContactForm').serialize(),
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                },
+                success: function (response) {
+                    // Clear form fields
+                    $('#createContactForm')[0].reset();
+
+                    // Optionally, update the table with new data
+                    var newRow = "<tr>";
+                    newRow += "<td>" + response.name + "</td>";
+                    newRow += "<td>" + response.position + "</td>";
+                    newRow += "</tr>";
+                    $('table tbody').append(newRow);
+                    window.location.reload();
+
+                },
+                error: function (xhr, errmsg, err) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+         const dataTable = $("#contact-table").DataTable({
+              "language": {
+                   "search": "ค้นหา",
+                   "lengthMenu": "แสดง _MENU_ รายการ",
+                   "info": "แสดง _START_ ถึง _END_ จากทั้งหมด _TOTAL_ รายการ",
+                   "paginate": {
+                        "previous": "ก่อนหน้า",
+                        "next": "ถัดไป"
+                   }
+              }
+         });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".delete-contact-btn").on("click", function() {
+            var contactId = $(this).data("contact-id");
+            if (confirm("ต้องการลบผู้ติดต่อรายนี้?")) {
+                var deleteUrl = $('#delete-contact-url').val();
+                $.ajax({
+                    type: 'POST',
+                    url: deleteUrl.replace("0", contactId),
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                    },
+                    success: function() {
+                        // Remove the row of the deleted contact from the table
+                        $('[data-contact-id="' + contactId + '"]').closest("tr").remove();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,219 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.bootstrap5.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.bootstrap5.css">
+
+{% extends 'task/index.html' %} 
+{% block content %}
+
+<style>
+    th, td {
+        font-size: 14px;
+        vertical-align: middle;
+    }
+
+    th {
+        font-size: 13.5px;
+    }
+
+    .table-sm>:not(caption)>*>* {
+        padding: 0.5rem 0.5rem;
+    }
+</style>
+
+<div class="card">
+    <div class="d-flex justify-content-end mt-2 mx-2">
+        <div class="btn-group">
+            <a href="{% url 'taskcontrol:manage_category' %}" class="btn btn-primary" aria-current="page"><i class="fa-solid fa-quote-left"></i> หมวดหมู่งาน</a>
+            <a href="{% url 'taskcontrol:manage_type' %}" class="btn btn-outline-primary">ประเภทงาน <i class="fa-solid fa-quote-right"></i></a>
+        </div>
+   </div>
+    <div class="card-body">
+        <div class="row mb-2">
+            <form id="add-category-form" method="post" action="{% url 'taskcontrol:manage_category' %}">
+                {% csrf_token %}
+                <div class="form-group row">
+                    <label for="category_name_th" class="form-label">หมวดหมู่งาน :</label>
+                    <div class="col-4">
+                        <input type="text" class="form-control" name="category_name_th" id="category_name_th" required />
+                    </div>
+                    <div class="col-4 text-start">
+                        <button type="submit" class="btn btn-outline-success">
+                            <i class="fa-solid fa-plus"></i> เพิ่ม
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="table-responsive mb-3">
+            <table id="category-table" class="table table-sm table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th class="text-center" style="width: 5%;">#</th>
+                        <th class="text-start">หมวดงาน</th>
+                        <th class="text-center" style="width: 10%;"><i class="fa-solid fa-gears"></i></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in engagement_categories %}
+                    <tr data-category-id="{{ category.id }}">
+                        <td class="text-center">{{ forloop.counter }}</td>
+                        <td class="text-start">{{ category.name_th }}</td>
+                        <td class="text-center">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-outline-warning btn-sm edit-category-button" data-bs-toggle="modal" data-bs-target="#updateCategoryModal" data-category-id="{{ category.id }}">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm delete-category-button disabled" data-delete-url="{% url 'taskcontrol:delete_category' category_id=category.id %}">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Categories Modal -->
+<div class="modal fade" id="updateCategoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark fw-semibold"><i class="fa-solid fa-pen-to-square" style="color: #ffbc35;"></i>&nbsp;แก้ไขหมวดงาน :</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-category-form" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" id="edit-category-id" name="category_id">
+                    <div class="mb-3">
+                        <label for="edit-name-th" class="form-label">ชื่อหมวดงาน:</label>
+                        <input type="text" id="edit-name-th" name="new_category_name_th" class="form-control">
+                    </div>
+                    <div class="modal-footer text-end">
+                        <button type="submit" class="btn btn-outline-warning">บันทึกแก้ไข</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.0.5/js/dataTables.bootstrap5.js"></script>
+<script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
+<script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.bootstrap5.js"></script>
+
+<script>
+    $(document).ready(function() {
+        const dataTable = $("#category-table").DataTable({
+            "language": {
+                "search": "ค้นหา",
+                "lengthMenu": "แสดง _MENU_ รายการ",
+                "info": "แสดง _START_ ถึง _END_ จากทั้งหมด _TOTAL_ รายการ",
+                "paginate": {
+                    "previous": "ก่อนหน้า",
+                    "next": "ถัดไป"
+                }
+            }
+        });
+
+        // Event listener for delete category button
+        $(".delete-category-button").on("click", function() {
+            deleteCategory($(this));
+        });
+
+        // Event listener for edit category button
+        $(".edit-category-button").on("click", function() {
+            editCategory($(this));
+        });
+
+        // Event listener for submitting edit category form
+        $("#edit-category-form").on("submit", function(event) {
+            event.preventDefault();
+            updateCategory($(this));
+        });
+
+        // Event listener for submitting add category form
+        $("#add-category-form").on("submit", function(event) {
+            event.preventDefault();
+            addCategory($(this));
+        });
+
+        // Function to delete a category
+        function deleteCategory(button) {
+            if (confirm("ต้องการลบหมวดหมู่งานจริงหรือไม่?")) {
+                var categoryId = button.closest("tr").data("category-id");
+                var deleteUrl = "{% url 'taskcontrol:delete_category' category_id=0 %}".replace("0", categoryId);
+                $.ajax({
+                    type: 'POST',
+                    url: deleteUrl,
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                    },
+                    success: function() {
+                        $('[data-category-id="' + categoryId + '"]').remove();
+                        $('#updateCategoryModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+        }
+
+        // Function to edit a category
+        function editCategory(button) {
+            var categoryRow = button.closest("tr");
+            var categoryId = categoryRow.data("category-id");
+            var nameTH = categoryRow.find("td:eq(1)").text();
+
+            $("#edit-category-id").val(categoryId);
+            $("#edit-name-th").val(nameTH);
+            $('#updateCategoryModal').modal('show');
+        }
+
+        // Function to update a category
+        function updateCategory(form) {
+            var formData = form.serialize();
+            var categoryId = $("#edit-category-id").val();
+            var updateUrl = "{% url 'taskcontrol:update_category' category_id=0 %}".replace("0", categoryId);
+            $.ajax({
+                type: 'POST',
+                url: updateUrl,
+                data: formData,
+                success: function() {
+                    $('#updateCategoryModal').modal('hide');
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+        // Function to add a new category
+        function addCategory(form) {
+            var formData = form.serialize();
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'taskcontrol:manage_category' %}",
+                data: formData,
+                success: function() {
+                    form.trigger("reset");
+                    location.reload(); // Reload the page after successful addition
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+    });
+</script>
+
+{% endblock content %}

@@ -1,0 +1,948 @@
+
+{% extends 'task/index.html' %}
+{% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredericka+the+Great&display=swap');
+    
+    #kanban {
+        display: inline-flex;
+        gap: 10px;
+        padding: 5px;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .task-card {
+        position: relative;
+        background-color: #ffffff;
+        box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 0.75rem;
+    }
+
+    .task-card a {
+        text-decoration: none;
+        margin-right: 10px;
+        color: #0085FF;
+    }
+
+    .task-card small {
+        font-size: 11px;
+        color: #393E46;
+    }
+
+    .task-card:hover {
+        box-shadow: rgba(255, 255, 255, 0.2) 0px 0px 0px 2px inset, rgba(18, 149, 255, 0.9) 0px 0px 0px 2px;
+    }
+
+    .task-header-open {
+        background-color: #cbe5ff;
+        padding: 1rem;
+        margin: 0 -1rem;
+        font-size: 15px;
+        font-weight: 600;
+        color: #0051a0;
+        border-radius: 0.75rem;
+    }
+
+    .task-header-progress {
+        background-color: #ead6ff;
+        padding: 1rem;
+        margin: 0 -1rem;
+        font-size: 15px;
+        font-weight: 600;
+        color: #5b2891;
+        border-radius: 0.75rem;
+    }
+
+    .task-header-review {
+        background-color: #fff1c6;
+        padding: 1rem;
+        margin: 0 -1rem;
+        font-size: 15px;
+        font-weight: 600;
+        color: #954800;
+        border-radius: 0.75rem;
+    }
+
+    .task-header-client {
+        background-color: #ffcfce;
+        padding: 1rem;
+        margin: 0 -1rem;
+        font-size: 15px;
+        font-weight: 600;
+        color: #a10f0a;
+        border-radius: 0.75rem;
+    }
+
+    .task-header-done {
+        background-color: #d0f4b2;
+        padding: 1rem;
+        margin: 0 -1rem;
+        font-size: 15px;
+        font-weight: 600;
+        color: #054627;
+        border-radius: 0.75rem;
+    }
+
+    .tasks-open,
+    .tasks-progress,
+    .tasks-review,
+    .tasks-client,
+    .tasks-done {
+        flex: 1;
+        display: inline-block;
+        padding: 0 1rem 5rem 1rem;
+        margin-bottom: 1.5rem;
+        border-radius: 0.75rem;
+        color: #31363E;
+        max-height: 1280px;
+        overflow-y: auto; /* เพิ่มการเลื่อนแนวตั้ง */
+    }
+
+    .tasks-open {
+        background-color: #cbe5ff;
+    }
+
+    .tasks-progress {
+        background-color: #ead6ff;
+    }
+
+    .tasks-review {
+        background-color: #fff1c6;
+    }
+
+    .tasks-client {
+        background-color: #ffcfce;
+    }
+
+    .tasks-done {
+        background-color: #d0f4b2;
+    }
+
+    .text-body {
+        opacity: 1;
+        color: rgba(108, 117, 125), 1 !important;
+    }
+
+    .dropdown-toggle {
+        display: none !important;
+    }
+
+    .title {
+        font-size: 12.2px;
+        font-weight: 600;
+        color: #31363E;
+    }
+
+    .sub-title {
+        font-size: 11.3px;
+        font-weight: 600;
+        color: #31363E;
+    }
+
+    .detail {
+        font-size: 11.3px;
+        color: #31363E;
+    }
+
+    .deadline {
+        font-size: 10px;
+        font-weight: 500;
+        color: #f70009;
+        margin-top: 0px;
+    }
+    
+    .date {
+        font-size: 9px;
+        color: #31363E;
+        margin-top: 0px;
+    }
+
+    .done {
+        text-decoration: line-through;
+    }
+    
+    .icon {
+        font-size: 14px;
+    }
+
+    .badge-open, .badge-in-progress, .badge-review, .badge-client, .badge-done {
+        font-size: 13px;
+        font-weight: 600;
+        background-color: #fff;
+        padding: 4px 8px;
+        border-radius: 12px;
+        margin-left: 5px;
+    }
+    
+    .badge-open { color: #0051a0; }
+    .badge-in-progress { color: #5b2891; }
+    .badge-review { color: #954800; }
+    .badge-client { color: #a10f0a; }
+    .badge-done { color: #054627; }
+    
+    .stamp-done {
+        box-shadow: 0 0 0 3px #059212, 0 0 0 2px #059212 inset;  
+        border: 2px solid transparent;
+        border-radius: 4px;
+        display: inline-block;
+        padding: 5px 2px;
+        margin-left: 10px;
+        line-height: 22px;
+        color: #059212;
+        font-size: 16px;
+        font-family: "Fredericka the Great", serif;
+        text-transform: uppercase;
+        text-align: center;
+        opacity: 0.6;
+        width: 155px;
+        transform: rotate(336deg);
+        position: absolute;
+        top: 65px;
+        left: 15px;
+    }
+</style>
+
+
+<div class="row">
+    <div class="card">
+        <div class="card-body">
+            <div class="text-end">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <a href="{% url 'taskcontrol:kanban_board' %}" class="btn btn-primary" id=""><i class="fa-solid fa-border-all"></i> Board</a>
+                    <a href="{% url 'taskcontrol:kanban_board_filter' %}" class="btn btn-outline-primary " id=""><i class="fa-solid fa-arrow-down-wide-short"></i> Filter</a>
+                </div>
+            </div>
+            
+            <div class="text-start">
+                <span class="badge bg-light text-dark mb-2">วันที่ {{ today|date:'d/m/Y' }}</span>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                        <i class="fi fi-br-square-plus"></i> เพิ่มงานใหม่
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Modal for adding a new task -->
+            <div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-top">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addTaskModalLabel"><i class="fi fi-sr-comment-medical" style="color: #53c536;"></i> เพิ่มงานใหม่ (Add New Task)</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{% url 'taskcontrol:add_new_task' %}" method="post">
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label for="" class="form-label">ชื่อบริษัท :</label>
+                                        <select name="client_id" id="" class="form-select">
+                                            {% for client in clients %}
+                                                <option value="{{ client.id }}">{{ client.company_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label for="" class="form-label">เลขที่ :</label>
+                                        <input type="text" name="number" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <label for="" class="form-label">ชื่องาน :</label>
+                                        <input type="text" name="new_job" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label for="" class="form-label">รายละเอียดงาน :</label>
+                                        <input type="text" name="description" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label for="" class="form-label">วันที่สิ้นสุด :</label>
+                                        <input type="date" name="due_date" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                                <button type="submit" class="btn btn-primary">บันทึก</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <!-- Kanban -->
+            <div class="row">
+                <div id="kanban" class="mt-2">
+
+                    <!-- OPEN -->
+                    <div class="tasks-open" data-status="OPEN_JOB" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <h5 class="task-header-open" id="task-open-header"> เปิดงาน <span class="badge badge-open">{{ engagement_details_open }}</span></h5>
+                        {% for detail in engagement_details %}
+                            {% if detail.status == 'OPEN_JOB' %}
+                                <div class="task-card" draggable="true" ondragstart="drag(event)" id="{{ detail.id }}">
+                                    <input type="hidden" id="newStatusInput_{{ detail.id }}" name="new_status" value="OPEN_JOB">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <div class="title">{{ detail.engagement.client.company_name }}</div>
+                                            <div class="sub-title">#  {{ detail.engagement.job_code }}</div>
+                                        </div>
+                                        <div class="col-4 text-end">
+                                            <i class="fi fi-br-edit" style="color:#ffc107;" onclick="openUpdateNotesModal('{{ detail.id }}', '{{ detail.engagement.job_code }}', '{{ detail.engagement.notes }}')"></i>
+                                            <i class="fi fi-br-up-right-from-square icon" style="color:#0085FF; cursor: pointer;" onclick="openEngagementModal('{{ detail.engagement.job_code }}')"></i>
+                                        </div>
+                                    </div>
+                                    <div class="date text-end">
+                                        <i class="fi fi-br-calendar-day"></i>
+                                        {{ detail.engagement.create_at|date:'d/m/Y' }}
+                                    </div>
+                                    <div class="detail">
+                                        <i class="fi fi-ss-thumbtack" style="color: #f42a2a;"></i> :
+                                        {{ detail.engagement_category.name_th }} <i class="fa-solid fa-angle-right"></i> {{ detail.engagement_type.name_th }}
+                                    </div>
+                                    <div class="detail">
+                                        {% if detail.engagement.administrator %}
+                                            <i class="fi fi-rr-user"></i> :
+                                            {{ detail.engagement.administrator.first_name }}
+                                            {{ detail.engagement.administrator.last_name }}
+                                        {% else %}
+                                            <i class="fi fi-br-user"></i> : -
+                                        {% endif %}
+                                    </div>
+                                    <div class="detail">
+                                        {% if detail.engagement.reviewer %}
+                                            <i class="fi fi-rr-member-search"></i> :
+                                            {{ detail.engagement.reviewer.first_name }}
+                                            {{ detail.engagement.reviewer.last_name }}
+                                        {% else %}
+                                            <i class="fi fi-rr-member-search"></i> : -
+                                        {% endif %}
+                                    </div>
+                                    <div class="detail">
+                                        {% if detail.engagement.approver %}
+                                            <i class="fi fi-rr-user-trust"></i> :
+                                            {{ detail.engagement.approver.first_name }}
+                                            {{ detail.engagement.approver.last_name }}
+                                        {% else %}
+                                            <i class="fi fi-rr-user-trust"></i> : -
+                                        {% endif %}
+                                    </div>
+                                    <div class="detail">
+                                        <i class="fi fi-rr-calendar-clock"></i> :
+                                        {% if detail.days_remaining >= 0 %}
+                                            <span class="fw-semibold">{{ detail.days_remaining }} วัน</span>
+                                        {% else %}
+                                            <span class="fw-semibold" style="color: #f70009;">{{ detail.days_remaining }} วัน</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="deadline text-end">
+                                        <i class="fi fi-br-clock-three"></i> {{ detail.deadline|date:'d/m/Y' }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    
+                        <!-- tasks -->
+                        {% for task in tasks %}
+                            {% if task.status == 'OPEN_JOB' %}
+                                <div class="task-card" draggable="true" ondragstart="drag(event)" id="{{ task.id }}">
+                                    <input type="hidden" id="newStatusInput_{{ task.id }}" name="new_status" value="OPEN_JOB">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <div class="title">{{ task.client.company_name }}</div>
+                                            <div class="sub-title">{{ task.number }}</div>
+                                        </div>
+                                        <div class="col-4 text-end">
+                                            <i class="fi fi-sr-briefcase" style="color: #0d6efd;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="date text-end">
+                                        <i class="fi fi-br-calendar-day"></i>
+                                        {{ task.create_at|date:'d/m/Y' }}
+                                    </div>
+                                    <div class="detail">
+                                        <i class="fi fi-ss-thumbtack" style="color: #f42a2a;"></i> :
+                                        {{ task.new_job }}
+                                    </div>
+                                    <div class="detail">{{ task.description }}</div>
+                                    <div class="deadline text-end">
+                                        <i class="fi fi-br-clock-three"></i> {{ task.due_date|date:'d/m/Y' }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <div class="tasks-progress" data-status="IN_PROGRESS" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <h5 class="task-header-progress fw-semibold" id="task-progress-header"> กำลังดำเนินงาน <span class="badge badge-in-progress">{{ engagement_details_inprogress }}</span></h5>
+                        {% for detail in engagement_details %}
+                        {% if detail.status == 'IN_PROGRESS' %}
+                        <div class="task-card" draggable="true" ondragstart="drag(event)" id="{{ detail.id }}">
+                            <input type="hidden" id="newStatusInput_{{ detail.id }}" name="new_status" value="IN_PROGRESS">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="title fw-semibold">{{ detail.engagement.client.company_name }}</div>
+                                    <div class="sub-title"># {{ detail.engagement.job_code }}</div>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <i class="fi fi-br-edit" style="color:#ffc107;" onclick="openUpdateNotesModal('{{ detail.id }}', '{{ detail.engagement.job_code }}', '{{ detail.engagement.notes }}')"></i>
+                                    <i class="fi fi-br-up-right-from-square" style="color:#0085FF; cursor: pointer;" onclick="openEngagementModal('{{ detail.engagement.job_code }}')"></i>
+                                </div>
+                            </div>
+                            <div class="date text-end">
+                                <i class="fi fi-br-calendar-day"></i>
+                                {{ detail.engagement.create_at|date:'d/m/Y' }}
+                            </div>
+                            <div class="detail">
+                                <i class="fi fi-ss-thumbtack" style="color: #f42a2a;"></i> :
+                                {{ detail.engagement_category.name_th }} <i class="fa-solid fa-angle-right"></i> {{ detail.engagement_type.name_th }}
+                                </div>
+                            <div class="detail">
+                                {% if detail.engagement.administrator %}
+                                <i class="fi fi-rr-user"></i> :
+                                {{ detail.engagement.administrator.first_name }}
+                                {{ detail.engagement.administrator.last_name }}
+                                {% else %}
+                                <i class="fi fi-br-user"></i> : -
+                                {% endif %}
+                            </div>
+                            <div class="detail">
+                                {% if detail.engagement.reviewer %}
+                                <i class="fi fi-rr-member-search"></i> :
+                                {{ detail.engagement.reviewer.first_name }}
+                                {{ detail.engagement.reviewer.last_name }}
+                                {% else %}
+                                <i class="fi fi-rr-member-search"></i> : -
+                                {% endif %}
+                            </div>
+                            <div class="detail">
+                                {% if detail.engagement.approver %}
+                                <i class="fi fi-rr-user-trust"></i> :
+                                {{ detail.engagement.approver.first_name }}
+                                {{ detail.engagement.approver.last_name }}
+                                {% else %}
+                                <i class="fi fi-rr-user-trust"></i> : -
+                                {% endif %}
+                            </div>
+                            <div class="detail">
+                                <i class="fi fi-rr-calendar-clock"></i> :
+                                {% if detail.days_remaining >= 0 %}
+                                <span class="fw-semibold">{{ detail.days_remaining }} วัน</span>
+                                {% else %}
+                                <span class="fw-semibold" style="color: #f70009;">{{ detail.days_remaining }} วัน</span>
+                                {% endif %}
+                            </div>
+                            <div class="deadline text-end">
+                                <i class="fi fi-br-clock-three"></i> {{ detail.deadline|date:'d/m/Y' }}
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+
+                        <!-- Loop through tasks -->
+                        {% for task in tasks %}
+                            {% if task.status == 'IN_PROGRESS' %}
+                                <div class="task-card" draggable="true" ondragstart="drag(event)" id="{{ task.id }}">
+                                    <input type="hidden" id="newStatusInput_{{ task.id }}" name="new_status" value="IN_PROGRESS">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <div class="title">{{ task.client.company_name }}</div>
+                                            <div class="sub-title">{{ task.number }}</div>
+                                        </div>
+                                        <div class="col-4 text-end">
+                                            <i class="fi fi-sr-briefcase" style="color: #0d6efd;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="date text-end">
+                                        <i class="fi fi-br-calendar-day"></i>
+                                        {{ task.create_at|date:'d/m/Y' }}
+                                    </div>
+                                    <div class="detail">
+                                        <i class="fi fi-ss-thumbtack" style="color: #f42a2a;"></i> :
+                                        {{ task.new_job }}
+                                    </div>
+                                    <div class="detail">{{ task.description }}</div>
+                                    <div class="deadline text-end">
+                                        <i class="fi fi-br-clock-three"></i> {{ task.due_date|date:'d/m/Y' }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <div class="tasks-review" data-status="REVIEW" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <h5 class="task-header-review fw-semibold" id="task-review-header">รอตรวจทาน <span class="badge badge-review">{{ engagement_details_review }}</span></h5>
+                        {% for detail in engagement_details %}
+                        {% if detail.status == 'REVIEW' %}
+                        <div class="task-card" draggable="true" ondragstart="drag(event)" id="{{ detail.id }}">
+                            <input type="hidden" id="newStatusInput_{{ detail.id }}" name="new_status" value="REVIEW">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="title fw-semibold">{{ detail.engagement.client.company_name }}</div>
+                                    <div class="sub-title"># {{ detail.engagement.job_code }}</div>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <i class="fi fi-br-edit" style="color:#ffc107;" onclick="openUpdateNotesModal('{{ detail.id }}', '{{ detail.engagement.job_code }}', '{{ detail.engagement.notes }}')"></i>
+                                    <i class="fi fi-br-up-right-from-square" style="color:#0085FF; cursor: pointer;" onclick="openEngagementModal('{{ detail.engagement.job_code }}')"></i>
+                                </div>
+                            </div>
+                            <div class="date text-end">
+                                <i class="fi fi-br-calendar-day"></i>
+                                {{ detail.engagement.create_at|date:'d/m/Y' }}
+                            </div>
+                            <div class="detail">
+                                <i class="fi fi-ss-thumbtack" style="color: #f42a2a;"></i> :
+                                {{ detail.engagement_category.name_th }} <i class="fa-solid fa-angle-right"></i> {{ detail.engagement_type.name_th }}
+                                </div>
+                            <div class="detail">
+                                {% if detail.engagement.administrator %}
+                                <i class="fi fi-rr-user"></i> :
+                                {{ detail.engagement.administrator.first_name }}
+                                {{ detail.engagement.administrator.last_name }}
+                                {% else %}
+                                <i class="fi fi-br-user"></i> : -
+                                {% endif %}
+                            </div>
+                            <div class="detail">
+                                {% if detail.engagement.reviewer %}
+                                <i class="fi fi-rr-member-search"></i> :
+                                {{ detail.engagement.reviewer.first_name }}
+                                {{ detail.engagement.reviewer.last_name }}
+                                {% else %}
+                                <i class="fi fi-rr-member-search"></i> : -
+                                {% endif %}
+                            </div>
+                            <div class="detail">
+                                {% if detail.engagement.approver %}
+                                <i class="fi fi-rr-user-trust"></i> :
+                                {{ detail.engagement.approver.first_name }}
+                                {{ detail.engagement.approver.last_name }}
+                                {% else %}
+                                <i class="fi fi-rr-user-trust"></i> : -
+                                {% endif %}
+                            </div>
+                            <div class="detail">
+                                <i class="fi fi-rr-calendar-clock"></i> :
+                                {% if detail.days_remaining >= 0 %}
+                                <span class="fw-semibold">{{ detail.days_remaining }} วัน</span>
+                                {% else %}
+                                <span class="fw-semibold" style="color: #f70009;">{{ detail.days_remaining }} วัน</span>
+                                {% endif %}
+                            </div>
+                            <div class="deadline text-end">
+                                <i class="fi fi-br-clock-three"></i> {{ detail.deadline|date:'d/m/Y' }}
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+
+                        {% for task in tasks %}
+                            {% if task.status == 'REVIEW' %}
+                                <div class="task-card" draggable="true" ondragstart="drag(event)" id="{{ task.id }}">
+                                    <input type="hidden" id="newStatusInput_{{ task.id }}" name="new_status" value="REVIEW">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <div class="title">{{ task.client.company_name }}</div>
+                                            <div class="sub-title">{{ task.number }}</div>
+                                        </div>
+                                        <div class="col-4 text-end">
+                                            <i class="fi fi-sr-briefcase" style="color: #0d6efd;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="date text-end">
+                                        <i class="fi fi-br-calendar-day"></i>
+                                        {{ task.create_at|date:'d/m/Y' }}
+                                    </div>
+                                    <div class="detail">
+                                        <i class="fi fi-ss-thumbtack" style="color: #f42a2a;"></i> :
+                                        {{ task.new_job }}
+                                    </div>
+                                    <div class="detail">{{ task.description }}</div>
+                                    <div class="deadline text-end">
+                                        <i class="fi fi-br-clock-three"></i> {{ task.due_date|date:'d/m/Y' }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <div class="tasks-client" data-status="PENDING_CLIENT" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <h5 class="task-header-client fw-semibold" id="task-client-header">รอลูกค้า <span class="badge badge-client">{{ engagement_details_pending }}</span></h5>
+                        {% for detail in engagement_details %}
+                        {% if detail.status == 'PENDING_CLIENT' %}
+                        <div class="task-card" draggable="true" ondragstart="drag(event)" id="{{ detail.id }}">
+                            <input type="hidden" id="newStatusInput_{{ detail.id }}" name="new_status" value="PENDING_CLIENT">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="title fw-semibold">{{ detail.engagement.client.company_name }}</div>
+                                    <div class="sub-title"># {{ detail.engagement.job_code }}</div>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <i class="fi fi-br-edit" style="color:#ffc107;" onclick="openUpdateNotesModal('{{ detail.id }}', '{{ detail.engagement.job_code }}', '{{ detail.engagement.notes }}')"></i>
+                                    <i class="fi fi-br-up-right-from-square" style="color:#0085FF; cursor: pointer;" onclick="openEngagementModal('{{ detail.engagement.job_code }}')"></i>
+                                </div>
+                            </div>
+                            <div class="date text-end">
+                                <i class="fi fi-br-calendar-day"></i>
+                                {{ detail.engagement.create_at|date:'d/m/Y' }}
+                            </div>
+                            <div class="detail">
+                                <i class="fi fi-ss-thumbtack" style="color: #f42a2a;"></i> :
+                                {{ detail.engagement_category.name_th }} <i class="fa-solid fa-angle-right"></i> {{ detail.engagement_type.name_th }}
+                                </div>
+                            <div class="detail">
+                                {% if detail.engagement.administrator %}
+                                <i class="fi fi-rr-user"></i> :
+                                {{ detail.engagement.administrator.first_name }}
+                                {{ detail.engagement.administrator.last_name }}
+                                {% else %}
+                                <i class="fi fi-br-user"></i> : -
+                                {% endif %}
+                            </div>
+                            <div class="detail">
+                                {% if detail.engagement.reviewer %}
+                                <i class="fi fi-rr-member-search"></i> :
+                                {{ detail.engagement.reviewer.first_name }}
+                                {{ detail.engagement.reviewer.last_name }}
+                                {% else %}
+                                <i class="fi fi-rr-member-search"></i> : -
+                                {% endif %}
+                            </div>
+                            <div class="detail">
+                                {% if detail.engagement.approver %}
+                                <i class="fi fi-rr-user-trust"></i> :
+                                {{ detail.engagement.approver.first_name }}
+                                {{ detail.engagement.approver.last_name }}
+                                {% else %}
+                                <i class="fi fi-rr-user-trust"></i> : -
+                                {% endif %}
+                            </div>
+                            <div class="detail">
+                                <i class="fi fi-rr-calendar-clock"></i> :
+                                {% if detail.days_remaining >= 0 %}
+                                <span class="fw-semibold">{{ detail.days_remaining }} วัน</span>
+                                {% else %}
+                                <span class="fw-semibold" style="color: #f70009;">{{ detail.days_remaining }} วัน</span>
+                                {% endif %}
+                            </div>
+                            <div class="deadline text-end">
+                                <i class="fi fi-br-clock-three"></i> {{ detail.deadline|date:'d/m/Y' }}
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+
+                        <!-- Loop through tasks -->
+                        {% for task in tasks %}
+                            {% if task.status == 'PENDING_CLIENT' %}
+                                <div class="task-card" draggable="true" ondragstart="drag(event)" id="{{ task.id }}">
+                                    <input type="hidden" id="newStatusInput_{{ task.id }}" name="new_status" value="PENDING_CLIENT">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <div class="title">{{ task.client.company_name }}</div>
+                                            <div class="sub-title">{{ task.number }}</div>
+                                        </div>
+                                        <div class="col-4 text-end">
+                                            <i class="fi fi-sr-briefcase" style="color: #0d6efd;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="date text-end">
+                                        <i class="fi fi-br-calendar-day"></i>
+                                        {{ task.create_at|date:'d/m/Y' }}
+                                    </div>
+                                    <div class="detail">
+                                        <i class="fi fi-ss-thumbtack" style="color: #f42a2a;"></i> :
+                                        {{ task.new_job }}
+                                    </div>
+                                    <div class="detail">{{ task.description }}</div>
+                                    <div class="deadline text-end">
+                                        <i class="fi fi-br-clock-three"></i> {{ task.due_date|date:'d/m/Y' }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <div class="tasks-done" data-status="DONE" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <h5 class="task-header-done fw-semibold" id="task-done-header"> เรียบร้อย <span class="badge badge-done">{{ engagement_details_done }}</span> </h5>
+                        {% for detail in engagement_details %}
+                        {% if detail.status == 'DONE' %}
+                        <div class="task-card" draggable="true" ondragstart="drag(event)" id="{{ detail.id }}">
+                            <input type="hidden" id="newStatusInput_{{ detail.id }}" name="new_status" value="DONE">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="title fw-semibold">{{ detail.engagement.client.company_name }} </div>
+                                    <div class="sub-title"><i class="fi fi-sr-badge-check" style="color:#53c536;"></i> # {{ detail.engagement.job_code }}</div>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <i class="fi fi-br-edit" style="color:#ffc107;" onclick="openUpdateNotesModal('{{ detail.id }}', '{{ detail.engagement.job_code }}', '{{ detail.engagement.notes }}')"></i>
+                                    <i class="fi fi-br-up-right-from-square" style="color:#0085FF; cursor: pointer;" onclick="openEngagementModal('{{ detail.engagement.job_code }}')"></i>
+                                </div>
+                            </div>
+                            <div class="date text-end">
+                                <i class="fi fi-br-calendar-day"></i>
+                                {{ detail.completed_at|date:'d/m/Y' }}
+                            </div>
+                            <div class="detail">
+                                <i class="fi fi-ss-thumbtack" style="color: #f42a2a;"></i> :
+                                {{ detail.engagement_category.name_th }} <i class="fa-solid fa-angle-right"></i> {{ detail.engagement_type.name_th }}
+                            </div>
+                            <div class="detail">
+                                {% if detail.engagement.administrator %}
+                                <i class="fi fi-rr-user"></i> :
+                                {{ detail.engagement.administrator.first_name }}
+                                {{ detail.engagement.administrator.last_name }}
+                                {% else %}
+                                <i class="fi fi-br-user"></i> : -
+                                {% endif %}
+                            </div>
+                            <div class="detail">
+                                {% if detail.engagement.reviewer %}
+                                <i class="fi fi-rr-member-search"></i> :
+                                {{ detail.engagement.reviewer.first_name }}
+                                {{ detail.engagement.reviewer.last_name }}
+                                {% else %}
+                                <i class="fi fi-rr-member-search"></i> : -
+                                {% endif %}
+                            </div>
+                            <div class="detail">
+                                {% if detail.engagement.approver %}
+                                <i class="fi fi-rr-user-trust"></i> :
+                                {{ detail.engagement.approver.first_name }}
+                                {{ detail.engagement.approver.last_name }}
+                                {% else %}
+                                <i class="fi fi-rr-user-trust"></i> : -
+                                {% endif %}
+                            </div>
+                            <div class="detail">
+                                <i class="fi fi-rr-calendar-clock"></i> :
+                                {% if detail.days_remaining >= 0 %}
+                                <span class="fw-semibold">{{ detail.days_remaining }} วัน</span>
+                                {% else %}
+                                <span class="fw-semibold" style="color: #f70009;">{{ detail.days_remaining }} วัน</span>
+                                {% endif %}
+                            </div>
+                            <div class="deadline text-end">
+                                <i class="fi fi-br-clock-three"></i> {{ detail.deadline|date:'d/m/Y' }}
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+
+                        <!-- Loop through tasks -->
+                        {% for task in tasks %}
+                            {% if task.status == 'DONE' %}
+                                <div class="task-card" draggable="true" ondragstart="drag(event)" id="{{ task.id }}">
+                                    <input type="hidden" id="newStatusInput_{{ task.id }}" name="new_status" value="DONE">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <div class="title">{{ task.client.company_name }} </div>
+                                            <div class="sub-title"><i class="fi fi-sr-badge-check" style="color:#53c536;"></i> {{ task.number }} </div>
+                                        </div>
+                                        <div class="col-4 text-end">
+                                            <i class="fi fi-sr-briefcase" style="color: #0d6efd;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="date text-end">
+                                        <i class="fi fi-br-calendar-day"></i>
+                                        {{ task.create_at|date:'d/m/Y' }}
+                                    </div>
+                                    <div class="detail">
+                                        <i class="fi fi-ss-thumbtack" style="color: #f42a2a;"></i> :
+                                        {{ task.new_job }}
+                                    </div>
+                                    <div class="detail">{{ task.description }}</div>
+                                    <div class="deadline text-end">
+                                        <i class="fi fi-br-clock-three"></i> {{ task.due_date|date:'d/m/Y' }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Notes Modal -->
+<div class="modal fade" id="updateNotesModal" tabindex="-1" aria-labelledby="updateNotesModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateNotesModalLabel">Update Notes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <textarea id="notesInput" class="form-control" rows="5"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="saveNotes()">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Engagement Details Modal -->
+<div class="modal fade" id="engagementModal" tabindex="-1" aria-labelledby="engagementModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="engagementModalLabel">Engagement Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="engagementDetails"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    var updateEngagementStatusUrl = "{% url 'taskcontrol:update_engagement_detail_status' %}";
+    var csrfToken = "{{ csrf_token }}";
+
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+
+    function drag(event) {
+        event.dataTransfer.setData("engagementId", event.target.id);
+    }
+
+    function isValidStatus(status) {
+        var validStatuses = ['OPEN_JOB', 'IN_PROGRESS', 'REVIEW', 'PENDING_CLIENT', 'DONE'];
+        return validStatuses.includes(status);
+    }
+
+    function drop(event) {
+        event.preventDefault();
+        var engagementDetailId = event.dataTransfer.getData("engagementId");
+        var newStatus = event.target.getAttribute("data-status");
+
+        // Check if newStatus is valid
+        if (!isValidStatus(newStatus)) {
+            console.error("Invalid status:", newStatus);
+            return;  // Do not proceed if status is not valid
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', updateEngagementStatusUrl, true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('X-CSRFToken', csrfToken);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    console.log('Status updated successfully');
+                    location.reload();  // Reload the page after successful update
+                } else {
+                    console.error('Failed to update status:', xhr.responseText);
+                }
+            }
+        };
+        xhr.send("engagement_detail_id=" + engagementDetailId + "&new_status=" + newStatus);
+    }
+
+</script>
+
+<script>
+    // Define functions like drag, allowDrop, etc.
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+
+    function drag(event) {
+        event.dataTransfer.setData("taskId", event.target.id);
+        event.dataTransfer.setData("currentStatus", event.target.getAttribute("data-status"));
+    }
+
+    function drop(event) {
+        event.preventDefault();
+        var taskId = event.dataTransfer.getData("taskId");
+        var currentStatus = event.dataTransfer.getData("currentStatus");
+        var newStatus = event.target.getAttribute("data-status");
+
+        // Example of isValidStatus function
+        function isValidStatus(status) {
+            var validStatuses = ['OPEN_JOB', 'IN_PROGRESS', 'REVIEW', 'PENDING_CLIENT', 'DONE'];
+            return validStatuses.includes(status);
+        }
+
+        if (!isValidStatus(newStatus)) {
+            console.error("Invalid status:", newStatus);
+            return;
+        }
+
+        var xhr = new XMLHttpRequest();
+        var updateTaskStatusUrl = "{% url 'taskcontrol:update_task_status' %}";
+        var csrfToken = "{{ csrf_token }}";
+
+        xhr.open('POST', updateTaskStatusUrl, true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('X-CSRFToken', csrfToken);
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    console.log('Status updated successfully');
+                    location.reload();
+                } else {
+                    console.error('Failed to update status:', xhr.responseText);
+                }
+            }
+        };
+
+        xhr.send("task_id=" + taskId + "&new_status=" + newStatus);
+    }
+</script>
+
+<script>
+    function openUpdateNotesModal(id, jobCode, notes) {
+        document.getElementById('notesInput').value = notes;
+        var myModal = new bootstrap.Modal(document.getElementById('updateNotesModal'));
+        myModal.show();
+    }
+
+    function saveNotes() {
+        var updatedNotes = document.getElementById('notesInput').value;
+        console.log("Notes saved:", updatedNotes);
+        var myModal = bootstrap.Modal.getInstance(document.getElementById('updateNotesModal'));
+        myModal.hide();
+    }
+
+    function openEngagementModal(jobCode) {
+        var engagementDetails = `Details for job code ${jobCode}`;
+        document.getElementById('engagementDetails').innerText = engagementDetails;
+        var myModal = new bootstrap.Modal(document.getElementById('engagementModal'));
+        myModal.show();
+    }
+</script>
+<script>
+    function clearCookie(cookieName) {
+        var d = new Date();
+        d.setTime(d.getTime() - (2 * 60 * 60 * 1000)); // ลบคุกกี้ทุก 2 ชั่วโมง
+    
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = cookieName + "=; " + expires + "; path=/;";
+    }
+</script>
+{% endblock content %}

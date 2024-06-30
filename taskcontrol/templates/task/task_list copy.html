@@ -1,0 +1,237 @@
+{% extends 'task/index.html' %}
+{% block content %}
+<div class="row">
+    <div class="card w-100">
+        <div class="card-body">
+            <h4 class="fw-semibold mb-4">Tasks Controller</h4>
+            <div class="col-xs-8 col-xs-offset-2">
+                <div class="input-group">
+                    <div class="input-group-btn search-panel">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span id="search_concept">Filter by</span> <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#contains">Contains</a></li>
+                            <li><a href="#its_equal">It's equal</a></li>
+                            <li><a href="#greather_than">Greather than ></a></li>
+                            <li><a href="#less_than">Less than < </a> </li> <li class="divider">
+                            </li>
+                            <li><a href="#all">Anything</a></li>
+                        </ul>
+                    </div>
+                    <input type="hidden" name="search_param" value="all" id="search_param">
+                    <input type="text" class="form-control" name="x" placeholder="Search...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="button"><i
+                                class="fa-solid fa-magnifying-glass"></i></button>
+                    </span>
+                </div>
+            </div>
+            <div class="btn-group" role="group" aria-label="Default button group">
+                <button type="button" class="btn btn-outline-primary">Deadline</button>
+                <button type="button" class="btn btn-outline-primary">ผู้ดูแล</button>
+                <button type="button" class="btn btn-outline-primary">ประเภทงาน</button>
+                <button type="button" class="btn btn-outline-primary">Period</button>
+            </div>
+
+            <div class="row vh-100">
+                <!-- Open Job tasks -->
+                <div class="col-sm shadow-sm mx-2 bg-light py-2" id="open" ondrop="drop(event)"
+                    ondragover="allowDrop(event)">
+                    <h5>เปิดงาน</h5>
+                    <div class="d-flex flex-column mt-3">
+                        <!-- card -->
+                        <div id="opentarget1" ondragstart="dragStart(event)" draggable="true"
+                            class="card rounded-0 w-100 mb-3 border-0 border-start border-primary border-3 shadow-sm">
+                            <div class="card-body px-3 py-3">
+                                <div class="card-text mb-2">Details of Task</div>
+                                <div class="bg-primary d-inline p-1 fw-semibold small text-white project-name">
+                                    Project Name</div>
+                            </div>
+                        </div>
+                        <!-- card -->
+                        <div id="opentarget2" ondragstart="dragStart(event)" draggable="true"
+                            class="card rounded-0 w-100 mb-3 border-0 border-start border-primary border-3 shadow-sm">
+                            <div class="card-body px-3 py-3">
+                                <div class="card-text mb-2">Details of Task</div>
+                                <div class="bg-primary d-inline p-1 fw-semibold small text-white project-name">
+                                    Project Name</div>
+                            </div>
+                        </div>
+                        <!-- card -->
+                        <div id="opentarget3" ondragstart="dragStart(event)" draggable="true"
+                            class="card rounded-0 w-100 mb-3 border-0 border-start border-primary border-3 shadow-sm">
+                            <div class="card-body px-3 py-3">
+                                <div class="card-text mb-2">Details of Task</div>
+                                <div class="bg-primary d-inline p-1 fw-semibold small text-white project-name">
+                                    Project Name</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- To do tasks -->
+                <div class="col-sm shadow-sm mx-2 bg-light py-2" id="progress" ondrop="drop(event)"
+                    ondragover="allowDrop(event)">
+                    <h5>กำลังดำเนินงาน</h5>
+                    <div class="d-flex flex-column align-items-center justify-content-center mt-3">
+                        <!-- card -->
+                        <div id="inprogresstarget1" ondragstart="dragStart(event)" draggable="true"
+                            class="card rounded-0 w-100 mb-3 border-0 border-start border-warning border-3 shadow-sm">
+                            <div class="card-body px-3 py-3">
+                                <div class="card-text mb-2">Details of Task</div>
+                                <div class="bg-warning d-inline p-1 fw-semibold small text-white project-name">Project
+                                    Name</div>
+                            </div>
+                        </div>
+                        <!-- card -->
+                        <div id="inprogresstarget2" ondragstart="dragStart(event)" draggable="true"
+                            class="card rounded-0 w-100 mb-3 border-0 border-start border-warning border-3 shadow-sm">
+                            <div class="card-body px-3 py-3">
+                                <div class="card-text mb-2">Details of Task</div>
+                                <div class="bg-warning d-inline p-1 fw-semibold small text-white project-name">Project
+                                    Name</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- To do tasks -->
+                <div class="col-sm shadow-sm mx-2 bg-light py-2" id="review" ondrop="drop(event)"
+                    ondragover="allowDrop(event)">
+                    <h5>รอตรวจสอบ</h5>
+                    <div class="d-flex flex-column align-items-center justify-content-center mt-3">
+                        <!-- card -->
+                        <div id="reviewtarget1" ondragstart="dragStart(event)" draggable="true"
+                            class="card rounded-0 w-100 mb-3 border-0 border-start border-danger border-3 shadow-sm">
+                            <div class="card-body px-3 py-3">
+                                <div class="card-text mb-2">Details of Task</div>
+                                <div class="bg-danger d-inline p-1 fw-semibold small text-white project-name">Project
+                                    Name</div>
+                            </div>
+                        </div>
+                        <!-- card -->
+                        <div id="reviewtarget2" ondragstart="dragStart(event)" draggable="true"
+                            class="card rounded-0 w-100 mb-3 border-0 border-start border-danger border-3 shadow-sm">
+                            <div class="card-body px-3 py-3">
+                                <div class="card-text mb-2">Details of Task</div>
+                                <div class="bg-danger d-inline p-1 fw-semibold small text-white project-name">Project
+                                    Name</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- tasks pending -->
+                <div class="col-sm shadow-sm mx-2 bg-light py-2" id="pending" ondrop="drop(event)"
+                    ondragover="allowDrop(event)">
+                    <h5>รอลูกค้า</h5>
+                    <div class="d-flex flex-column align-items-center justify-content-center mt-3">
+                        <!-- card -->
+                        <div id="pendingtarget1" ondragstart="dragStart(event)" draggable="true"
+                            class="card rounded-0 w-100 mb-3 border-0 border-start border-info border-3 shadow-sm">
+                            <div class="card-body px-3 py-3">
+                                <div class="card-text mb-2">Details of Task</div>
+                                <div class="bg-info d-inline p-1 fw-semibold small text-white project-name">Project Name
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- tasks completed -->
+                <div class="col-sm shadow-sm mx-2 bg-light py-2" id="completed" ondrop="drop(event)"
+                    ondragover="allowDrop(event)">
+                    <h5>เรียบร้อยแล้ว</h5>
+                    <div class="d-flex flex-column align-items-center justify-content-center mt-3">
+                        <!-- card -->
+                        <div id="completedtarget1" ondragstart="dragStart(event)" draggable="true"
+                            class="card rounded-0 w-100 mb-3 border-0 border-start border-success border-3 shadow-sm">
+                            <div class="card-body px-3 py-3">
+                                <div class="card-text mb-2">Details of Task</div>
+                                <div class="bg-success d-inline p-1 fw-semibold small text-white project-name">Project
+                                    Name</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function dragStart(event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    }
+
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+
+    function drop(event) {
+        if (event.target.id != "") {
+            event.preventDefault();
+            const data = event.dataTransfer.getData("Text");
+            event.target.appendChild(document.getElementById(data));
+            // open list
+            if (event.target.id == "open") {
+                document.getElementById(data).classList.remove("border-warning", "border-success");
+                document.getElementById(data).classList.add("border-primary");
+                document.getElementById(data).getElementsByClassName("project-name")[0].classList.remove(
+                    "bg-warning",
+                    "bg-success");
+                document.getElementById(data).getElementsByClassName("project-name")[0].classList.add(
+                    "bg-primary")
+            }
+            // progress list
+            if (event.target.id == "progress") {
+                document.getElementById(data).classList.remove("border-primary", "border-success");
+                document.getElementById(data).classList.add("border-warning");
+                document.getElementById(data).getElementsByClassName("project-name")[0].classList.remove(
+                    "bg-primary",
+                    "bg-success");
+                document.getElementById(data).getElementsByClassName("project-name")[0].classList.add(
+                    "bg-warning")
+            }
+            // completed list
+            if (event.target.id == "completed") {
+                document.getElementById(data).classList.remove("border-warning", "border-success");
+                document.getElementById(data).classList.add("border-success");
+                document.getElementById(data).getElementsByClassName("project-name")[0].classList.remove(
+                    "bg-warning",
+                    "bg-success");
+                document.getElementById(data).getElementsByClassName("project-name")[0].classList.add(
+                    "bg-success")
+            }
+            // pending list
+            if (event.target.id == "pending") {
+                document.getElementById(data).classList.remove("border-warning", "border-success");
+                document.getElementById(data).classList.add("border-success");
+                document.getElementById(data).getElementsByClassName("project-name")[0].classList.remove(
+                    "bg-warning",
+                    "bg-success");
+                document.getElementById(data).getElementsByClassName("project-name")[0].classList.add(
+                    "bg-success")
+            }
+            // review list
+            if (event.target.id == "review") {
+                document.getElementById(data).classList.remove("border-warning", "border-success");
+                document.getElementById(data).classList.add("border-success");
+                document.getElementById(data).getElementsByClassName("project-name")[0].classList.remove(
+                    "bg-warning",
+                    "bg-success");
+                document.getElementById(data).getElementsByClassName("project-name")[0].classList.add(
+                    "bg-success")
+            }
+        }
+    }
+
+    $(document).ready(function(e){
+        $('.search-panel .dropdown-menu').find('a').click(function(e) {
+            e.preventDefault();
+            var param = $(this).attr("href").replace("#","");
+            var concept = $(this).text();
+            $('.search-panel span#search_concept').text(concept);
+            $('.input-group #search_param').val(param);
+        });
+    });
+</script>
+
+{% endblock content %}

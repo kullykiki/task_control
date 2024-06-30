@@ -1,0 +1,1330 @@
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.4/components/charts/chart-7/assets/css/chart-7.css">
+{% extends 'task/index.html' %}
+{% load static %}
+{% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+    .head-s {
+        font-size: 12px;
+        font-family: "Poppins", sans-serif;
+        font-weight: 500;
+    }
+
+    .head-number {
+        font-size: 34px;
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+    }
+
+    .head-total{
+        font-size: 10px;
+        font-family: "Poppins", sans-serif;
+        font-weight: 500;
+        color: #5c6975;
+    }
+
+    .card-open-job {
+        color: #297ae3;
+        background-color: #dfebfa;
+        border-radius: 8px;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .card-pending-client {
+        color: #dc3545;
+        background-color: #ffcfce;
+        border-radius: 8px;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .card-done {
+        color: #00c894;
+        background-color: #d7f7ee;
+        border-radius: 8px;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .total-open-job {
+        color: #297ae3;
+        background-color: #fff;
+        display: inline;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .total-pending-client {
+        color: #dc3545;
+        background-color: #fff;
+        display: inline;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .total-done {
+        color: #00c894;
+        background-color: #fff;
+        display: inline;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    .card-date {
+        background-color: #FFFFFF;
+        border-radius: 15px;
+        box-shadow: 0px 0px 10px #efefef;
+    }
+
+    .card {
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    .card-body {
+        flex: 1 1 auto;
+        padding: 20px 15px 10px 15px;
+    }
+
+    .calendar {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .calendar-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .calendar-toolbar>.current-month {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .calendar-toolbar>[class$="month-btn"] {
+        width: 40px;
+        aspect-ratio: 1;
+        text-align: center;
+        line-height: 40px;
+        font-size: 10px;
+        background: #f6f6f6;
+        border: none;
+        border-radius: 13px;
+    }
+
+    .weekdays {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .weekday-name {
+        width: calc(100% / 7);
+        padding: 8px 0;
+        text-align: center;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .calendar-days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+        font-size: 13px;
+        text-align: center;
+    }
+
+    .day {
+        text-align: center;
+        line-height: 25px;
+        font-size: 12px;
+        border: 1px solid #ccc;
+        border-radius: 13px;
+    }
+    
+    .current-day {
+        background-color: #fa6b6b;
+        color: #f8f7fa;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: 0.5s;
+        cursor: pointer;
+    }
+
+    .padding-day {
+        color: #a5a5a5;
+        user-select: none;
+    }
+
+    .calendar-toolbar>[class$="month-btn"]:hover,
+    .month-day:hover,
+    .btn-date:hover {
+        border-radius: 13px;
+        background-color: #f8f7fa;
+        color: #fa6b6b;
+        transition: 0.1s;
+        cursor: pointer;
+        box-shadow: inset 0px 0px 0px 1.5px #fa6b6b;
+    }
+
+    .calendar-toolbar>[class$="month-btn"]:focus,
+    .month-day:focus,
+    .btn-date:focus {
+        border-radius: 13px;
+        background-color: #fa6b6b;
+        color: #f8f7fa;
+    }
+
+    .btn-date {
+        background: #f8f7fa;
+        border: none;
+        border-radius: 15px;
+        padding: 8px 14px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        margin-right: 1px;
+        box-shadow: 0px 0px 0px #efefef;
+    }
+
+    /* ให้ตัว container ที่ครอบองค์ประกอบทั้งหมดมี display: flex */
+    .container {
+        display: flex;
+        align-items: center;
+    }
+
+    /* ให้ chart-container เป็นส่วนหนึ่งของ container และมี flex-grow: 1 เพื่อให้ยืดตามพื้นที่ที่เหลือ */
+    .chart-container {
+        position: relative;
+        width: 180px;
+        height: 180px;
+    }
+
+    .legend {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+        margin-left: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .legend-item .icon-1 {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        margin-right: 5px;
+    }
+
+    #open_job_count .icon { background-color: #ff6384; }
+    #in_progress_count .icon { background-color: #36a2eb; }
+    #review_count .icon { background-color: #ffce56; }
+    #pending_client_count .icon { background-color: #4bc0c0; }
+    #done_count .icon { background-color: #cb99ff; }
+
+    #centerText {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 14px;
+        font-family: "Bai Jamjuree", sans-serif;
+        font-weight: 600;
+    }
+
+    .count-client {
+        padding: 13px;
+        color: #5d87ff;
+        background: #ffffff;
+    }
+
+    .count-engagement {
+        padding: 13px;
+        color: #ffba0f;
+        background: #ffffff;
+    }
+
+    .count-open-job {
+        padding: 13px;
+        color: #fe5f3b;
+        background: #ffffff;
+    }
+
+    .count-done {
+        padding: 13px;
+        color: #53c536;
+        background: #ffffff;
+    }
+
+    .flex-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .icon.total-client{
+        background-color: #e0ebff;
+        color: #5d87ff;
+    }
+
+
+
+    th,
+    td {
+        padding: 8px;
+        font-size: 13.5px;
+    }
+
+    th {
+        background-color: #f5f7f9;
+        font-size: 12px;
+        border-radius: 1px;
+    }
+    
+    .engagement-table {
+        display: none;
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+    }
+    .status-wrapper {
+        display: flex;
+        align-items: center;
+    }
+    
+    .status-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+    }
+    
+    .all-status {
+        margin-right: 10px;
+    }
+    
+    .toggle-btn {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        outline: none;
+    }
+    
+    .toggle-btn i {
+        font-size: 14px;
+        color: #333;
+        transition: transform 0.3s ease;
+    }
+    
+    .toggle-btn.active i {
+        transform: rotate(180deg);
+    }
+    
+    .engagement-table {
+        display: table;
+        font-size: 13px;
+    }
+
+    .badge-deadline {
+        font-size: 12px;
+    }
+
+    .badge-period {
+        font-size: 12px;
+    }
+    
+    .status-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 8px;
+        font-size: 12.5px;
+        font-weight: 600;
+    }
+    
+    .status-open {
+        border-radius: 8px;
+        color: #0051a0;
+        background-color: #cbe5ff;
+    }
+    
+    .status-in-progress {
+        border-radius: 8px;
+        color: #5b2891;
+        background-color: #ead6ff;
+    }
+    
+    .status-review {
+        border-radius: 8px;
+        color: #954800;
+        background-color: #fff1c6;
+    }
+    
+    .status-pending-client {
+        border-radius: 8px;
+        color: #a10f0a;
+        background-color: #ffcfce;
+    }
+    
+    .status-done {
+        border-radius: 8px;
+        color: #054627;
+        background-color: #d0f4b2;
+    }
+
+    .due{
+        font-size: 13px;
+        font-weight: 600;
+        color: #5eb643;
+    }
+
+    .overdue{
+        font-size: 13px;
+        font-weight: 600;
+        color: #ff4261;
+    }
+
+    .normal{
+        font-size: 13px;
+        font-weight: 600;
+        color: #263339;
+    }
+    
+    .warning-date{
+        font-size: 13px;
+        font-weight: 600;
+        color: #ffaf11;
+    }
+
+    .card-client {
+        color: #3476ff;
+        background-color: #e5f6ff;
+        padding: 10px;
+    }
+    .bage-icon-client {
+        border-radius: 40%;
+        padding: 15px;
+        margin-left: 20px;
+        font-size: 20px;
+        color: #2c71ff;
+        background-color: #b7e6ff;
+    }
+
+    .card-engagement {
+        color: #6e31d2;
+        background-color: #f6f3ff;
+        padding: 10px;
+    }
+    .bage-icon-engagement {
+        border-radius: 40%;
+        padding: 15px;
+        margin-left: 20px;
+        font-size: 20px;
+        color: #6e31d2;
+        background-color: #d9d3ff;
+    }
+
+    .card-open {
+        color: #1f9b47;
+        background-color: #e2f6e9;
+        padding: 10px;
+    }
+    .bage-icon-open {
+        border-radius: 40%;
+        padding: 15px;
+        margin-left: 20px;
+        font-size: 20px;
+        color: #1f9b47;
+        background-color: #c3e8d1;
+    }
+
+    .card-close {
+        color: #fe5f3b;
+        background-color: #fff0e9;
+        padding: 10px;
+    }
+    .bage-icon-close {
+        border-radius: 40%;
+        padding: 15px;
+        margin-left: 20px;
+        font-size: 20px;
+        color: #fe5f3b;
+        background-color: #fedac9;
+    }
+</style>
+
+<!--Test-->
+<!-- Row1 -->
+<div class="row">
+    <div class="card">
+        <div class="card-body">
+            <h4>Dashboard</h4>
+            <div class="row md-3">
+                <div class="col-2">
+                    <div class="col-12">
+                        <div class="card card-client">
+                            <div class="row">
+                                <div class="col-4 d-flex align-items-center justify-content-center">
+                                    <span class="badge bage-icon-client">
+                                        <i class="fi fi-sr-users-alt"></i>
+                                    </span>
+                                </div>
+                                <div class="col-8 text-end">
+                                    <span class="head-s">Clients</span><br>
+                                    <span class="head-number">{{ total_clients }}</span><br>
+                                    <span class="head-total">Total Clients</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="card card-open">
+                            <div class="row">
+                                <div class="col-4 d-flex align-items-center justify-content-center">
+                                    <span class="badge bage-icon-open">
+                                        <i class="fi fi-ss-badget-check-alt"></i>
+                                    </span>
+                                </div>
+                                <div class="col-8 text-end">
+                                    <span class="head-s">Open</span><br>
+                                    <span class="head-number">{{ open_job_engagement }}</span><br>
+                                    <span class="head-total">Total Open Jobs</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="col-12">
+                        <div class="card card-engagement">
+                            <div class="row">
+                                <div class="col-4 d-flex align-items-center justify-content-center">
+                                    <span class="badge bage-icon-engagement">
+                                        <i class="fi fi-sr-box"></i>
+                                    </span>
+                                </div>
+                                <div class="col-8 text-end">
+                                    <span class="head-s">Engagements</span><br>
+                                    <span class="head-number">{{ total_engagements }}</span><br>
+                                    <span class="head-total">Total Engagements</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="card card-close">
+                            <div class="row">
+                                <div class="col-4 d-flex align-items-center justify-content-center">
+                                    <span class="badge bage-icon-close">
+                                        <i class="fi fi-ss-badget-check-alt"></i>
+                                    </span>
+                                </div>
+                                <div class="col-8 text-end">
+                                    <span class="head-s">Completed</span><br>
+                                    <span class="head-number">{{ done_job_engagement }}</span><br>
+                                    <span class="head-total">Total Completed</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-3">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="calendar-toolbar">
+                                    <button class="prev month-btn">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <div class="current-month"></div>
+                                    <button class="next month-btn">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div class="calendar">
+                                    <div class="weekdays">
+                                        <div class="weekday-name">Su</div>
+                                        <div class="weekday-name">Mo</div>
+                                        <div class="weekday-name">Tu</div>
+                                        <div class="weekday-name">We</div>
+                                        <div class="weekday-name">Th</div>
+                                        <div class="weekday-name">Fr</div>
+                                        <div class="weekday-name">Sa</div>
+                                    </div>
+                                    <div class="calendar-days"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Row2 -->
+<div class="row">
+    <div class="card">
+        <div class="card-body">
+            <h4>Dashboard</h4>
+            <div class="row md-3">
+                <div class="col-md-3">
+                    <div class="row justify-content-center">
+                        <div class="card widget-card border-light shadow-sm">
+                            <div class="card-body p-4">
+                                <h5 class="card-title widget-card-title mb-1">Status Engagements</h5>
+                                <div id="bsb-chart-7" class="mb-4"></div>
+                                <div class="row gy-4">
+                                    <div class="col-12">
+                                        <div class="row align-items-center">
+                                            <div class="col-8">
+                                                <div class="d-flex align-items-center">
+                                                    <div>
+                                                        <div class="fs-5 bsb-w-50 bsb-h-50 bg-primary-subtle text-primary rounded-2 d-flex align-items-center justify-content-center me-3">
+                                                            <i class="bi bi-display"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="m-0">Open Job</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <h6 class="fs-7 d-flex align-items-center justify-content-end m-0">
+                                                    <span class="bg-primary-subtle text-primary rounded-2 py-1 px-2">60%</span>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="row align-items-center">
+                                            <div class="col-8">
+                                                <div class="d-flex align-items-center">
+                                                    <div>
+                                                        <div class="fs-5 bsb-w-50 bsb-h-50 bg-success-subtle text-success rounded-2 d-flex align-items-center justify-content-center me-3">
+                                                            <i class="bi bi-tablet"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="m-0">Tablet</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <h6 class="fs-7 d-flex align-items-center justify-content-end m-0">
+                                                    <span class="bg-success-subtle text-success rounded-2 py-1 px-2">25%</span>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="row align-items-center">
+                                            <div class="col-8">
+                                                <div class="d-flex align-items-center">
+                                                    <div>
+                                                        <div
+                                                            class="fs-5 bsb-w-50 bsb-h-50 bg-danger-subtle text-danger rounded-2 d-flex align-items-center justify-content-center me-3">
+                                                            <i class="bi bi-phone"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="m-0">Mobile</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <h6 class="fs-7 d-flex align-items-center justify-content-end m-0">
+                                                    <span class="bg-danger-subtle text-danger rounded-2 py-1 px-2">15%</span>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="row align-items-center">
+                                            <div class="col-8">
+                                                <div class="d-flex align-items-center">
+                                                    <div>
+                                                        <div
+                                                            class="fs-5 bsb-w-50 bsb-h-50 bg-danger-subtle text-danger rounded-2 d-flex align-items-center justify-content-center me-3">
+                                                            <i class="bi bi-phone"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="m-0">Pending Clients</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <h6 class="fs-7 d-flex align-items-center justify-content-end m-0">
+                                                    <span class="bg-danger-subtle text-danger rounded-2 py-1 px-2">15%</span>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="row align-items-center">
+                                            <div class="col-8">
+                                                <div class="d-flex align-items-center">
+                                                    <div>
+                                                        <div
+                                                            class="fs-5 bsb-w-50 bsb-h-50 bg-danger-subtle text-danger rounded-2 d-flex align-items-center justify-content-center me-3">
+                                                            <i class="bi bi-phone"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="m-0">Done</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <h6 class="fs-7 d-flex align-items-center justify-content-end m-0">
+                                                    <span class="bg-danger-subtle text-danger rounded-2 py-1 px-2">15%</span>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Row 1
+<div class="row md-3">
+    <div class="col-2">
+        <div class="col-12">
+            <div class="card count-client">
+                <div class="row">
+                    <div class="flex-container">
+                        <div class="text-start">
+                            <span class="head-s">Clients</span>
+                        </div>
+                        <div class="text-end">
+                            <i class="fa-solid fa-user-large icon" style="background-color: #5d87ff;"></i>
+                        </div>
+                    </div>
+                    <span class="head-number">{{ total_clients }}</span>
+                    <span class="head-total">Total Clients</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card count-open-job">
+                <div class="row">
+                    <div class="flex-container">
+                        <div class="text-start">
+                            <span class="head-s">Open </span>
+                        </div>
+                        <div class="text-end">
+                            <i class="fa-solid fa-star icon" style="background-color: #fe5f3b;"></i>
+                        </div>
+                    </div>
+                    <span class="head-number">{{ open_job_engagement }}</span>
+                    <span class="head-total">Total Open Jobs</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-2">
+        <div class="col-12">
+            <div class="card count-engagement">
+                <div class="row">
+                    <div class="flex-container">
+                        <div class="text-start">
+                            <span class="head-s">Engagements</span>
+                        </div>
+                        <div class="text-end">
+                            <i class="fa-solid fa-box-archive icon" style="background-color: #ffba0f;"></i>
+                        </div>
+                    </div>
+                    <span class="head-number">{{ total_engagements }}</span>
+                    <span class="head-total">Total Engagements</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card count-done">
+                <div class="row">
+                    <div class="flex-container">
+                        <div class="text-start">
+                            <span class="head-s">Completed</span>
+                        </div>
+                        <div class="text-end">
+                            <i class="fa-solid fa-box-archive icon" style="background-color: #53c536;"></i>
+                        </div>
+                    </div>
+                    <span class="head-number">{{ done_job_engagement }}</span>
+                    <span class="head-total">Total Close Jobs</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="calendar-toolbar">
+                        <button class="prev month-btn">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="current-month"></div>
+                        <button class="next month-btn">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="calendar">
+                        <div class="weekdays">
+                            <div class="weekday-name">Su</div>
+                            <div class="weekday-name">Mo</div>
+                            <div class="weekday-name">Tu</div>
+                            <div class="weekday-name">We</div>
+                            <div class="weekday-name">Th</div>
+                            <div class="weekday-name">Fr</div>
+                            <div class="weekday-name">Sa</div>
+                        </div>
+                        <div class="calendar-days"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="row justify-content-center">
+            <div class="card widget-card border-light shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="card-title widget-card-title mb-1">Status Engagements</h5>
+                    <div id="bsb-chart-7" class="mb-4"></div>
+                    <div class="row gy-4">
+                        <div class="col-12">
+                            <div class="row align-items-center">
+                                <div class="col-8">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <div class="fs-5 bsb-w-50 bsb-h-50 bg-primary-subtle text-primary rounded-2 d-flex align-items-center justify-content-center me-3">
+                                                <i class="bi bi-display"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h6 class="m-0">Open Job</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <h6 class="fs-7 d-flex align-items-center justify-content-end m-0">
+                                        <span class="bg-primary-subtle text-primary rounded-2 py-1 px-2">60%</span>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="row align-items-center">
+                                <div class="col-8">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <div class="fs-5 bsb-w-50 bsb-h-50 bg-success-subtle text-success rounded-2 d-flex align-items-center justify-content-center me-3">
+                                                <i class="bi bi-tablet"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h6 class="m-0">Tablet</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <h6 class="fs-7 d-flex align-items-center justify-content-end m-0">
+                                        <span class="bg-success-subtle text-success rounded-2 py-1 px-2">25%</span>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="row align-items-center">
+                                <div class="col-8">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <div
+                                                class="fs-5 bsb-w-50 bsb-h-50 bg-danger-subtle text-danger rounded-2 d-flex align-items-center justify-content-center me-3">
+                                                <i class="bi bi-phone"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h6 class="m-0">Mobile</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <h6 class="fs-7 d-flex align-items-center justify-content-end m-0">
+                                        <span class="bg-danger-subtle text-danger rounded-2 py-1 px-2">15%</span>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="row align-items-center">
+                                <div class="col-8">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <div
+                                                class="fs-5 bsb-w-50 bsb-h-50 bg-danger-subtle text-danger rounded-2 d-flex align-items-center justify-content-center me-3">
+                                                <i class="bi bi-phone"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h6 class="m-0">Pending Clients</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <h6 class="fs-7 d-flex align-items-center justify-content-end m-0">
+                                        <span class="bg-danger-subtle text-danger rounded-2 py-1 px-2">15%</span>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="row align-items-center">
+                                <div class="col-8">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <div
+                                                class="fs-5 bsb-w-50 bsb-h-50 bg-danger-subtle text-danger rounded-2 d-flex align-items-center justify-content-center me-3">
+                                                <i class="bi bi-phone"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h6 class="m-0">Done</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <h6 class="fs-7 d-flex align-items-center justify-content-end m-0">
+                                        <span class="bg-danger-subtle text-danger rounded-2 py-1 px-2">15%</span>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+
+<!--Row 2-->
+<div class="row">
+    <div class="col-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="col-12">
+                    <button class="btn btn-primary head-s">Accounts</button>
+                    <div class="container">
+                        <div id="accountingChart" style="width: 40%; float: left;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="col-12">
+                    <button class="btn btn-primary head-s">Taxes</button>
+                    <div class="container">
+                        <div id="taxChart" style="width: 40%; float: left;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Row 3-->
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <form id="frmSearch" method="GET" action="{% url 'taskcontrol:get_filter_dashboard' %}">
+                    <div class="row mb-3">
+                        <div class="col-4">
+                            <label for="" class="form-label">ชื่อบริษัท :</label>
+                            <select name="client_id" id="client_id" class="form-select">
+                                <option value selected disabled hidden>-- กรุณาเลือก --</option>
+                                {% for client in clients %}
+                                <option value="{{ client.id }}">{{ client.company_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label for="" class="form-label">หมวดหมู่ :</label>
+                            <select name="category_id" id="category_id" class="form-select">
+                                <option value selected disabled hidden>-- กรุณาเลือก --</option>
+                                {% for ca in engagement_category %}
+                                <option value="{{ ca.id }}">{{ ca.name_th }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label for="" class="form-label">ประเภทงาน :</label>
+                            <select name="engagement_type_id" id="engagement_type_id" class="form-select">
+                                <option value selected disabled hidden>-- กรุณาเลือก --</option>
+                                {% for t in engagement_types %}
+                                <option value="{{ t.id }}">{{ t.name_th }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-1">
+                            <label for="" class="form-label">รอบบัญชี :</label>
+                        </div>
+                        <div class="col-3">
+                            <input type="date" class="form-control" name="start_date_period"
+                                value="{{ start_date_period }}">
+                        </div>
+                        <div class="col-4">
+                            <input type="date" class="form-control" name="end_date_period"
+                                value="{{ end_date_period }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-1"></div>
+                        <div class="col">
+                            <input type="checkbox" name="per_month" id="per_month" class="form-check-input"
+                                {% if per_month %}checked{% endif %}>
+                            <label for="" class="form-label">เฉพาะเดือนปัจจุบัน</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="deadline_days" id="deadline_days" class="form-check-input">
+                            <label for="deadline_days" class="form-label">ใกล้ถึงกำหนดเดดไลน์</label>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" id="btnSearch" class="btn btn-primary"><i
+                                    class="fa-solid fa-magnifying-glass"></i> กรองค้นหา</button>
+                            <button type="reset" id="btnReset" class="btn btn-light">ล้างข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div id="engagementData">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'assets/js/date.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="https://unpkg.com/bs-brain@2.0.4/components/charts/chart-7/assets/controller/chart-7.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            url: '{% url 'taskcontrol:get_engagement_data' %}',
+            type: 'GET',
+            success: function(data) {
+                createDonutChart('engagementChart', data.labels, data.percentages, 'Engagement Data');
+            }
+        });
+    
+        $.ajax({
+            url: '{% url 'taskcontrol:get_engagement_accounting' %}',
+            type: 'GET',
+            success: function(data) {
+                createDonutChart('accountingChart', data.labels, data.percentages, 'Engagement Accounting');
+            }
+        });
+    
+        $.ajax({
+            url: '{% url 'taskcontrol:get_engagement_tax' %}',
+            type: 'GET',
+            success: function(data) {
+                createDonutChart('taxChart', data.labels, data.percentages, 'Engagement Tax');
+            }
+        });
+    
+        $.ajax({
+            url: '{% url 'taskcontrol:get_engagement_payroll' %}',
+            type: 'GET',
+            success: function(data) {
+                createDonutChart('payrollChart', data.labels, data.percentages, 'Engagement Payroll');
+            }
+        });
+    
+        $.ajax({
+            url: '{% url 'taskcontrol:get_engagement_report' %}',
+            type: 'GET',
+            success: function(data) {
+                createDonutChart('reportChart', data.labels, data.percentages, 'Engagement Report');
+            }
+        });
+    })
+    
+    function createDonutChart(chartId, labels, counts, percentages, total_counts, total_percentage, title) {
+        var options = {
+            series: percentages,
+            labels: labels,
+            dataLabels: {
+                enabled: false
+            },
+            chart: {
+                type: "donut",
+                width: 420
+            },
+            stroke: {
+                width: 0.5
+            },
+            colors: ["#1F8EFA", "#8C54FF", "#E65F57", "#FFC738", "#19BC47", "#B5B8CB"],
+            title: {
+                text: title,
+                align: 'center'
+            },
+            legend: {
+                show: false
+            },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: "80%",
+                        labels: {
+                            show: true,
+                            name: {
+                                show: false
+                            },
+                            value: {
+                                formatter: function(val, w) {
+                                    var result = Math.floor(val / 1000);
+                                    var percent = ((val / total_counts) * 100).toFixed(1);
+                                    return result + "k | " + percent + "%";
+                                }
+                            },
+                            total: {
+                                show: true,
+                                showAlways: false,
+                                label: 'Total',
+                                fontWeight: "bold",
+                                fontFamily: "Bai Jamjuree, sans-serif",
+                                fontSize: 16,
+                                formatter: function (w) {
+                                    return `Total ${total_percentage}%`
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            legend: {
+                formatter: function(seriesName, opts) {
+                    var name = seriesName;
+                    var index = opts.seriesIndex;
+                    var count = counts[index];
+                    var percentage = ((count / total_counts) * 100).toFixed(1);
+    
+                    var layout = `<div class="d-inline-flex w-80">
+                        <p class="col-4 text-nowrap">${name}</p>
+                        <p class="col-4 text-right">${count}</p>
+                        <p class="col-4 text-right">${percentage}%</p>
+                    </div>`;
+                    return layout;
+                }
+            },
+            dataLabels: {
+                enabled: false
+            }
+        };
+        // คำสั่งสร้างแผนภูมิ
+        var chart = new ApexCharts(
+            document.querySelector("#" + chartId),
+            options
+        );
+        chart.render();
+    }
+    
+</script>
+
+
+
+<!--DataTable all-->
+<script>
+    $(document).ready(function() {
+        $('#engagement_table').DataTable({
+            "language": {
+                "search": "ค้นหา",
+                "lengthMenu": "แสดง _MENU_ รายการ",
+                "info": "แสดง _START_ ถึง _END_ จากทั้งหมด _TOTAL_ รายการ",
+                "infoFiltered": "(กรองจากทั้งหมด _MAX_ รายการ)",
+                "paginate": {
+                    "previous": "ก่อนหน้า",
+                    "next": "ถัดไป"
+                }
+            }
+        });
+
+        // โหลดข้อมูลเริ่มต้นเมื่อเอกสารพร้อม
+        function loadInitialData() {
+            var data = $('#frmSearch').serialize(); // แปลงข้อมูลฟอร์มเป็นรูปแบบ query string
+            var currentDate = new Date(); // วันที่ปัจจุบัน
+            var perMonth = $('#per_month').prop('checked'); // ค่าของเช็คบ็อกเพื่อเลือกเฉพาะเดือนปัจจุบัน
+            var deadlineDays = $('#deadline_days').prop('checked'); // ค่าของเช็คบ็อกเพื่อเลือกเฉพาะงานที่ใกล้ถึงกำหนด
+    
+            // ข้อความสำหรับส่งผ่าน AJAX
+            $.ajax({
+                url: '{% url "taskcontrol:get_filter_dashboard" %}',
+                type: 'GET',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    displayEngagements(response); // แสดงผลลัพธ์
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+    
+        // ฟังก์ชันสำหรับแสดงผลลัพธ์ในตาราง
+        function displayEngagements(data) {
+            var engagements = data.engagements;
+            var engagementDataDiv = document.getElementById('engagementData');
+            engagementDataDiv.innerHTML = '';
+    
+            if (engagements && engagements.length > 0) {
+                var tableHTML = `
+                    <table class="engagement_table">
+                        <thead>
+                            <tr>
+                                <th style="width: 6.25%;">#</th>
+                                <th style="width: 18.75%;">ลูกค้า</th>
+                                <th style="width: 12.5%;">รอบบัญชี</th>
+                                <th style="width: 12.5%;">ประเภทงาน</th>
+                                <th style="width: 12.5%;">ผู้รับผิดชอบ</th>
+                                <th style="width: 12.5%;">เดดไลน์</th>
+                                <th style="width: 12.5%;">เหลือเวลา</th>
+                                <th style="width: 12.5%;">สถานะ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+    
+                engagements.forEach(function(engagement, index) {
+                    var statusText, badgeClass;
+                    switch (engagement.status) {
+                        case 'OPEN_JOB':
+                            statusText = 'เปิดงาน';
+                            badgeClass = 'status-open';
+                            break;
+                        case 'IN_PROGRESS':
+                            statusText = 'กำลังดำเนินการ';
+                            badgeClass = 'status-in-progress';
+                            break;
+                        case 'PENDING_CLIENT':
+                            statusText = 'รอลูกค้า';
+                            badgeClass = 'status-pending-client';
+                            break;
+                        case 'REVIEW':
+                            statusText = 'รอตรวจทาน';
+                            badgeClass = 'status-review';
+                            break;
+                        case 'DONE':
+                            statusText = 'เรียบร้อย';
+                            badgeClass = 'status-done';
+                            break;
+                        default:
+                            statusText = engagement.status;
+                            badgeClass = '';
+                    }
+    
+                    tableHTML += `
+                        <tr>
+                            <td class="fw-semibold" style="font-size: 13px; width: 10%;">${engagement.job_code}</td>
+                            <td>${engagement.client}</td>
+                            <td class="badge-period">${engagement.start_date_period}</td>
+                            <td>${engagement.type}</td>
+                            <td>${engagement.administrator}</td>
+                            <td class="badge-deadline">${engagement.deadline}</td>
+                            <td>${getRemainingDaysText(engagement.remaining_days)}</td>
+                            <td>
+                                <span class="badge ${badgeClass}">
+                                    ${statusText}
+                                </span>
+                            </td>
+                        </tr>
+                    `;
+                });
+    
+                tableHTML += `
+                        </tbody>
+                    </table>
+                `;
+    
+                engagementDataDiv.innerHTML = tableHTML;
+            } else {
+                engagementDataDiv.textContent = 'ไม่พบข้อมูล.';
+            }
+        }
+    
+        // โหลดข้อมูลเมื่อเอกสารพร้อม
+        loadInitialData();
+
+        // Function to get remaining days text
+        function getRemainingDaysText(remainingDays) {
+            if (remainingDays === 0) {
+                return '<span class="due">ครบกำหนด</span>';
+            } else if (remainingDays < 1) {
+                return `<span class="overdue">เกิน ${remainingDays} วัน</span>`;
+            } else if (remainingDays < 7) {
+                return `<span class="warning-date">${remainingDays} วัน (ใกล้กำหนด)</span>`;
+            } else {
+                return `<span class="normal">${remainingDays} วัน </span>`;
+            }
+        }
+    
+        // อัปเดตข้อมูลเมื่อฟอร์มถูกส่ง
+        $('#frmSearch').submit(function(event) {
+            event.preventDefault();
+            loadInitialData();
+        });
+    
+        // รีเซ็ตฟอร์มเมื่อปุ่มรีเซ็ตถูกคลิก
+        $('#btnReset').click(function() {
+            $('#frmSearch')[0].reset();
+            loadInitialData();
+        });
+    
+        // อัปเดตข้อมูลเมื่อเช็คบ็อกเปลี่ยนแปลง
+        $('#per_month, #deadline_days').change(function() {
+            loadInitialData();
+        });
+    });
+    
+</script>
+{% endblock content %}

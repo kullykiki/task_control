@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Task</title>
+</head>
+<body>
+    <h1>Create Task</h1>
+    <form id="create-task-form">
+        <label for="title">Title:</label><br>
+        <input type="text" id="title" name="title"><br>
+        <label for="description">Description:</label><br>
+        <textarea id="description" name="description"></textarea><br>
+        <label for="status">Status:</label><br>
+        <select id="status" name="status">
+            <option value="OPEN JOB">Open Job</option>
+            <option value="IN PROGRESS">In Progress</option>
+            <option value="REVIEW">Review</option>
+            <option value="PENDING CLIENT">Pending Client</option>
+            <option value="DONE">Done</option>
+        </select><br><br>
+        <input type="submit" value="Create Task">
+    </form>
+
+    <div id="response-message"></div>
+
+    <script>
+        document.getElementById("create-task-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var form = event.target;
+            var formData = new FormData(form);
+
+            fetch(`/create_task/${engagement_id}/`, {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("response-message").innerText = "Task created successfully.";
+                } else {
+                    document.getElementById("response-message").innerText = data.error;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById("response-message").innerText = "An error occurred while creating the task.";
+            });
+        });
+    </script>
+</body>
+</html>

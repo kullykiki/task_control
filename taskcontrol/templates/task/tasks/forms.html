@@ -1,0 +1,73 @@
+{% load static %}
+
+<html lang="en">
+
+<head>
+    <title>Test</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <script src="{% static 'js/jquery.mask.min.js' %}"></script>
+</head>
+
+<body>
+    <div class="col-sm-4">
+        <div class="form-group">
+            <select name="province" id="province" class="form-select form-select-sm">
+                <option value selected disabled hidden>จังหวัด</option>
+                {% for p in province %}
+                <option value="{{ p.id }}">{{ p.name_th }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            <select name="district" id="district" class="form-select form-select-sm">
+                <option value="" selected disabled hidden>อำเภอ</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            <select name="subdistrict" id="subdistrict" class="form-select form-select-sm">
+                <option value="" selected disabled hidden>ตำบล</option>
+            </select>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+        $(function() {
+            $('#province').change(function() {
+                $("#district").empty()
+                $.ajax({
+                    url: '{% url 'taskcontrol:GetDistrict' %}',
+                    data: {province_id: $(this).val()
+                    },
+                    success: function(data) {
+                        $("#district").append('<option value selected disabled hidden>อำเภอ</option>')
+                        $.each(data, function(index, value) {
+                            $("#district").append('<option value="' + data[index].id + '">' + data[index].name_th + '</option>')
+                        })
+                    }
+                })
+            })
+            $('#district').change(function() {
+                $('#subdistrict').empty()
+                $.ajax({
+                    url : '{% url 'taskcontrol:GetSubdistrict' %}',
+                    data: {district_id: $(this).val()},
+                    success: function(data) {
+                        $('#subdistrict').append('<option value selected disabled hidden>ตำบล</option>')
+                        $.each(data, function(i, v) {
+                            $('#subdistrict').append('<option value="' + data[i].id + '">' + data[i].name_th + '  ' + data[i].zipcode + '</option>');
+                        })
+                    }
+                })
+            })
+        });
+    </script>
+</body>
+
+</html>

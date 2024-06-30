@@ -1,0 +1,45 @@
+.number {
+    width: 24px;
+    height: 24px;
+    line-height: 20px;
+    border-radius: 50%;
+    background: #007bff;
+    position: absolute;
+    font-size: 13px;
+    top: 10px;
+    right: 0px;
+    border: 2px solid #fff;
+    color: #fff;
+    text-align: center;
+}
+
+
+
+
+.dropdown-header {
+    background: #826a6a;
+    padding: 15px;
+    position: relative;
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 10px 10px 0 0;
+    border: 0px;
+    border-style: solid;
+    border-bottom-width: 1px;
+    -moz-border-image: -moz-linear-gradient(right, white, #cedae0, #cedae0, white) 1 20%;
+    -o-border-image: -o-linear-gradient(right, white, #cedae0, #cedae0, white) 1 20%;
+    border-image: linear-gradient(to right, white 0%, #cedae0 40%, #cedae0 60%, white 100%) 1 20%;
+    box-shadow: 0px 2px 10px -2px #cedae0;
+  }
+
+.dropdown-menu-end .show .triangle {
+    position: absolute;
+    top: -8px;
+    left: 134px;
+    height: 15px;
+    width: 15px;
+    border-radius: 6px 0px 0px 0px;
+    transform: rotate(45deg);
+    background: #fff;
+  }

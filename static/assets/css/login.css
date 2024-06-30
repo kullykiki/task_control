@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600&display=swap');
+
+* {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+     font-family: "Bai Jamjuree", sans-serif;
+}
+
+body {
+     height: 100vh;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     background-color: #f1f1f1;
+}
+
+.container {
+     width: 100%;
+     padding: 160px;
+}
+
+.login-box {
+     background-color: #fff;
+     padding: 20px;
+     border-radius: 5px;
+     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.login-box h2, p {
+     margin: 0 0 15px;
+     padding: 0;
+     color: #112D4E;
+     text-align: center;
+     text-transform: uppercase;
+}
+
+.user-box {
+     position: relative;
+     margin-bottom: 30px;
+}
+
+.user-box input {
+     width: 100%;
+     padding: 10px 0;
+     font-size: 16px;
+     color: #333;
+     margin-bottom: 30px;
+     border: none;
+     border-bottom: 2px solid #333;
+     outline: none;
+     background: transparent;
+}
+
+.user-box label {
+     position: absolute;
+     top: 0;
+     left: 0;
+     padding: 10px 0;
+     font-size: 16px;
+     color: #333;
+     pointer-events: none;
+     transition: 0.5s;
+}
+
+.user-box input:focus~label,
+.user-box input:valid~label {
+     transform: translateY(-20px);
+     font-size: 14px;
+     color: #333;
+}
+
+.password-toggle-icon {
+     position: absolute;
+     top: 50%;
+     right: 10px;
+     transform: translateY(-50%);
+     cursor: pointer;
+}
+
+.password-toggle-icon i {
+     font-size: 18px;
+     line-height: 1;
+     color: #333;
+     transition: color 0.3s ease-in-out;
+     margin-bottom: 20px;
+}
+
+.password-toggle-icon i:hover {
+     color: #000;
+}

@@ -1,0 +1,188 @@
+{% extends 'tasks/base.html' %}
+{% block content %}
+
+    <form action="{% url 'taskcontrol:RegisterForm' %}" method="post">
+        {% csrf_token %}
+
+            <label for="c_code">รหัสลูกค้า:</label>
+            <input type="text" id="c_code" name="c_code" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" required>
+
+            <label for="c_company_name">ชื่อบริษัท:</label>
+            <input type="text" id="c_company_name" name="c_company_name" required>
+
+            <label for="c_tin_id">เลขที่นิติ:</label>
+            <input type="text" id="c_tin_id" name="c_tin_id" required>
+
+            <label for="c_create_data">วันที่สร้าง:</label>
+            <input type="date" id="c_create_data" name="c_create_data" required>
+
+            <label for="c_service_fee">ค่าบริการ:</label>
+            <input type="text" id="c_service_fee" name="c_service_fee" required>
+
+            <label for="c_address">ที่อยู่บริษัท:</label>
+            <input type="text" id="c_address" name="c_address" required>
+
+            <label for="province">จังหวัด:</label>
+            <select id="province" name="province" required>
+                <option value="" selected disabled hidden>เลือกจังหวัด</option>
+                {% for p in province %}
+                    <option value="{{ p.id }}">{{ p.name_th }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="district">อำเภอ:</label>
+            <select id="district" name="district" required>
+                <option value="" selected disabled hidden>เลือกอำเภอ</option>
+            </select>
+
+            <label for="subdistrict">ตำบล:</label>
+            <select id="subdistrict" name="subdistrict" required>
+                <option value="" selected disabled hidden>เลือกตำบล</option>
+            </select>
+
+            <label for="c_channal">ช่องทางรู้จักเรา:</label>
+            <input type="text" id="c_channal" name="c_channal" required>
+
+            <label for="c_detail">รายละเอียด:</label>
+            <input type="text" id="c_detail" name="c_detail" required>
+
+            <button type="submit">บันทึก</button>
+    </form>
+
+    <div class="card bg-base-100 shadow-xl m-8">
+        <div class="card-body">
+            <form id="" action="{% url 'taskcontrol:RegisterForm' %}" method="Post">
+                {% csrf_token %}
+                <h1>ลูกค้า</h1>
+                <div class="grid gap-6 mb-6 md:grid-cols-4">
+                    <div>
+                        <label for="c_code" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">รหัสลูกค้า</label>
+                        <input type="text" id="c_code" name="c_code" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="c_company_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">ชื่อบริษัท</label>
+                        <input type="text" id="c_company_name" name="c_company_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="c_tin_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">เลขที่นิติ</label>
+                        <input type="text" id="c_tin_id" name="c_tin_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="c_create_data" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">วันที่สร้างลูกค้า</label>
+                        <input type="date" id="c_create_data" name="c_create_data" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required>
+                    </div>  
+                    <div>
+                        <label for="c_service_fee" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">ค่าบริการ</label>
+                        <input type="text" id="c_service_fee" name="c_service_fee" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="c_address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">ที่อยู่บริษัท</label>
+                        <input type="text" id="c_address" name="c_address" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="province" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">จังหวัด</label>
+                        <select id="province" name="province" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                            <option value="" selected disabled hidden>เลือกจังหวัด</option>
+                            {% for p in province %}
+                                <option value="{{ p.id }}">{{ p.name_th }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="district" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">อำเภอ</label>
+                        <select id="district" name="district" required>
+                            <option value="" selected disabled hidden>เลือกอำเภอ</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="subdistrict" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">ตำบล</label>
+                        <select id="subdistrict" name="subdistrict" required>
+                            <option value="" selected disabled hidden>เลือกตำบล</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="c_channal" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">ช่องทางรู้จักเรา</label>
+                        <input type="text" id="c_channal" name="c_channal" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="c_detail" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">ช่องทางรู้จักเรา</label>
+                        <input type="text" id="c_detail" name="c_detail" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div> 
+
+    <script type="text/javascript">
+        $(function() {
+            $.ajax({
+                url: '{% url 'taskcontrol:GetProvince' %}',
+                success: function(data) {
+                    var $selectProvince = $('#province');
+                    $selectProvince.empty();
+                    $selectProvince.append('<option value="" selected disabled hidden>เลือกจังหวัด</option>');
+                    $.each(data, function(index, province) {
+                        $selectProvince.append($('<option>', {
+                            value: province.id,
+                            text: province.name_th
+                        }));
+                    });
+                }
+            });
+
+            // Handle province change event
+            $('#province').change(function() {
+                var selectedProvinceId = $(this).val();
+                if (selectedProvinceId) {
+                    // Load districts based on the selected province
+                    $.ajax({
+                        url: '{% url 'taskcontrol:GetDistrict' %}',
+                        data: { province_id: selectedProvinceId },
+                        success: function(data) {
+                            var $selectDistrict = $('#district');
+                            $selectDistrict.empty();
+                            $selectDistrict.append('<option value="" selected disabled hidden>เลือกอำเภอ</option>');
+                            $.each(data, function(index, district) {
+                                $selectDistrict.append($('<option>', {
+                                    value: district.id,
+                                    text: district.name_th
+                                }));
+                            });
+                        }
+                    });
+                } else {
+                    // Clear and disable district and subdistrict select dropdowns
+                    $('#district').empty().prop('disabled', true);
+                    $('#subdistrict').empty().prop('disabled', true);
+                }
+            });
+
+            // Handle district change event
+            $('#district').change(function() {
+                var selectedDistrictId = $(this).val();
+                if (selectedDistrictId) {
+                    // Load subdistricts based on the selected district
+                    $.ajax({
+                        url: '{% url 'taskcontrol:GetSubdistrict' %}',
+                        data: { district_id: selectedDistrictId },
+                        success: function(data) {
+                            var $selectSubdistrict = $('#subdistrict');
+                            $selectSubdistrict.empty();
+                            $selectSubdistrict.append('<option value="" selected disabled hidden>เลือกตำบล</option>');
+                            $.each(data, function(index, subdistrict) {
+                                $selectSubdistrict.append($('<option>', {
+                                    value: subdistrict.id,
+                                    text: subdistrict.name_th + ' - ' + subdistrict.zipcode
+                                }));
+                            });
+                        }
+                    });
+                } else {
+                    // Clear and disable subdistrict select dropdown
+                    $('#subdistrict').empty().prop('disabled', true);
+                }
+            });
+        });
+    </script>
+
+{% endblock content %}

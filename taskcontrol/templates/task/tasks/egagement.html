@@ -1,0 +1,377 @@
+{% extends 'tasks/base.html' %}
+{% block content %}
+    <div class="card card-side bg-base-100 shadow-xl m-7">
+        <div class="card-body">
+            <form action="{% url 'taskcontrol:RegisterEgagement' %}" method="post">
+            {% csrf_token %}
+                <label for="">การว่าจ้าง</label>
+                <!--Egagement-->
+                <div class="grid gap-6 mb-6 md:grid-cols-4">
+                    <div>
+                        <label for="" class="lable">รหัสลูกค้า</label>
+                        <input type="date" id="" name="" class="inputtext" placeholder="" required>
+                    </div> 
+                    <div>
+                        <label for="" class="lable">ชื่อลูกค้า</label>
+                        <input type="text" id="" name="" class="inputtext" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="" class="lable">รหัส Job</label>
+                        <input type="text" id="" name="" class="inputtext" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="" class="lable">วันที่เริ่มบริการ</label>
+                        <input type="date" id="" name="" class="inputtext" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="" class="lable">วันที่สิ้นสุดบริการ</label>
+                        <input type="date" id="" name="" class="inputtext" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="" class="lable">รอบที่เริ่มใหเบริการ</label>
+                        <input type="" id="" name="" class="inputtext" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="" class="lable">รอบที่สิ้นสุดบริการ</label>
+                        <input type="" name="" id="" class="inputtext">
+                    </div>
+                    <div>
+                        <label for="" class="lable">ผู้ดูแล</label>
+                        <label for="" class="lable">ผู้ตรวจทาน1</label>
+                        <input type="text" name="" id="" class="inputtext">
+                    </div>
+                    <div>
+                        <label for="" class="lable">ผู้ตรวจทาน2</label>
+                        <input type="text" name="" id="" class="inputtext">
+                    </div>
+                </div>
+
+                <!--Account-->
+                <div class="mb-4">
+                    <label for="">บัญชี</label>
+                </div>
+                <div class="grid gap-6 mb-6 md:grid-cols-7">
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">บันทึกบัญชี</label>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>ประเภท</option>
+                            <option value="ครั้งเดียว">ครั้งเดียว</option>
+                            <option value="รายเดือน">รายเดือน</option>
+                            <option value="รายปี">รายปี</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>เดดไลน์</option>
+                            <option value="ตามกฎหมาย">ตามกฎหมาย</option>
+                            <option value="">ระบุเอง</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>แจ้งเตือน</option>
+                            <option value="3">3 วัน</option>
+                            <option value="7">7 วัน</option>
+                        </select>
+                    </div>
+                    <div>
+                        <input type="date" name="" id="" class="inputtext">
+                    </div>
+                    <div>
+                        <input type="date" name="" id="" class="inputtext">
+                    </div>
+                </div>
+                <div class="grid gap-6 mb-6 md:grid-cols-7">
+                    <div></div>
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">ตรวจทาน1</label>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">ตรวจทาน2</label>
+                    </div>
+                </div>
+                <div class="grid gap-6 mb-6 md:grid-cols-7">
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">ตามเอกสาร</label>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>ประเภท</option>
+                            <option value="ครั้งเดียว">ครั้งเดียว</option>
+                            <option value="รายเดือน">รายเดือน</option>
+                            <option value="รายปี">รายปี</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>เดดไลน์</option>
+                            <option value="ตามกฎหมาย">ตามกฎหมาย</option>
+                            <option value="">ระบุเอง</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>แจ้งเตือน</option>
+                            <option value="3">3 วัน</option>
+                            <option value="7">7 วัน</option>
+                        </select>
+                    </div>
+                    <div>
+                        <input type="date" name="" id="" class="inputtext">
+                    </div>
+                    <div>
+                        <input type="date" name="" id="" class="inputtext">
+                    </div>
+                </div>
+                <div class="grid gap-6 mb-6 md:grid-cols-7">
+                    <div></div>
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">ตรวจทาน1</label>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">ตรวจทาน2</label>
+                    </div>
+                </div>
+                <div class="grid gap-6 mb-6 md:grid-cols-7">
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">เก็บเอกสาร</label>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>ประเภท</option>
+                            <option value="ครั้งเดียว">ครั้งเดียว</option>
+                            <option value="รายเดือน">รายเดือน</option>
+                            <option value="รายปี">รายปี</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>เดดไลน์</option>
+                            <option value="ตามกฎหมาย">ตามกฎหมาย</option>
+                            <option value="">ระบุเอง</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>แจ้งเตือน</option>
+                            <option value="3">3 วัน</option>
+                            <option value="7">7 วัน</option>
+                        </select>
+                    </div>
+                    <div>
+                        <input type="date" name="" id="" class="inputtext">
+                    </div>
+                    <div>
+                        <input type="date" name="" id="" class="inputtext">
+                    </div>
+                </div>
+                <div class="grid gap-6 mb-6 md:grid-cols-7">
+                    <div></div>
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">ตรวจทาน1</label>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">ตรวจทาน2</label>
+                    </div>
+                </div>
+
+                <!--Tax-->
+                <div class="mb-4">
+                    <label for="">ภาษี</label>
+                </div>
+                <div class="grid gap-6 mb-6 md:grid-cols-7">
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">ภงด.1</label>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>ประเภท</option>
+                            <option value="ครั้งเดียว">ครั้งเดียว</option>
+                            <option value="รายเดือน">รายเดือน</option>
+                            <option value="รายปี">รายปี</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>เดดไลน์</option>
+                            <option value="ตามกฎหมาย">ตามกฎหมาย</option>
+                            <option value="">ระบุเอง</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>แจ้งเตือน</option>
+                            <option value="3">3 วัน</option>
+                            <option value="7">7 วัน</option>
+                        </select>
+                    </div>
+                    <div>
+                        <input type="date" name="" id="" class="inputtext">
+                    </div>
+                    <div>
+                        <input type="date" name="" id="" class="inputtext">
+                    </div>
+                </div>
+                <div class="grid gap-6 mb-6 md:grid-cols-7">
+                    <div></div>
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">ตรวจทาน1</label>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">ตรวจทาน2</label>
+                    </div>
+                </div>
+                <div class="grid gap-6 mb-6 md:grid-cols-7">
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">ภงด.3</label>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>ประเภท</option>
+                            <option value="ครั้งเดียว">ครั้งเดียว</option>
+                            <option value="รายเดือน">รายเดือน</option>
+                            <option value="รายปี">รายปี</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>เดดไลน์</option>
+                            <option value="ตามกฎหมาย">ตามกฎหมาย</option>
+                            <option value="">ระบุเอง</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>แจ้งเตือน</option>
+                            <option value="3">3 วัน</option>
+                            <option value="7">7 วัน</option>
+                        </select>
+                    </div>
+                    <div>
+                        <input type="date" name="" id="" class="inputtext">
+                    </div>
+                    <div>
+                        <input type="date" name="" id="" class="inputtext">
+                    </div>
+                </div>
+                <div class="grid gap-6 mb-6 md:grid-cols-7">
+                    <div></div>
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">ตรวจทาน1</label>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">ตรวจทาน2</label>
+                    </div>
+                </div>
+                <div class="grid gap-6 mb-6 md:grid-cols-7">
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">ภงด.53</label>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>ประเภท</option>
+                            <option value="ครั้งเดียว">ครั้งเดียว</option>
+                            <option value="รายเดือน">รายเดือน</option>
+                            <option value="รายปี">รายปี</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>เดดไลน์</option>
+                            <option value="ตามกฎหมาย">ตามกฎหมาย</option>
+                            <option value="">ระบุเอง</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>แจ้งเตือน</option>
+                            <option value="3">3 วัน</option>
+                            <option value="7">7 วัน</option>
+                        </select>
+                    </div>
+                    <div>
+                        <input type="date" name="" id="" class="inputtext">
+                    </div>
+                    <div>
+                        <input type="date" name="" id="" class="inputtext">
+                    </div>
+                </div>
+                <div class="grid gap-6 mb-6 md:grid-cols-7">
+                    <div></div>
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">ตรวจทาน1</label>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">ตรวจทาน2</label>
+                    </div>
+                </div>
+                <div class="grid gap-6 mb-6 md:grid-cols-7">
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">ภงด.54</label>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>ประเภท</option>
+                            <option value="ครั้งเดียว">ครั้งเดียว</option>
+                            <option value="รายเดือน">รายเดือน</option>
+                            <option value="รายปี">รายปี</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>เดดไลน์</option>
+                            <option value="ตามกฎหมาย">ตามกฎหมาย</option>
+                            <option value="">ระบุเอง</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select class="inputtext">
+                            <option disabled selected>แจ้งเตือน</option>
+                            <option value="3">3 วัน</option>
+                            <option value="7">7 วัน</option>
+                        </select>
+                    </div>
+                    <div>
+                        <input type="date" name="" id="" class="inputtext">
+                    </div>
+                    <div>
+                        <input type="date" name="" id="" class="inputtext">
+                    </div>
+                </div>
+                <div class="grid gap-6 mb-6 md:grid-cols-7">
+                    <div></div>
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">ตรวจทาน1</label>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                        <label for="" class="">ตรวจทาน2</label>
+                    </div>
+                </div>
+        </div>
+    </div>
+    
+            
+{% endblock content %}

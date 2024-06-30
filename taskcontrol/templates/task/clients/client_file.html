@@ -1,0 +1,389 @@
+{% extends 'task/index.html' %}
+{% block content %}
+{% load static %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+    * {
+        font-family: "Bai Jamjuree", sans-serif;
+    }
+
+    .card {
+        margin-top: 1rem;
+    }
+
+    .card, .card-body {
+        background-color: #e7f3ff;
+        border-radius: 20px;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .mx-auto {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .pl-0 {
+        padding-left: 0;
+    }
+
+    .submit-btn {
+        border: 1px solid #53c536;
+        background-color: #53c536;
+    }
+
+    .mt-3 {
+        margin-top: 2rem;
+    }
+
+    .d-none {
+        display: none;
+    }
+
+    .form-step {
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+        border-radius: 12px;
+        margin-top: 2rem;
+        padding: 2rem;
+        background-color: #fff;
+    }
+
+    ul.form-stepper {
+        counter-reset: section;
+        margin-bottom: 1rem;
+    }
+
+    ul.form-stepper .form-stepper-circle {
+        position: relative;
+    }
+
+    ul.form-stepper .form-stepper-circle span {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateY(-50%) translateX(-50%);
+    }
+
+    .form-stepper-horizontal {
+        position: relative;
+        display: flex;
+        justify-content: space-around;
+    }
+
+    ul.form-stepper>li:not(:last-of-type) {
+        margin-bottom: 0.625rem;
+        transition: margin-bottom 0.4s;
+    }
+
+    .form-stepper-horizontal>li:not(:last-of-type) {
+        margin-bottom: 0 !important;
+    }
+
+    .form-stepper-horizontal li {
+        position: relative;
+        display: flex;
+        flex: 1;
+        align-items: center;
+        flex-wrap: nowrap;
+        transition: 0.5s;
+        justify-content: space-evenly;
+    }
+
+    .form-stepper-horizontal li:not(:last-child):after {
+        position: relative;
+        flex: 1;
+        height: 1px;
+        content: "";
+        top: 32%;
+    }
+
+    .form-stepper-horizontal li:after {
+        background-color: #c4cad0;
+    }
+
+    .form-stepper-horizontal li.form-stepper-completed:after {
+        background-color: #0277ff;
+    }
+
+    .form-stepper-horizontal li:last-child {
+        flex: unset;
+    }
+
+    ul.form-stepper li a .form-stepper-circle {
+        display: inline-block;
+        margin-right: 0;
+        line-height: 1.7rem;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.38);
+        border-radius: 50%;
+    }
+
+    .form-stepper .form-stepper-active .form-stepper-circle {
+        background-color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-active .label {
+        color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-active .form-stepper-circle:hover {
+        background-color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-unfinished .form-stepper-circle {
+        background-color: #f5f5f5;
+    }
+
+    .form-stepper .form-stepper-completed .form-stepper-circle {
+        background-color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-completed .label {
+        color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-completed .form-stepper-circle:hover {
+        background-color: #0277ff !important;
+    }
+
+    .form-stepper .label {
+        font-size: 14.5px;
+        font-weight: 500;
+        margin-top: 0.5rem;
+    }
+
+    .form-stepper a {
+        cursor: default;
+    }
+
+    .number-lable {
+        color: #333944;
+        font-size: 12.5px;
+        font-weight: 500;
+    }
+
+    .number-step {
+        color: #5d87ff;
+        font-weight: 700;
+        font-size: 18px;
+    }
+
+    .text-muted {
+        --bs-text-opacity: 1;
+        color: #0277ff !important;
+    }
+
+    th {
+        font-size: 13.5px;
+    }
+
+    td {
+        font-size: 14;
+    }
+</style>
+<div class="card">
+    <div class="card-body">
+        <div id="multi-step-form-container">
+            <!-- Form Steps / Progress Bar -->
+            <ul class="form-stepper form-stepper-horizontal text-center mx-auto pl-0 ">
+                <!-- Step 1 -->
+                <li class="form-stepper-unfinished text-center form-stepper-list">
+                    <a class="mx-2">
+                        <span class="number-step"><i class="fi fi-sr-user-add"></i></span>
+                        <div class="number-lable">ข้อมูลลูกค้า</div>
+                        <span class="form-stepper-circle text-muted">
+                            <span><i class="fa-solid fa-circle-check fa-lg"></i></span>
+                        </span>
+                    </a>
+                </li>
+                <!-- Step 2 -->
+                <li class="form-stepper-unfinished text-center form-stepper-list">
+                    <a class="mx-2">
+                        <span class="number-step"><i class="fi fi-sr-comment-user"></i></span>
+                        <div class="number-lable"> ผู้ติดต่อ</div>
+                        <span class="form-stepper-circle text-muted">
+                            <span><i class="fa-solid fa-circle-check fa-lg"></i></span>
+                        </span>
+                    </a>
+                </li>
+                <!-- Step 3 -->
+                <li class="form-stepper-unfinished text-center form-stepper-list">
+                    <a class="mx-2">
+                        <span class="number-step"><i class="fi fi-sr-user-lock"></i></span>
+                        <div class="number-lable">รหัสผ่าน</div>
+                        <span class="form-stepper-circle text-muted">
+                            <span><i class="fa-solid fa-circle-check fa-lg"></i></span>
+                        </span>
+                    </a>
+                </li>
+                <!-- Step 4 -->
+                <li class="form-stepper-unfinished text-center form-stepper-list">
+                    <a class="mx-2">
+                        <span class="number-step"><i class="fi fi-sr-document"></i></span>
+                        <div class="number-lable">แนบไฟล์</div>
+                        <span class="form-stepper-circle text-muted">
+                            <span><i class="fa-regular fa-circle-dot fa-lg"></i></span>
+                        </span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Step 4-->
+            <section class="form-step mb-3">
+                <div class="mt-1">
+                    <form method="post" enctype="multipart/form-data" action="{% url 'taskcontrol:file_client_create' client_id=client.id %}">
+                        {% csrf_token %}
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="c_description" class="form-label">คำอธิบาย :</label>
+                                <input type="text" name="c_description" class="form-control" required/>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="c_file" class="form-label">ไฟล์ :</label>
+                                <input type="file" name="c_file" class="form-control" accept=".pdf, .doc, .docx, .txt">
+                                <span style="font-size: 0.85rem; color: tomato;">ไฟล์ .pdf, .doc, .docx, .txt</span>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="c_image" class="form-label">รูปภาพ :</label>
+                                <input type="file" name="c_image" class="form-control" accept="image/*">
+                                <span style="font-size: 0.85rem; color: tomato;">ไฟล์รูปภาพ</span>
+                            </div>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="submit" class="btn btn-outline-primary"><i class="fa-solid fa-upload"></i> อัปโหลด</button>
+                            </div>
+                        </div>
+                    </form>
+        
+                    <div class="table-responsive mb-4">
+                        <table id="file-table" class="table">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>คำอธิบาย</th>
+                                    <th>ไฟล์ | รูปภาพแนบ</th>
+                                    <th><i class="fa-solid fa-file-pdf fa-lg"></i></th>
+                                    <th><i class="fa-solid fa-file-image fa-lg"></i></th>
+                                    <th><i class="fa-solid fa-gears"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for file in files %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ file.description }}</td>
+                                        <td>{{ file.file_client }} | {{ file.image_client }}</td>
+                                        <td>
+                                            {% if file.file_client %}
+                                                <a href="{% url 'taskcontrol:file_client_download_file' file_id=file.id %}" download target="_blank">
+                                                    <i class="fa-solid fa-download fa-lg"></i>
+                                                </a>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if file.image_client %}
+                                                <a href="{% url 'taskcontrol:file_client_download_image' image_id=file.id %}" download target="_blank">
+                                                    <i class="fa-solid fa-download fa-lg"></i>
+                                                </a>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-outline-danger btn-sm delete-btn" data-file-id="{{ file.id }}"
+                                                data-delete-url="{% url 'taskcontrol:file_client_delete' file_id=file.id %}">
+                                                <i class="fa-solid fa-trash-can"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{% url 'taskcontrol:create_password' client_id=client.id %}" class="btn btn-outline-dark"><i class="fa-solid fa-angles-left"></i> ย้อนกลับ</a>
+                    <a href="{% url 'taskcontrol:client_detail' client_id=client.id %}" class="btn btn-dark">ถัดไป <i class="fa-solid fa-angles-right"></i></a>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const deleteButtons = document.querySelectorAll(".delete-btn");
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                handleDelete(this);
+            });
+        });
+    
+        function handleDelete(button) {
+            const fileId = button.getAttribute("data-file-id");
+            const confirmation = confirm("ต้องการลบประเภทงานนี้ ?");
+            if (confirmation) {
+                const deleteUrl = button.getAttribute("data-delete-url");
+                fetch(deleteUrl, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCsrfToken(),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ file_id: fileId })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Error deleting item. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                    alert('Error deleting item. Please try again.');
+                });
+            }
+        }
+    
+        function getCsrfToken() {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, 'csrftoken'.length + 1) === ('csrftoken=')) {
+                        cookieValue = decodeURIComponent(cookie.substring('csrftoken'.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    });
+</script>
+<script>
+    $(document).ready(function () {
+         const dataTable = $("#file-table").DataTable({
+              "language": {
+                   "search": "ค้นหา",
+                   "lengthMenu": "แสดง _MENU_ รายการ",
+                   "info": "แสดง _START_ ถึง _END_ จากทั้งหมด _TOTAL_ รายการ",
+                   "paginate": {
+                        "previous": "ก่อนหน้า",
+                        "next": "ถัดไป"
+                   }
+              }
+         });
+    });
+</script>
+{% endblock %}

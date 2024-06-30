@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Document Detail</title>
+</head>
+<body>
+    <h1>รายละเอียดเอกสาร</h1>
+    <form method="post" action="{% url 'taskcontrol:create_document_detail' %}">
+        {% csrf_token %}
+
+        <label for="document_type_id">เอกสาร</label>
+
+        <label for="c_type">ประเภท</label>
+        <select name="c_type" id="c_type">
+            <option value="ครั้งเดียว">ครั้งเดียว</option>
+            <option value="รายเดือน">รายเดือน</option>
+            <option value="รายปี">รายปี</option>
+        </select><br>
+
+        <label for="c_deadline">เดตไลน์</label>
+        <input type="date" name="c_deadline" id="c_deadline"><br>
+
+        <label for="c_notification">แจ้งเตือน</label>
+        <select name="c_notification" id="c_notification">
+            <option value="3">3 วัน</option>
+            <option value="5">5 วัน</option>
+            <option value="7">7 วัน</option>
+        </select><br>
+
+        <label for="c_start_date">วันที่เริ่มต้น</label>
+        <input type="date" name="c_start_date" id="c_start_date"><br>
+
+        <label for="c_end_date">สิ้นสุดวันที่</label>
+        <input type="date" name="c_end_date" id="c_end_date"><br>
+
+        <button type="submit">บันทึก</button>
+    </form>
+
+    <a href="{% url 'taskcontrol:list_document_detail' %}">ยกเลิก และย้อนกลับ</a>
+</body>
+</html>

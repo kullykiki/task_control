@@ -1,0 +1,447 @@
+{% extends 'task/index.html' %}
+{% block content %}
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+    }
+
+    th,
+    td {
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f5f7f9;
+        font-size: 12.5px;
+        border-radius: 1px;
+    }
+
+    .today {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 8px;
+        font-weight: 600;
+        color: #212A3E;
+        background-color: #F1F6F9;
+        font-size: 13px;
+    }
+    
+    .badge.OPEN_OB {
+        color: #0051a0;
+        background-color: #cbe5ff;
+        display: flex;
+        justify-content: flex-start;
+        align-items: stretch;
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-size: 14px;
+        font-weight: 600;
+        width: 100%;
+    }
+    
+    .badge.IN_PROGRESS {
+        color: #5b2891;
+        background-color: #ead6ff;
+        display: flex;
+        justify-content: flex-start;
+        align-items: stretch;
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-size: 14px;
+        font-weight: 600;
+        width: 100%;
+    }
+    
+    .badge.REVIEW {
+        color: #954800;
+        background-color: #fff1c6;
+        display: flex;
+        justify-content: flex-start;
+        align-items: stretch;
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-size: 14px;
+        font-weight: 600;
+        width: 100%;
+    }
+    
+    .badge.PENDING_CLIENT {
+        color: #a10f0a;
+        background-color: #ffcfce;
+        display: flex;
+        justify-content: flex-start;
+        align-items: stretch;
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-size: 14px;
+        font-weight: 600;
+        width: 100%;
+    }
+    
+    .badge.DONE {
+        color: #054627;
+        background-color: #d0f4b2;
+        display: flex;
+        justify-content: flex-start;
+        align-items: stretch;
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-size: 14px;
+        font-weight: 600;
+        width: 100%;
+    }
+    
+    .engagement-table {
+        display: none;
+    }
+    .status-wrapper {
+        display: flex;
+        align-items: center;
+    }
+    
+    .status-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+    }
+    
+    .all-status {
+        margin-right: 10px;
+    }
+    
+    .toggle-btn {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        outline: none;
+    }
+    
+    .toggle-btn i {
+        font-size: 14px;
+        color: #333;
+        transition: transform 0.3s ease;
+    }
+    
+    .toggle-btn.active i {
+        transform: rotate(180deg);
+    }
+    
+    .engagement-table {
+        display: table;
+    }
+
+    .badge-deadline {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #da1124;
+    }
+    
+    .status-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 8px;
+        font-size: 12.5px;
+        font-weight: 600;
+    }
+    
+    .status-open {
+        color: #0051a0;
+        background-color: #cbe5ff;
+    }
+    
+    .status-in-progress {
+        color: #5b2891;
+        background-color: #ead6ff;
+    }
+    
+    .status-review {
+        color: #954800;
+        background-color: #fff1c6;
+    }
+    
+    .status-pending-client {
+        color: #a10f0a;
+        background-color: #ffcfce;
+    }
+    
+    .status-done {
+        color: #054627;
+        background-color: #d0f4b2;
+    }
+
+</style>
+<div class="row">
+    <div class="card w-100">
+        <div class="card-body">
+            <ul class="nav nav-underline mb-3" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="pills-home-tab" href="{% url 'taskcontrol:kanban_board' %}" role="tab" aria-controls="pills-home" aria-selected="true">บอร์ด</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="pills-profile-tab" href="#" role="tab" aria-controls="pills-profile" aria-selected="false">ค้นหาจากบอร์ด</a>
+                </li>
+            </ul>
+            <div class="mb-3 text-start">
+                <span class="today"><i class="fa-regular fa-calendar"></i> {{ today|date:"d/m/Y" }}</span>
+            </div>
+            <div class="row mb-3">
+                <form id="filterForm" method="GET">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label for="administrator_id" class="form-label">ผู้รับผิดชอบ:</label>
+                            <select name="administrator_id" id="administrator_id" class="form-select">
+                                <option value="" selected disabled hidden>-- กรุณาเลือก --</option>
+                                {% for admin in administrators %}
+                                <option value="{{ admin.id }}">{{ admin.first_name }} {{ admin.last_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label for="engagement_type_id" class="form-label">ประเภทงาน:</label>
+                            <select name="engagement_type_id" id="engagement_type_id" class="form-select">
+                                <option value="" selected disabled hidden>-- กรุณาเลือก --</option>
+                                {% for type in engagement_types %}
+                                <option value="{{ type.id }}">{{ type.name_th }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5">
+                            <div class="form-check">
+                                <input type="checkbox" name="near_deadline" id="near_deadline" class="form-check-input">
+                                <label for="near_deadline" class="form-label">งานที่ใกล้เดดไลน์</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-5">
+                            <div class="form-check">
+                                <input type="checkbox" name="per_month" id="per_month" class="form-check-input">
+                                <label for="per_month" class="form-label">รอบบัญชี (ปัจจุบัน)</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">ค้นหา <i class="fa-solid fa-magnifying-glass"></i></button>
+                        <button type="button" class="btn btn-outline-dark" onclick="clearFilter()">ล้าง</button>
+                    </div>
+                </form>
+
+            </div>
+
+            <div id="engagementData">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">เลขที่</th>
+                            <th style="width: 15%;">ประเภทงาน</th>
+                            <th style="width: 20%;">ผู้ตรวจทาน</th>
+                            <th style="width: 20%;">ผู้อนุมัติ</th>
+                            <th style="width: 20%;">ผู้รับผิดชอบ</th>
+                            <th style="width: 15%;">เดดไลน์</th>
+                        </tr>
+                    </thead>
+                </table>
+                {% for status in engagement_statuses %}
+                <div class="status-wrapper">
+                    <span class="badge {{ status }}">
+                        <button class="toggle-btn" onclick="toggleTable('{{ status }}')">
+                            <i class="fa-solid fa-caret-down"></i>
+                        </button>&nbsp;&nbsp;
+                        {% if status == 'OPEN_JOB' %}
+                        เปิดงาน
+                        {% elif status == 'IN_PROGRESS' %}
+                        กำลังดำเนินการ
+                        {% elif status == 'PENDING_CLIENT' %}
+                        รอลูกค้า
+                        {% elif status == 'REVIEW' %}
+                        รอตรวจทาน
+                        {% elif status == 'DONE' %}
+                        เรียบร้อย
+                        {% else %}
+                        {{ status }}
+                        {% endif %}
+                        {% if statusCounts.status %}
+                        {% endif %}
+                    </span>
+                </div>
+                <table id="filter_table_{{ status }}" class="engagement-table">
+                    <tbody>
+                        {% for engagement in engagements %}
+                        {% if engagement.status == status %}
+                        {% for detail in engagement.engagementdetail_set.all %}
+                        <tr class="card-engagement">
+                            <td class="fw-semibold" style="font-size: 13px; width: 10%;">{{ engagement.job_code }}</td>
+                            <td style="width: 15%;">{{ detail.engagement_type.name_th }}</td>
+                            <td style="width: 20%;">{{ engagement.reviewer.first_name }} {{ engagement.reviewer.last_name }}</td>
+                            <td style="width: 20%;">{{ engagement.approver.first_name }} {{ engagement.approver.last_name }}</td>
+                            <td style="width: 20%;">{{ engagement.administrator.first_name }} {{ engagement.administrator.last_name }}</td>
+                            <td style="width: 15%;" class="badge-deadline">{{ detail.deadline|date:"d/m/Y" }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('filterForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+    
+        var formData = new FormData(this);
+        var searchParams = new URLSearchParams(formData).toString();
+    
+        var url = '{% url "taskcontrol:get_filter_engagement_details" %}?' + searchParams;
+    
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('การตอบสนองของเครือข่ายไม่โอเค');
+                }
+                return response.json();
+            })
+            .then(data => {
+                displayEngagements(data);
+            })
+            .catch(error => {
+                console.error('เกิดข้อผิดพลาดกับ Engagements:', error);
+            });
+    });
+    
+    function displayEngagements(data) {
+        var engagements = data.engagements;
+        var engagementDataDiv = document.getElementById('engagementData');
+        engagementDataDiv.innerHTML = '';
+    
+        if (engagements && engagements.length > 0) {
+            var tableHTML = `
+                <table class="engagement-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">เลขที่</th>
+                            <th style="width: 15%;">ประเภทงาน</th>
+                            <th style="width: 20%;">ผู้ตรวจทาน</th>
+                            <th style="width: 20%;">ผู้อนุมัติ</th>
+                            <th style="width: 20%;">ผู้รับผิดชอบ</th>
+                            <th style="width: 15%;">เดดไลน์</th>
+                            <th>สถานะ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+    
+            engagements.forEach(function(engagement, index) {
+                var statusText, badgeClass;
+                switch (engagement.status) {
+                    case 'OPEN_JOB':
+                        statusText = 'เปิดงาน';
+                        badgeClass = 'status-open';
+                        break;
+                    case 'IN_PROGRESS':
+                        statusText = 'กำลังดำเนินการ';
+                        badgeClass = 'status-in-progress';
+                        break;
+                    case 'PENDING_CLIENT':
+                        statusText = 'รอลูกค้า';
+                        badgeClass = 'status-pending-client';
+                        break;
+                    case 'REVIEW':
+                        statusText = 'รอตรวจทาน';
+                        badgeClass = 'status-review';
+                        break;
+                    case 'DONE':
+                        statusText = 'เรียบร้อย';
+                        badgeClass = 'status-done';
+                        break;
+                    default:
+                        statusText = engagement.status;
+                        badgeClass = '';
+                }
+    
+                tableHTML += `
+                    <tr>
+                        <td class="fw-semibold" style="font-size: 13px; width: 10%;">${engagement.job_code}</td>
+                        <td>${engagement.type}</td>
+                        <td>${engagement.reviewer}</td>
+                        <td>${engagement.approver}</td>
+                        <td>${engagement.administrator}</td>
+                        <td class="badge-deadline">${engagement.deadline}</td>
+                        <td>
+                            <span class="badge ${badgeClass}">
+                                ${statusText}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+    
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+    
+            engagementDataDiv.innerHTML = tableHTML;
+        } else {
+            engagementDataDiv.textContent = 'ไม่พบข้อมูล.';
+        }
+    }
+    
+    
+    function clearFilter() {
+        document.getElementById("administrator_id").value = "";
+        document.getElementById("engagement_type_id").value = "";
+        document.getElementById("near_deadline").checked = false;
+        document.getElementById("per_month").checked = false;
+    
+        window.location.reload();
+    }
+
+    function toggleTable(status) {
+        var tableId = "filter_table_" + status;
+        var table = document.getElementById(tableId);
+        var btn = document.querySelector("[onclick=\"toggleTable('" + status + "')\"]");
+
+        if (table.style.display === "none") {
+            table.style.display = "table";
+            btn.classList.add("active");
+        } else {
+            table.style.display = "none";
+            btn.classList.remove("active");
+        }
+    }
+
+    function countStatuses() {
+        var badges = document.querySelectorAll('.badge');
+        badges.forEach(function(badge) {
+            var status = badge.classList[1];
+            statusCounts[status] = (statusCounts[status] || 0) + 1;
+        });
+        
+        // Display the count of each status
+        Object.keys(statusCounts).forEach(function(status) {
+            var statusElement = document.createElement('span');
+            statusElement.className = 'status-count';
+            statusElement.textContent = '(' + statusCounts[status] + ')';
+            
+            // Find the badge element corresponding to the status
+            var badgeElement = document.querySelector('.badge.' + status);
+            
+            // Append the count element next to the badge
+            badgeElement.appendChild(statusElement);
+        });
+    }
+    
+</script>
+{% endblock content %}

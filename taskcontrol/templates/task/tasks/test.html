@@ -1,0 +1,265 @@
+{% extends 'tasks/base.html' %}
+{% block content %}
+    <div class="card card-side bg-base-100 shadow-xl m-7">
+        <div class="card-body">
+            <form action="{% url 'taskcontrol:RegisterForm' %}" method="post">
+            {% csrf_token %}
+                <label for="">ลูกค้า</label>
+
+                <!--Client-->
+                <div class="grid gap-6 mb-6 md:grid-cols-4">
+                    <div>
+                        <label for="c_create_data" class="lable">วันที่สร้างลูกค้า</label>
+                        <input type="date" id="c_create_data" name="c_create_data" class="inputtext" placeholder="" required>
+                    </div> 
+                    <div>
+                        <label for="c_code" class="lable">รหัสลูกค้า</label>
+                        <input type="text" id="c_code" name="c_code" class="inputtext" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="c_company_name" class="lable">ชื่อบริษัท</label>
+                        <input type="text" id="c_company_name" name="c_company_name" class="inputtext" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="c_tin_id" class="lable">เลขที่นิติ</label>
+                        <input type="text" id="c_tin_id" name="c_tin_id" class="inputtext" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="c_service_fee" class="lable">ค่าบริการ</label>
+                        <input type="text" id="c_service_fee" name="c_service_fee" class="inputtext" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="c_address" class="lable">ที่อยู่บริษัท</label>
+                        <input type="text" id="c_address" name="c_address" class="inputtext" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="province" class="lable">จังหวัด</label>
+                        <select id="province" name="province" class="inputtext" required>
+                            <option value="" selected disabled hidden>เลือกจังหวัด</option>
+                            {% for p in province %}
+                                <option value="{{ p.id }}">{{ p.name_th }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="district" class="lable">อำเภอ</label>
+                        <select id="district" name="district" class="inputtext" required>
+                            <option value="" selected disabled hidden>เลือกอำเภอ</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="subdistrict" class="lable">ตำบล</label>
+                        <select id="subdistrict" name="subdistrict" class="inputtext" required>
+                            <option value="" selected disabled hidden>เลือกตำบล</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="zipcode" class="lable">รหัสไปรษณีย์</label>
+                        <input type="text" name="" id="" class="inputtext">
+                    </div>
+                    <div>
+                        <label for="c_channal" class="block mb-2 text-sm font-medium">ช่องทางรู้จักเรา</label>
+                        <select class="inputtext">
+                            <option disabled selected hidden>กรุณาเลือกคำตอบ</option>
+                            <option value="Youtube">Youtube</option>
+                            <option value="Facebook">Facebook</option>
+                            <option value"">อื่นๆ</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="c_detail" class="lable">รายละเอียด</label>
+                        <textarea type="text" id="c_detail" name="c_detail" class="inputtext" placeholder="" required></textarea>
+                    </div>
+                </div>
+
+                <!--RegisterCilent-->
+                <div class="mb-3">
+                    <div class="grid gap-6 mb-2">
+                        <label class="lable">จดทะเบียนภาษีมูลค่าเพิ่ม
+                            <input type="radio" name="radio-1" class="radioC" checked />
+                            <span class="">ใช่</span> 
+                            <input type="radio" name="radio-1" class="radioC" />
+                            <span class="">ไม่ใช่</span>
+                            <span>วันที่จด</span>
+                            <input type="date" name="" id="" class="">
+                        </label>
+                    </div>
+                    <div></div>
+                    <div></div>
+                    <div class="grid gap-6 mb-2 md:grid-cols-2">
+                        <label class="lable">จดทะเบียนภาษีธุรกิจเฉพาะ
+                            <input type="radio" name="radio-2" class="radioC" checked />
+                            <span class="">ใช่</span>
+                            <input type="radio" name="radio-2" class="radioC" />
+                            <span class="">ไม่ใช่</span>
+                            <span>วันที่จด</span>
+                            <input type="date" name="" id="" class="">
+                        </label>
+                    </div>
+                    <div></div>
+                    <div></div>
+                    <div class="grid gap-6 mb-2 md:grid-cols-2">
+                        <label class="lable">จดทะเบียนนายจ้าง
+                            <input type="radio" name="radio-3" class="radioC" checked />
+                            <span class="">ใช่</span>
+                            <input type="radio" name="radio-3" class="radioC" />
+                            <span class="">ไม่ใช่</span>
+                            <span>วันที่จด</span>
+                            <input type="date" name="" id="" class="">
+                        </label>
+                    </div>
+                    <div></div>
+                    <div class="grid gap-6 mb-2 md:grid-cols-2">
+                        <label class="lable">จดทะเบียนยื่นภาษีออนไลน์
+                            <input type="radio" name="radio-4" class="radioC" checked />
+                            <span class="">ใช่</span> 
+                            <input type="radio" name="radio-4" class="radioC" />
+                            <span class="">ไม่ใช่</span>
+                            <span>วันที่จด</span>
+                            <input type="date" name="" id="" class="">
+                        </label>
+                    </div>
+                </div>
+
+                <!--Contact-->
+                <div class="grid gap-6 mb-6 md:grid-cols-4">
+                    <div>
+                        <label for="" class="lable">ชื่อผู้ติดต่อ</label>
+                        <input type="text" id="" name="" class="inputtext" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="" class="lable">ตำแหน่ง</label>
+                        <input type="text" id="" name="" class="inputtext" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="" class="lable">เบอร์ติดต่อ</label>
+                        <input type="text" id="" name="" class="inputtext" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="" class="lable">อีเมล</label>
+                        <input type="email" id="" name="" class="inputtext" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="" class="lable">ไลน์</label>
+                        <input type="text" id="" name="" class="inputtext" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="" class="lable">ช่องทางติดต่ออื่น</label>
+                        <input type="text" id="" name="" class="inputtext" placeholder="" required>
+                    </div>
+                    <div>
+                        <label for="" class="lable">ที่อยู่ติดต่อ
+                            <input type="checkbox" checked="checked" class="checkbox checkbox-sm" />
+                            <span class="text-sm font-medium" >เหมือนบริษัท</span>
+                        </label>
+                        <input type="text" id="" name="" class="inputtext" placeholder="" required>
+                    </div>
+                </div>
+
+                <!--PasswordClient-->
+                <div class="grid gap-6 mb-6 md:grid-cols-4">
+                    <div class="">
+                        <label for="" class="lable">RD</label>
+                        <span class="lable">ผู้ใช้งาน</span>
+                        <input type="text" id="" name="" class="inputtext" placeholder="" required>
+                        <span class="lable">รหัสผ่าน</span>
+                        <input type="password" name="" id="" class="inputtext">
+                    </div>
+                    <div class="">
+                        <label for="" class="lable">DBD</label>
+                        <span class="lable">ผู้ใช้งาน</span>
+                        <input type="text" id="" name="" class="inputtext" placeholder="" required>
+                        <span class="lable">รหัสผ่าน</span>
+                        <input type="password" name="" id="" class="inputtext">
+                    </div>
+                    <div class="">
+                        <label for="" class="lable">SSO</label>
+                        <span class="lable">ผู้ใช้งาน</span>
+                        <input type="text" id="" name="" class="inputtext" placeholder="" required>
+                        <span class="lable">รหัสผ่าน</span>
+                        <input type="password" name="" id="" class="inputtext">
+                    </div>
+                    <div class="">
+                        <label for="" class="lable">e-Filling</label>
+                        <span class="lable">ผู้ใช้งาน</span>
+                        <input type="text" id="" name="" class="inputtext" placeholder="" required>
+                        <span class="lable">รหัสผ่าน</span>
+                        <input type="password" name="" id="" class="inputtext">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div> 
+
+    <script type="text/javascript">
+        $(function() {
+            $.ajax({
+                url: '{% url 'taskcontrol:GetProvince' %}',
+                success: function(data) {
+                    var $selectProvince = $('#province');
+                    $selectProvince.empty();
+                    $selectProvince.append('<option value="" selected disabled hidden>เลือกจังหวัด</option>');
+                    $.each(data, function(index, province) {
+                        $selectProvince.append($('<option>', {
+                            value: province.id,
+                            text: province.name_th
+                        }));
+                    });
+                }
+            });
+
+            // Handle province change event
+            $('#province').change(function() {
+                var selectedProvinceId = $(this).val();
+                if (selectedProvinceId) {
+                    // Load districts based on the selected province
+                    $.ajax({
+                        url: '{% url 'taskcontrol:GetDistrict' %}',
+                        data: { province_id: selectedProvinceId },
+                        success: function(data) {
+                            var $selectDistrict = $('#district');
+                            $selectDistrict.empty();
+                            $selectDistrict.append('<option value="" selected disabled hidden>เลือกอำเภอ</option>');
+                            $.each(data, function(index, district) {
+                                $selectDistrict.append($('<option>', {
+                                    value: district.id,
+                                    text: district.name_th
+                                }));
+                            });
+                        }
+                    });
+                } else {
+                    // Clear and disable district and subdistrict select dropdowns
+                    $('#district').empty().prop('disabled', true);
+                    $('#subdistrict').empty().prop('disabled', true);
+                }
+            });
+
+            // Handle district change event
+            $('#district').change(function() {
+                var selectedDistrictId = $(this).val();
+                if (selectedDistrictId) {
+                    // Load subdistricts based on the selected district
+                    $.ajax({
+                        url: '{% url 'taskcontrol:GetSubdistrict' %}',
+                        data: { district_id: selectedDistrictId },
+                        success: function(data) {
+                            var $selectSubdistrict = $('#subdistrict');
+                            $selectSubdistrict.empty();
+                            $selectSubdistrict.append('<option value="" selected disabled hidden>เลือกตำบล</option>');
+                            $.each(data, function(index, subdistrict) {
+                                $selectSubdistrict.append($('<option>', {
+                                    value: subdistrict.id,
+                                    text: subdistrict.name_th + '  ' + subdistrict.zipcode
+                                }));
+                            });
+                        }
+                    });
+                } else {
+                    // Clear and disable subdistrict select dropdown
+                    $('#subdistrict').empty().prop('disabled', true);
+                }
+            });
+        });
+    </script>
+{% endblock content %}

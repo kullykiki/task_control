@@ -1,0 +1,1400 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts/dist/apexcharts.min.css">
+<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css"> -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts/dist/apexcharts.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css">
+
+{% extends 'task/index.html' %}
+{% block content %}
+{% load static %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+    .head-s {
+        font-size: 12px;
+        font-family: "Poppins", sans-serif;
+        font-weight: 500;
+    }
+
+    .head-number {
+        font-size: 34px;
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+    }
+
+    .head-total{
+        font-size: 10px;
+        font-family: "Poppins", sans-serif;
+        font-weight: 500;
+        color: #5c6975;
+    }
+
+    .card-open-job {
+        color: #297ae3;
+        background-color: #dfebfa;
+        border-radius: 8px;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .card-pending-client {
+        color: #dc3545;
+        background-color: #ffcfce;
+        border-radius: 8px;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .card-done {
+        color: #00c894;
+        background-color: #d7f7ee;
+        border-radius: 8px;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .total-open-job {
+        color: #297ae3;
+        background-color: #fff;
+        display: inline;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .total-pending-client {
+        color: #dc3545;
+        background-color: #fff;
+        display: inline;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .total-done {
+        color: #00c894;
+        background-color: #fff;
+        display: inline;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    .card-date {
+        background-color: #FFFFFF;
+        border-radius: 15px;
+        box-shadow: 0px 0px 10px #efefef;
+    }
+
+    .card {
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    .card-body {
+        flex: 1 1 auto;
+        padding: 20px 15px 10px 15px;
+    }
+
+    /* ให้ตัว container ที่ครอบองค์ประกอบทั้งหมดมี display: flex */
+    .container {
+        display: flex;
+        align-items: center;
+    }
+
+    /* ให้ chart-container เป็นส่วนหนึ่งของ container และมี flex-grow: 1 เพื่อให้ยืดตามพื้นที่ที่เหลือ */
+    .chart-container {
+        position: relative;
+        width: 180px;
+        height: 180px;
+    }
+
+    .legend {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+        margin-left: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .legend-item .icon-1 {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        margin-right: 5px;
+    }
+
+    #open_job_count .icon { background-color: #ff6384; }
+    #in_progress_count .icon { background-color: #36a2eb; }
+    #review_count .icon { background-color: #ffce56; }
+    #pending_client_count .icon { background-color: #4bc0c0; }
+    #done_count .icon { background-color: #cb99ff; }
+
+    #centerText {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 14px;
+        font-family: "Bai Jamjuree", sans-serif;
+        font-weight: 600;
+    }
+
+    .count-client {
+        padding: 13px;
+        color: #5d87ff;
+        background: #ffffff;
+    }
+
+    .count-engagement {
+        padding: 13px;
+        color: #ffba0f;
+        background: #ffffff;
+    }
+
+    .count-open-job {
+        padding: 13px;
+        color: #fe5f3b;
+        background: #ffffff;
+    }
+
+    .count-done {
+        padding: 13px;
+        color: #53c536;
+        background: #ffffff;
+    }
+
+    .flex-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .icon.total-client{
+        background-color: #e0ebff;
+        color: #5d87ff;
+    }
+    
+    .engagement-table {
+        display: none;
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+    }
+    .status-wrapper {
+        display: flex;
+        align-items: center;
+    }
+    
+    .status-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+    }
+    
+    .all-status {
+        margin-right: 10px;
+    }
+    
+    .toggle-btn {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        outline: none;
+    }
+    
+    .toggle-btn i {
+        font-size: 14px;
+        color: #333;
+        transition: transform 0.3s ease;
+    }
+    
+    .toggle-btn.active i {
+        transform: rotate(180deg);
+    }
+    
+    .engagement-table {
+        display: table;
+        font-size: 13px;
+    }
+
+    .badge-deadline {
+        font-size: 12px;
+    }
+
+    .badge-period {
+        font-size: 12px;
+    }
+    
+    .status-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 8px;
+        font-size: 12.5px;
+        font-weight: 600;
+    }
+    
+    .status-open {
+        border-radius: 8px;
+        color: #0051a0;
+        background-color: #cbe5ff;
+    }
+    
+    .status-in-progress {
+        border-radius: 8px;
+        color: #5b2891;
+        background-color: #ead6ff;
+    }
+    
+    .status-review {
+        border-radius: 8px;
+        color: #954800;
+        background-color: #fff1c6;
+    }
+    
+    .status-pending-client {
+        border-radius: 8px;
+        color: #a10f0a;
+        background-color: #ffcfce;
+    }
+    
+    .status-done {
+        border-radius: 8px;
+        color: #054627;
+        background-color: #d0f4b2;
+    }
+
+    .due{
+        font-size: 13px;
+        font-weight: 600;
+        color: #5eb643;
+    }
+
+    .overdue{
+        font-size: 13px;
+        font-weight: 600;
+        color: #ff4261;
+    }
+
+    .normal{
+        font-size: 13px;
+        font-weight: 600;
+        color: #263339;
+    }
+    
+    .warning-date{
+        font-size: 13px;
+        font-weight: 600;
+        color: #ffaf11;
+    }
+
+    .card-client {
+        color: #3476ff;
+        background-color: #e5f6ff;
+        padding: 10px;
+        box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+    }
+    .bage-icon-client {
+        border-radius: 40%;
+        padding: 15px;
+        margin-left: 20px;
+        font-size: 20px;
+        color: #2c71ff;
+        background-color: #b7e6ff;
+    }
+
+    .card-engagement {
+        color: #6e31d2;
+        background-color: #f6f3ff;
+        padding: 10px;
+        box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+    }
+    .bage-icon-engagement {
+        border-radius: 40%;
+        padding: 15px;
+        margin-left: 20px;
+        font-size: 20px;
+        color: #6e31d2;
+        background-color: #d9d3ff;
+    }
+
+    .card-open {
+        color: #1f9b47;
+        background-color: #e2f6e9;
+        padding: 10px;
+        box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+    }
+
+    .bage-icon-open {
+        border-radius: 40%;
+        padding: 15px;
+        margin-left: 20px;
+        font-size: 20px;
+        color: #1f9b47;
+        background-color: #c3e8d1;
+    }
+
+    .card-close {
+        color: #fe5f3b;
+        background-color: #fff0e9;
+        padding: 10px;
+        box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+    }
+    .bage-icon-close {
+        border-radius: 40%;
+        padding: 15px;
+        margin-left: 20px;
+        font-size: 20px;
+        color: #fe5f3b;
+        background-color: #fedac9;
+    }
+    
+    .calendar-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .calendar-toolbar>.current-month {
+        font-size: 16px;
+        font-weight: 600;
+    }
+    
+    .calendar-toolbar>[class$="month-btn"] {
+        width: 40px;
+        aspect-ratio: 1;
+        text-align: center;
+        line-height: 40px;
+        font-size: 10px;
+        background: #f6f6f6;
+        border: none;
+        border-radius: 13px;
+    }
+    
+    .current-week-month {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .today-btn {
+        border: 1px solid #ffc2c2;
+        font-size: 0.9rem;
+        border-radius: 15px;
+        padding: 5px 10px;
+        margin-left: 10px;
+    }
+    
+    .calendar-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .calendar-toolbar>.current-month {
+        font-size: 16px;
+        font-weight: 600;
+    }
+    
+    .calendar-toolbar>[class$="month-btn"] {
+        width: 40px;
+        aspect-ratio: 1;
+        text-align: center;
+        line-height: 40px;
+        font-size: 10px;
+        background: #f6f6f6;
+        border: none;
+        border-radius: 13px;
+    }
+
+    .current-week {
+        font-size: 11.5px;
+        font-weight: 500;
+        color: #8f9ba6;
+    }
+
+    .month-select, .year-select {
+        font-size: 13px;
+        font-weight: 500;
+        background: #ffffff;
+        border-radius: 5px;
+        padding: 3px;
+        border: 1px solid #ffc107;
+    }
+
+    .current-week-month {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .today-btn {
+        color: #6f5400;
+        font-weight: 500;
+        background-color: #fbf6e3;
+        border: 2px solid #ffc107;
+        font-size: 13px;
+        border-radius: 8px;
+        padding: 5px 10px;
+        margin-left: 10px;
+    }
+    
+    .calendar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .weekdays, .calendar-days {
+        display: flex;
+        justify-content: space-evenly;
+        width: 100%;
+    }
+    
+    .weekday-name, .calendar-day {
+        width: calc(100% / 7);
+        padding: 3px 0;
+        text-align: center;
+        font-size: 12px;
+        font-weight: 700;
+    }
+    
+    .calendar-day {
+        border: 1px solid #ffffff;
+        margin-top: 5px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12.5px;
+    }
+    
+    .calendar-day.today {
+        background-color: #ffc107;
+        color: #ffffff;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: 0.5s;
+        cursor: pointer;
+    }
+    
+    .calendar-toolbar>[class$="month-btn"]:hover,
+    .month-day:hover,
+    .btn-date:hover {
+        border-radius: 13px;
+        background-color: #ffffff;
+        color: #ffc107;
+        transition: 0.1s;
+        cursor: pointer;
+        box-shadow: inset 0px 0px 0px 1.5px #ffc107;
+    }
+    
+    .calendar-toolbar>[class$="month-btn"]:focus,
+    .month-day:focus,
+    .btn-date:focus {
+        border-radius: 13px;
+        background-color: #ffc107;
+        color: #f8f7fa;
+    }
+    
+    .btn-date {
+        background: #f8f7fa;
+        border: none;
+        border-radius: 15px;
+        padding: 8px 14px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        margin-right: 1px;
+        box-shadow: 0px 0px 0px #efefef;
+    }
+
+    .week-btn {
+        border-radius: 8px;
+        padding: 5px 5px;
+        border: 1px solid #ffc107;
+        background-color: #ffc107;
+        color: #fbf6e3;
+        font-size: 0.7rem;
+        font-weight: 500;
+    }
+
+    .card.task-all {
+        height: 400px;
+        overflow-y: auto;
+    }
+
+    .task-all {
+        max-width: 400px;
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    .status-open, .status-in-progress, .status-review, .status-pend-client, .status-done {
+        font-weight: 500;
+        border-radius: 8px;
+        font-size: 12.5px;
+    }
+
+    .status-open { color: #054627; background-color: #d0f4b2; border-radius: 12px; font-size: 11px; }
+    .status-in-progress { color: #5b2891; background-color: #ead6ff; border-radius: 12px; font-size: 11px; }
+    .status-review { color: #954800; background-color: #fff1c6; border-radius: 12px; font-size: 11px; }
+    .status-pend-client { color: #bb4900; background-color: #ffdfbc; border-radius: 12px; font-size: 11px; }
+    .status-done { color: #a10f0a; background-color: #ffcfce; border-radius: 12px; font-size: 11px; }
+
+    #engagementTable {
+        font-size: 13px;
+    }
+
+    th {
+        font-size: 12.5px;
+    }
+</style>
+
+<!--Test-->
+<!-- Row 1 -->
+<div class="row">
+    <div class="col-9">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Dashboard</h5>
+                <div class="row">
+                    <div class="col-3">
+                        <div class="card card-client">
+                            <div class="row">
+                                <div class="col-4 d-flex align-items-center justify-content-center">
+                                    <span class="badge bage-icon-client">
+                                        <i class="fi fi-sr-users-alt"></i>
+                                    </span>
+                                </div>
+                                <div class="col-8 text-end">
+                                    <span class="head-s">Clients</span><br>
+                                    <span class="head-number">{{ total_clients }}</span><br>
+                                    <span class="head-total">Total Clients</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="card card-open">
+                            <div class="row">
+                                <div class="col-4 d-flex align-items-center justify-content-center">
+                                    <span class="badge bage-icon-open">
+                                        <i class="fi fi-ss-badget-check-alt"></i>
+                                    </span>
+                                </div>
+                                <div class="col-8 text-end">
+                                    <span class="head-s">Open</span><br>
+                                    <span class="head-number">{{ open_job_engagement }}</span><br>
+                                    <span class="head-total">Total Open Jobs</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="card card-engagement">
+                            <div class="row">
+                                <div class="col-4 d-flex align-items-center justify-content-center">
+                                    <span class="badge bage-icon-engagement">
+                                        <i class="fi fi-sr-box"></i>
+                                    </span>
+                                </div>
+                                <div class="col-8 text-end">
+                                    <span class="head-s">Engagements</span><br>
+                                    <span class="head-number">{{ total_engagements }}</span><br>
+                                    <span class="head-total">Total Engagements</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="card card-close">
+                            <div class="row">
+                                <div class="col-4 d-flex align-items-center justify-content-center">
+                                    <span class="badge bage-icon-close">
+                                        <i class="fi fi-ss-badget-check-alt"></i>
+                                    </span>
+                                </div>
+                                <div class="col-8 text-end">
+                                    <span class="head-s">Completed</span><br>
+                                    <span class="head-number">{{ done_job_engagement }}</span><br>
+                                    <span class="head-total">Total Completed</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Week -->
+    <div class="col-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="calendar-toolbar">
+                    <button class="prev week-btn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="current-week-month">
+                        <div class="current-week"></div>
+                        <div class="row">
+                            <div class="col-6">
+                                <select class="month-select">
+                                    <option value="0">มกราคม</option>
+                                    <option value="1">กุมภาพันธ์</option>
+                                    <option value="2">มีนาคม</option>
+                                    <option value="3">เมษายน</option>
+                                    <option value="4">พฤษภาคม</option>
+                                    <option value="5">มิถุนายน</option>
+                                    <option value="6">กรกฎาคม</option>
+                                    <option value="7">สิงหาคม</option>
+                                    <option value="8">กันยายน</option>
+                                    <option value="9">ตุลาคม</option>
+                                    <option value="10">พฤศจิกายน</option>
+                                    <option value="11">ธันวาคม</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <select class="year-select"></select>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <button class="next week-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div class="calendar">
+                    <div class="weekdays">
+                        <div class="weekday-name" style="color: tomato;">อา</div>
+                        <div class="weekday-name">จ</div>
+                        <div class="weekday-name">อ</div>
+                        <div class="weekday-name">พ</div>
+                        <div class="weekday-name">พฤ</div>
+                        <div class="weekday-name">ศ</div>
+                        <div class="weekday-name" style="color: tomato;">ส</div>
+                    </div>
+                    <div class="calendar-days"></div>
+                </div>
+                <div class="text-end">
+                    <button class="today-btn"><i class="fi fi-br-calendar-day"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Row 2 -->
+<!-- Chart.js -->
+<div class="row">
+    <div class="col-3">
+        <div class="card flex-fill w-100 draggable">
+            <div class="card-body d-flex">
+                <div class="align-self-center w-100">
+                    <h6>สถานะงาน Engagements</h6>
+                    <div>
+                        <div id="chart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-6">
+                <div class="card flex-fill w-100 draggable">
+                    <div class="card-body d-flex">
+                        <div class="align-self-center w-100">
+                            <h6>บัญชี</h6>
+                            <div>
+                                <div class="py-1">
+                                    <div id="accountingChart" style="width: 100%; height: 130px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-6">
+                <div class="card flex-fill w-100 draggable">
+                    <div class="card-body d-flex">
+                        <div class="align-self-center w-100">
+                            <h6>ภาษี</h6>
+                            <div>
+                                <div class="py-1">
+                                    <div id="taxChart" style="width: 100%; height: 130px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="card flex-fill w-100 draggable">
+                    <div class="card-body d-flex">
+                        <div class="align-self-center w-100">
+                            <h6>เงินเดือน</h6>
+                            <div>
+                                <div class="py-1">
+                                    <div id="payrollChart" style="width: 100%; height: 130px"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card flex-fill w-100 draggable">
+                    <div class="card-body d-flex">
+                        <div class="align-self-center w-100">
+                            <h6>รายงาน</h6>
+                            <div>
+                                <div class="py-1">
+                                    <div id="reportChart" style="width: 100%; height: 130px"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- #TODO Task -->
+    <div class="col-3">
+        <div class="card task-all">
+            <div class="card-body">
+                <h6>Month Task <span class="badge bg-primary">{{ tasks.count }}</span></h6>
+                <ul class="list-group">
+                    {% for task in tasks %}
+                    <li class="list-group-item d-flex">
+                        <div class="row">
+                            <div class="col-5">
+                                <span class="me-1">
+                                    {% if task.status == "OPEN_JOB" %}
+                                    <span><i class="fi fi-sr-square-small" style="color: #5b93ff;"></i></span>
+                                    {% elif task.status == "IN_PROGRESS" %}
+                                    <span><i class="fi fi-sr-square-small" style="color: #977dfb;"></i></span>
+                                    {% elif task.status == "REVIEW" %}
+                                    <span><i class="fi fi-sr-square-small" style="color: #fed76a;"></i></span>
+                                    {% elif task.status == "PENDING_CLIENT" %}
+                                    <span><i class="fi fi-sr-square-small" style="color: #ff8f6b;"></i></span>
+                                    {% else %}
+                                    <span><i class="fi fi-sr-square-small" style="color: #a1dc67;"></i></span>
+                                    {% endif %}
+                                </span>
+                                <span class="fw-bold" style="font-size: 12px;">{{ task.number }}</span><br>
+                                <span class="badge bg-light" style="font-size: 9px; font-weight: 600; color: tomato;">{{ task.due_date|date:"d/m/Y" }}</span>
+                            </div>
+                            <div class="col-7 text-start">
+                                <span style="font-size: 12px;">{{ task.client.company_name }}</span>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Row 3-->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div>
+                    <div class="row mb-2">
+                        <div class="col-4">
+                            <label for="client_id" class="form-label">ชื่อบริษัทลูกค้า :</label>
+                            <select id="client_id" class="form-select">
+                                <option value="">- เลือก -</option>
+                                {% for client in clients %}
+                                    <option value="{{ client.id }}">{{ client.company_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label for="category_id" class="form-label">หมวดหมู่ :</label>
+                            <select id="category_id" class="form-select">
+                                <option value="">- เลือก -</option>
+                                {% for engagement_category in engagement_categories %}
+                                    <option value="{{ engagement_category.id }}">{{ engagement_category.name_th }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label for="engagement_type_id" class="form-label">ประเภทงาน :</label>
+                            <select id="engagement_type_id" class="form-select">
+                                <option value="">- เลือก -</option>
+                                <!-- Options will be dynamically populated based on selected category -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-1">
+                            <label for="per_month" class="form-label">รอบบัญชี : </label>
+                        </div>
+                        <div class="col-3">
+                            <label for="start_date_period" class="form-label">จากวันที่ :</label>
+                            <input type="date" id="start_date_period" class="form-control">
+                        </div>
+                        <div class="col-3">
+                            <label for="end_date_period" class="form-label">ถึงวันที่ :</label>
+                            <input type="date" id="end_date_period" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-1"></div>
+                        <div class="col-2">
+                            <input type="checkbox" id="per_month" class="form-check-input">
+                            <label for="per_month" class="form-label">เฉพาะเดือนปัจจุบัน </label>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-1"></div>
+                        <div class="col-3">
+                            <input type="checkbox" id="near_deadline_7" class="form-check-input" data-days="7">
+                            <label for="deadline_days" class="form-label">ใกล้กำหนดเดดไลน์</label>
+                            <input type="number" id="deadline_days" hidden>
+                        </div>
+                    </div>
+                    <div class="text-end mb-4">
+                        <button id="clearFilter" class="btn btn-light"><i class="fi fi-ss-clear-alt"></i></button>
+                        <button id="filter" class="btn btn-primary">ค้นหา</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive mb-5">
+                    <table id="engagementTable" class="table display table-bordered" width="100%">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-start" style="width: 8%;">#</th>
+                                <th class="text-center" style="width: 23%;">ลูกค้า</th>
+                                <th class="text-center" style="width: 13%;">งาน</th>
+                                <th class="text-center" style="width: 20%;">รอบบัญชีวันที่</th>
+                                <th class="text-center" style="width: 11%;">ผู้รับผิดชอบ</th>
+                                <th class="text-center" style="width: 10%;">เดดไลน์</th>
+                                <th class="text-center" style="width: 7%;"><i class="fi fi-br-calendar-clock" style="color: tomato;"></i></th>
+                                <th class="text-center" style="width: 8%;">สถานะ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be loaded here via AJAX -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+
+<!--#TODO Filter Dashboard Table -->
+<script>
+    $(document).ready(function() {
+        var table;
+        // Function to load data into the table
+        function loadData() {
+            var data = {
+                client_id: $('#client_id').val().trim(),
+                start_date_period: $('#start_date_period').val().trim(),
+                end_date_period: $('#end_date_period').val().trim(),
+                category_id: $('#category_id').val().trim(),
+                deadline_days: $('#deadline_days').val().trim(),
+                per_month: $('#per_month').is(':checked'),
+                engagement_type_id: $('#engagement_type_id').val().trim(),
+                near_deadline_3: $('#near_deadline_3').is(':checked'),
+                near_deadline_5: $('#near_deadline_5').is(':checked'),
+                near_deadline_7: $('#near_deadline_7').is(':checked'),
+                near_deadline_14: $('#near_deadline_14').is(':checked')
+            };
+    
+            $.ajax({
+                url: '{% url "taskcontrol:get_engagement_detail_dashboard" %}',
+                method: 'GET',
+                data: data,
+                success: function(response) {
+                    if (table) {
+                        table.clear().destroy();
+                    }
+    
+                    table = $('#engagementTable').DataTable({
+                        data: response.engagement_details,
+                        columns: [
+                            { data: 'job_code' },
+                            { data: 'client' },
+                            { data: 'type' },
+                            {
+                                data: null,
+                                render: function (data, type, row) {
+                                    return row.start_date_period + ' - ' + row.end_date_period;
+                                },
+                                className: 'text-center'
+                            },
+                            { 
+                                data: 'administrator',
+                                className: 'text-center'
+                            },
+                            { 
+                                data: 'deadline',
+                                className: 'text-center'
+                            },
+                            {
+                                data: 'remaining_days',
+                                render: function (data, type, row) {
+                                    return data + ' วัน';
+                                },
+                                className: 'text-end'
+                            },
+                            {
+                                data: 'status',
+                                render: function (data, type, row) {
+                                    let badgeClass, badgeText;
+                                    switch (data) {
+                                        case "OPEN_JOB":
+                                            badgeClass = "status-open";
+                                            badgeText = "เปิดงาน";
+                                            break;
+                                        case "IN_PROGRESS":
+                                            badgeClass = "status-in-progress";
+                                            badgeText = "กำลังดำเนินงาน";
+                                            break;
+                                        case "REVIEW":
+                                            badgeClass = "status-review";
+                                            badgeText = "รอตรวจทาน";
+                                            break;
+                                        case "PENDING_CLIENT":
+                                            badgeClass = "status-pend-client";
+                                            badgeText = "รอลูกค้า";
+                                            break;
+                                        default:
+                                            badgeClass = "status-done";
+                                            badgeText = "ปิดงาน";
+                                    }
+                                    return '<span class="badge ' + badgeClass + '">' + badgeText + '</span>';
+                                },
+                                className: 'text-start'
+                            }
+                        ],
+                        language: {
+                            "search": "ค้นหา",
+                            "lengthMenu": "แสดง _MENU_ รายการ",
+                            "info": "แสดง _START_ ถึง _END_ จากทั้งหมด _TOTAL_ รายการ",
+                            "paginate": {
+                                "previous": "ก่อนหน้า",
+                                "next": "ถัดไป"
+                            }
+                        },
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading data:', error);
+                }
+            });
+        }
+    
+        // Load initial data on page load
+        loadData();
+    
+        // Filter button click event
+        $('#filter').on('click', function() {
+            loadData();
+        });
+    
+        // Clear filter button click event
+        $('#clearFilter').on('click', function() {
+            // Clear all input fields
+            $('#client_id').val('');
+            $('#start_date_period').val('');
+            $('#end_date_period').val('');
+            $('#category_id').val('');
+            $('#deadline_days').val('');
+            $('#per_month').prop('checked', false);
+            $('#engagement_type_id').val('');
+            $('#near_deadline_3').prop('checked', false);
+            $('#near_deadline_5').prop('checked', false);
+            $('#near_deadline_7').prop('checked', false);
+            $('#near_deadline_14').prop('checked', false);
+    
+            // Reload data with cleared filters
+            loadData();
+        });
+    });
+</script>
+
+<!--#TODO Filter Dashboard Table Category and Type-->
+<script>
+    $(document).ready(function() {
+        // Function to fetch engagement types based on selected category
+        $('#category_id').change(function() {
+            var category_id = $(this).val();
+            if (category_id) {
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'taskcontrol:get_engagement_type' %}",
+                    data: {
+                        'category_id': category_id,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        // Clear previous options
+                        $('#engagement_type_id').empty();
+                        $('#engagement_type_id').append($('<option>', {
+                            value: '',
+                            text: '- เลือก -'
+                        }));
+                        // Populate options with fetched data
+                        $.each(data, function(index, item) {
+                            $('#engagement_type_id').append($('<option>', {
+                                value: item.id,
+                                text: item.name_th
+                            }));
+                        });
+                        // Enable engagement_type_id select
+                        $('#engagement_type_id').prop('disabled', false);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            } else {
+                // If no category is selected, clear engagement type options and disable
+                $('#engagement_type_id').empty();
+                $('#engagement_type_id').append($('<option>', {
+                    value: '',
+                    text: '- เลือก -'
+                }));
+                $('#engagement_type_id').prop('disabled', true);
+            }
+        });
+    });
+</script>
+
+<!--#TODO ChartEngagement-->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function fetchDataAndCreateChart(url, chartId) {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                    console.log('Data fetched successfully:', data);
+                    createDonutChart(chartId, data.labels, data.series, data.percentages);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error while fetching data for ' + chartId + ':', error);
+                }
+            });
+        }
+
+        function createDonutChart(chartId, labels, series, percentages) {
+            var statusNames = {
+                'OPEN_JOB': 'เปิดงาน',
+                'IN_PROGRESS': 'กำลังดำเนินงาน',
+                'REVIEW': 'รอตรวจทาน',
+                'PENDING_CLIENT': 'รอลูกค้า',
+                'DONE': 'เรียบร้อย'
+            };
+
+            var options = {
+                chart: {
+                    type: 'donut',
+                    height: 380
+                },
+                series: series,
+                labels: labels.map(label => statusNames[label]),
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '70%',
+                            labels: {
+                                show: true,
+                                name: {
+                                    fontSize: '16px',
+                                    fontFamily: 'Bai Jamjuree, sans-serif',
+                                },
+                                value: {
+                                    fontSize: '14px',
+                                    fontFamily: 'Bai Jamjuree, sans-serif',
+                                },
+                                total: {
+                                    show: true,
+                                    label: 'ทั้งหมด',
+                                    fontFamily: 'Bai Jamjuree, sans-serif',
+                                    fontWeight: '600',
+                                    formatter: function (w) {
+                                        return w.globals.seriesTotals.reduce((a, b) => a + b, 0) + " รายการ";
+                                    }
+                                }
+                            }
+                        },
+                    }
+                },
+                dataLabels: {
+                    enabled: false,
+                },
+                colors: ['#5B93FF', '#977dfb', '#FF8F6B', '#FFD66B', '#A1DC67', '#333'],
+                legend: {
+                    show: true,
+                    position: 'bottom',
+                    horizontalAlign: 'left',
+                    fontSize: '13px',
+                    fontFamily: 'Bai Jamjuree, sans-serif',
+                    formatter: function(seriesName, opts) {
+                        const seriesIndex = opts.seriesIndex;
+                        const value = opts.w.globals.series[seriesIndex];
+                        const percentage = percentages[seriesIndex].toFixed(2);
+                        const totalCount = opts.w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                        return seriesName + " : " + value + " รายการ (" + percentage + "%)";
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return val + " รายการ";
+                        }
+                    }
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#" + chartId), options);
+            chart.render();
+        }
+
+        // Replace the URL with the correct endpoint
+        var url = '{% url "taskcontrol:get_engagement_detail_status" %}';
+        var chartId = 'chart';
+        fetchDataAndCreateChart(url, chartId);
+    });
+</script>
+
+<!--#TODO ChartEngagementType in Engagement Detail-->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        function fetchDataAndCreateChart(url, chartId) {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                    createDonutChart(chartId, data.series);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error while fetching data for ' + chartId + ':', error);
+                }
+            });
+        }
+
+        // URLs for fetching data
+        const urls = {
+            accounting: '{% url "taskcontrol:get_accounting" %}',
+            tax: '{% url "taskcontrol:get_tax" %}',
+            payroll: '{% url "taskcontrol:get_payroll" %}',
+            report: '{% url "taskcontrol:get_report" %}'
+        };
+
+        // Fetch and create charts for each URL
+        Object.keys(urls).forEach(function (key) {
+            fetchDataAndCreateChart(urls[key], key + 'Chart');
+        });
+
+        function createDonutChart(chartId, seriesData) {
+            var statusNames = {
+                'OPEN_JOB': 'เปิดงาน',
+                'IN_PROGRESS': 'กำลังดำเนินงาน',
+                'REVIEW': 'รอตรวจทาน',
+                'PENDING_CLIENT': 'รอลูกค้า',
+                'DONE': 'เรียบร้อย'
+            };
+            
+            var options = {
+                chart: {
+                    type: 'donut',
+                    height: 155,
+                },
+                labels: seriesData.map(series => statusNames[series.name]), // Use statusNames for labels
+                series: seriesData.map(series => series.data.reduce((a, b) => a + b, 0)),
+                colors: getColors(seriesData.length),
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '80%',
+                            labels: {
+                                show: true,
+                                name: {
+                                    fontSize: '12px',
+                                    fontFamily: 'Bai Jamjuree, sans-serif'
+                                },
+                                value: {
+                                    fontSize: '12px',
+                                    fontFamily: 'Bai Jamjuree, sans-serif'
+                                },
+                                total: {
+                                    show: true,
+                                    label: 'ทั้งหมด',
+                                    fontSize: '13px',
+                                    fontFamily: 'Bai Jamjuree, sans-serif',
+                                    fontWeight: '600',
+                                    formatter: function (w) {
+                                        return w.globals.seriesTotals.reduce((a, b) => a + b, 0) + " รายการ";
+                                    }
+                                }
+                            }
+                        },
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                legend: {
+                    show: false // Hide the legend
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return val + " รายการ";
+                        }
+                    }
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#" + chartId), options);
+            chart.render();
+        }
+
+        function getColors(count) {
+            var colors = [
+                "#5B93FF", // Open Jobs
+                "#977dfb", // In Progress
+                "#FF8F6B", // Under Review
+                "#FFD66B", // Pending Client
+                "#A1DC67"  // Done
+            ];
+            return colors.slice(0, count);
+        }
+    });
+</script>
+
+<!--#TODO Week-->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentWeekElement = document.querySelector('.current-week');
+        const monthSelect = document.querySelector('.month-select');
+        const yearSelect = document.querySelector('.year-select');
+        const prevWeekBtn = document.querySelector('.prev.week-btn');
+        const nextWeekBtn = document.querySelector('.next.week-btn');
+        const todayBtn = document.querySelector('.today-btn');
+        const calendarDays = document.querySelector('.calendar-days');
+
+        let currentDate = new Date();
+
+        // Populate year select
+        const currentYear = currentDate.getFullYear();
+        for (let i = currentYear - 5; i <= currentYear + 5; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            yearSelect.appendChild(option);
+        }
+        yearSelect.value = currentYear;
+        monthSelect.value = currentDate.getMonth();
+
+        // Function to get start of the week
+        function getStartOfWeek(date) {
+            const day = date.getDay();
+            const diff = date.getDate() - day + (day === 0 ? -6 : 0);
+            return new Date(date.setDate(diff));
+        }
+
+        // Function to get end of the week
+        function getEndOfWeek(date) {
+            const start = getStartOfWeek(new Date(date));
+            return new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6);
+        }
+
+        // Function to render the week view
+        function renderWeek() {
+            calendarDays.innerHTML = '';
+            let start = getStartOfWeek(new Date(currentDate));
+            let end = getEndOfWeek(new Date(currentDate));
+
+            // Display the correct week range
+            const startFormatted = `${start.toLocaleDateString('en-US', { weekday: 'short' })}`;
+            const endFormatted = `${end.toLocaleDateString('en-US', { weekday: 'short' })}`;
+            currentWeekElement.textContent = `${startFormatted} - ${endFormatted}`;
+
+            const today = new Date();
+            for (let i = 0; i < 7; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.classList.add('calendar-day');
+                dayElement.textContent = start.getDate();
+
+                // Highlight today
+                if (start.toDateString() === today.toDateString()) {
+                    dayElement.classList.add('today');
+                }
+
+                calendarDays.appendChild(dayElement);
+                start.setDate(start.getDate() + 1);
+            }
+        }
+
+        // Event listeners for navigation buttons and selectors
+        prevWeekBtn.addEventListener('click', function() {
+            currentDate.setDate(currentDate.getDate() - 7);
+            renderWeek();
+        });
+
+        nextWeekBtn.addEventListener('click', function() {
+            currentDate.setDate(currentDate.getDate() + 7);
+            renderWeek();
+        });
+
+        todayBtn.addEventListener('click', function() {
+            currentDate = new Date();
+            monthSelect.value = currentDate.getMonth();
+            yearSelect.value = currentDate.getFullYear();
+            renderWeek();
+        });
+
+        monthSelect.addEventListener('change', function() {
+            currentDate.setMonth(monthSelect.value);
+            renderWeek();
+        });
+
+        yearSelect.addEventListener('change', function() {
+            currentDate.setFullYear(yearSelect.value);
+            renderWeek();
+        });
+
+        // Initial render of the week
+        renderWeek();
+    });
+</script>
+
+{% endblock content %}

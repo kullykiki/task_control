@@ -1,0 +1,418 @@
+{% extends 'task/index.html' %}
+{% block content %}
+<style>
+    .kanban-filter {
+        display: inline-flex;
+        gap: 10px;
+        padding: 5px;
+        overflow-x: auto; /* Enable horizontal scrolling */
+        flex-wrap: nowrap;
+        align-items: stretch;
+        width: 100%; /* Full width initially */
+    }
+
+    /* สไตล์เพิ่มเติมสำหรับการ์ด */
+    .task-filter {
+        border: 1px solid #ebf3fe;
+        padding: 10px;
+        background-color: #ecf2ff;
+        border-radius: 0.75rem;
+        min-height: 200px;
+        margin-top: 10px;
+        overflow-x: auto;
+    }
+    
+    .task-header-all {
+        color: #393E46;
+        padding: 10px;
+        margin: 0;
+        background-color: #ecf2ff;
+    }
+
+    .task-card-filter {
+        width: 23.5%;
+        height: 205px;
+        background-color: #ffffff;
+        border: 1px solid #5d87ff;
+        border-radius: 0.75rem;
+        padding: 10px;
+        margin-bottom: 10px;
+        margin-left: 13.5px;
+    }
+
+    .task-card-filter a {
+        text-decoration: none;
+        margin-right: 10px;
+        color: #7d7d7d;
+    }
+
+    .task-card-filter small {
+        font-size: 11px;
+        color: #393E46;
+    }
+
+    .task-card-filter:hover {
+        box-shadow: rgba(255, 255, 255, 0.2) 0px 0px 0px 2px inset, rgba(93, 135, 255, 0.9) 0px 0px 0px 2px;
+    }
+
+    .title {
+        font-size: 13.5px;
+        color: #31363E;
+    }
+
+    .sub-title {
+        font-size: 13px;
+        color: #31363E;
+    }
+
+    .detail {
+        font-size: 12px;
+        color: #31363E;
+    }
+
+    .deadline {
+        font-size: 10px;
+        font-weight: 600;
+        color: #f70009;
+        margin-top: 0px;
+    }
+    
+    .date {
+        font-size: 9px;
+        color: #31363E;
+        margin-top: 0px;
+    }
+
+    .status-open, .status-in-progress, .status-review, .status-pend-client, .status-done {
+        font-weight: 500;
+        border-radius: 8px;
+        font-size: 12px;
+    }
+
+    .status-open { color: #054627; background-color: #d0f4b2; border-radius: 12px; font-size: 10px; }
+    .status-in-progress { color: #5b2891; background-color: #ead6ff; border-radius: 12px; font-size: 10px; }
+    .status-review { color: #954800; background-color: #fff1c6; border-radius: 12px; font-size: 10px; }
+    .status-pend-client { color: #bb4900; background-color: #ffdfbc; border-radius: 12px; font-size: 10px; }
+    .status-done { color: #a10f0a; background-color: #ffcfce; border-radius: 12px; font-size: 10px; }
+
+    .all-task {
+        color: #fff;
+        background-color: #5d87ff;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .checkbox-deadline {
+        margin-right: 0.5rem;
+        width: 1em;
+        height: 1em;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 0.25em;
+    }
+    
+    .checkbox-deadline:checked {
+        background-color: #f70009;
+        border-color: #f70009;
+    }
+
+
+</style>
+
+
+<div class="row">
+    <div class="card">
+        <div class="card-body">
+            <div class="text-end">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <a href="{% url 'taskcontrol:kanban_board' %}" class="btn btn-outline-primary" id=""><i class="fa-solid fa-border-all"></i> Board</a>
+                    <a href="{% url 'taskcontrol:kanban_board_filter' %}" class="btn btn-primary " id=""><i class="fa-solid fa-arrow-down-wide-short"></i> Filter</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-7 text-start"><span class="badge bg-light text-dark mb-2">วันที่ {{ today|date:'d/m/Y' }}</span></div>
+                <div class="col-3"><button class="btn btn-light btn-sm filter-button clear-button"> <i class="fi fi-rr-clear-alt"></i> ล้างตัวกรอง</button></div>
+            </div>
+            
+            <!-- Filter container with buttons -->
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="filter-container">
+                        <div class="mb-1">
+                            <select id="engagement-category-filter" class="form-select">
+                                <option value="*">งานทั้งหมด</option>
+                                {% for category in engagement_category %}
+                                    <option value=".engagement-category-{{ category.id }}">{{ category.name_th }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-check " id="deadline-filter">
+                            <input class="form-check-input checkbox-deadline me-2" type="checkbox" id="near-deadline-checkbox" value=".near-deadline">
+                            <label class="form-label" for="near-deadline-checkbox">เดดไลน์ (7 วัน)</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="filter-container">
+                        <select id="admin-filter" class="form-select">
+                            <option value="*">ผู้รับผิดชอบทั้งหมด</option>
+                            {% for admin in administrators %}
+                                <option value=".admin-{{ admin.id }}">{{ admin.first_name }} {{ admin.last_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-outline-dark filter-button filter-period" data-filter=".period">รอบบัญชี</button>
+                </div>
+            </div>
+
+            <!-- Kanban Filter -->
+            <div class="task-filter">
+                <h5 class="task-header-all fw-semibold"> ทั้งหมด <span class="badge all-task">{{ total_count }}</span></h5>
+                <div id="kanbanContainer" class="kanban-filter isotope-grid">
+                    {% for detail in engagement_details %}
+                    <div class="task-card-filter filter-period {% if detail.near_deadline %}near-deadline{% endif %} admin-{{ detail.engagement.administrator.id }} engagement-category-{{ detail.engagement_category.id }}">
+                        <div class="content">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="title fw-semibold">{{ detail.engagement.client.company_name }}</div>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <i class="fi fi-br-edit" style="color:#ffc107;" onclick="openUpdateNotesModal('{{ detail.id }}', '{{ detail.engagement.job_code }}', '{{ detail.engagement.notes }}')"></i>
+                                    <i class="fi fi-br-up-right-from-square" style="color:#0085FF; cursor: pointer;" onclick="openEngagementModal('{{ detail.engagement.job_code }}')"></i>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="detail fw-semibold">{{ detail.engagement.job_code }}
+                                        <span>{% if detail.status == "OPEN_JOB" %}
+                                        <span class="badge status-open">เปิดงาน</span>
+                                        {% elif detail.status == "IN_PROGRESS" %}
+                                        <span class="badge status-in-progress">กำลังดำเนินงาน</span>
+                                        {% elif detail.status == "REVIEW" %}
+                                        <span class="badge status-review">รอตรวจทาน</span>
+                                        {% elif detail.status == "PENDING_CLIENT" %}
+                                        <span class="badge status-pend-client">รอลูกค้า</span>
+                                        {% else %}
+                                        <span class="badge status-done">ปิดงาน</span>
+                                        {% endif %}</span>
+                                    </div> 
+                                </div>
+                            </div>
+                            <div class="date text-end"><i class="fi fi-br-calendar-day"></i> {{ detail.engagement.create_at|date:'d/m/Y' }}</div>
+                            <div class="detail"><i class="fi fi-ss-thumbtack" style="color: #f42a2a;"></i> : {{ detail.engagement_category.name_th }} <i class="fa-solid fa-angle-right"></i> {{ detail.engagement_type.name_th }}</div>
+                            <div class="detail">
+                                {% if detail.engagement.administrator %}
+                                <i class="fi fi-rr-user"></i> :
+                                {{ detail.engagement.administrator.first_name }}
+                                {{ detail.engagement.administrator.last_name }}
+                                {% else %}
+                                <i class="fi fi-rr-user"></i> :
+                                {% endif %}
+                            </div>
+                            <div class="detail">
+                                {% if detail.engagement.reviewer %}
+                                <i class="fi fi-rr-member-search"></i> :
+                                {{ detail.engagement.reviewer.first_name }}
+                                {{ detail.engagement.reviewer.last_name }}
+                                {% else %}
+                                <i class="fi fi-rr-member-search"></i> :
+                                {% endif %}
+                            </div>
+                            <div class="detail">
+                                {% if detail.engagement.approver %}
+                                <i class="fi fi-rr-user-trust"></i> :
+                                {{ detail.engagement.approver.first_name }}
+                                {{ detail.engagement.approver.last_name }}
+                                {% else %}
+                                <i class="fi fi-rr-user-trust"></i> : -
+                                {% endif %}
+                            </div>
+                            <div class="detail">
+                                <i class="fi fi-rr-calendar-clock"></i> :
+                                {% if detail.days_remaining >= 0 %}
+                                <span class="fw-semibold">{{ detail.days_remaining }} วัน</span>
+                                {% else %}
+                                <span class="fw-semibold" style="color: #f70009;">{{ detail.days_remaining }} วัน</span> 
+                                {% endif %}
+                            </div>
+                            <div class="detail start_date_period">รอบบัญชีเดือน : {{ detail.engagement.start_date_period|date:'m' }}</div>
+                        </div>
+                        <div class="deadline text-end">
+                            <i class="fi fi-br-clock-three"></i> {{ detail.deadline|date:'d/m/Y' }} 
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Notes Modal -->
+<div class="modal fade" id="updateNotesModal" tabindex="-1" aria-labelledby="updateNotesModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateNotesModalLabel">หมายเหตุ (เพิ่มเติม)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <textarea id="notesInput" class="form-control" rows="5"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                <button type="button" class="btn btn-primary" onclick="saveNotes()">บันทึก</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Engagement Details Modal -->
+<div class="modal fade" id="engagementModal" tabindex="-1" aria-labelledby="engagementModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="engagementModalLabel">รายละเอียดงาน Engagement {{ engagement_details.engagement.job_code }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="engagementModalContent">
+                <!-- ข้อมูล Engagement จะถูกแสดงที่นี่ -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js"></script>
+
+<script>
+    // สร้างฟังก์ชัน JavaScript ที่รับ URL เป็นอาร์กิวเมนต์
+    function getEngagementDetailsUrl() {
+        return '{% url "taskcontrol:get_engagement_details" %}';
+    }
+
+    function openEngagementModal(jobCode) {
+        var engagementDetailsUrl = document.getElementById('engagementModal').getAttribute('data-engagement-details-url');
+        $.ajax({
+            url: getEngagementDetailsUrl(),  // เรียกใช้ฟังก์ชันเพื่อรับ URL
+            method: 'GET',
+            data: { job_code: jobCode },
+            success: function(response) {
+                $('#engagementModalLabel').html('รายละเอียด Engagement #' + jobCode);
+                $('#engagementModalContent').html(response.modal_content);
+                $('#engagementModal').modal('show');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching engagement details:', error);
+                // แสดงข้อความแจ้งเตือนหรือประกาศข้อผิดพลาดเมื่อเกิดข้อผิดพลาด
+            }
+        });
+    }
+
+</script>
+
+<script>
+    $(document).ready(function(){
+        var $grid = $('.isotope-grid').isotope({
+            itemSelector: '.task-card-filter',
+            layoutMode: 'fitRows'
+        });
+
+        function combineFilters() {
+            var filters = [];
+        
+            if ($('#near-deadline-checkbox').is(':checked')) {
+                filters.push('.near-deadline');
+            }
+        
+            var adminFilter = $('#admin-filter').val();
+            if (adminFilter && adminFilter !== '*') {
+                filters.push(adminFilter);
+            }
+        
+            var engagementCategoryFilter = $('#engagement-category-filter').val();
+            if (engagementCategoryFilter && engagementCategoryFilter !== '*') {
+                filters.push(engagementCategoryFilter);
+            }
+        
+            return filters.join('');
+        }
+
+        $('#deadline-filter input[type="checkbox"]').on('change', function() {
+            var filterValue = combineFilters();
+            $grid.isotope({ filter: filterValue });
+        });
+
+        $('#admin-filter').on('change', function() {
+            var filterValue = combineFilters();
+            $grid.isotope({ filter: filterValue });
+        });
+
+        $('#engagement-category-filter').on('change', function() {
+            var filterValue = $(this).val();
+            $grid.isotope({ filter: filterValue });
+        });
+        
+
+        $('.filter-period').on('click', function () {
+            var selectedPeriod = $(this).data('filter');
+            if (selectedPeriod) {
+                $grid.isotope({
+                    filter: function () {
+                        var startMonth = $(this).find('.start_date_period').text().replace('รอบบัญชีเดือน : ', '').trim();
+                        var currentMonth = '{{ today|date:"m" }}';
+                        return startMonth === currentMonth;
+                    }
+                });
+            } else {
+                console.log('Please select a period filter.');
+            }
+        });
+
+        $('.clear-button').on('click', function () {
+            $('#near-deadline-checkbox').prop('checked', false);
+            $('#admin-filter').val('*');
+            $('#engagement-category-filter').val('*');
+
+            $grid.isotope({ filter: '*' });
+        });
+    });
+</script>
+
+<script>
+    function openUpdateNotesModal(id, jobCode, notes) {
+        // Set the content of the modal
+        document.getElementById('notesInput').value = notes;
+        // Show the modal
+        var myModal = new bootstrap.Modal(document.getElementById('updateNotesModal'));
+        myModal.show();
+    }
+
+    function saveNotes() {
+        // Logic to save notes (you might send an AJAX request here)
+        var updatedNotes = document.getElementById('notesInput').value;
+        // Implement save functionality here
+        console.log("Notes saved:", updatedNotes);
+        // Hide the modal after saving
+        var myModal = bootstrap.Modal.getInstance(document.getElementById('updateNotesModal'));
+        myModal.hide();
+    }
+
+    function openEngagementModal(jobCode) {
+        // Fetch engagement details based on jobCode (example code, replace with actual logic)
+        var engagementDetails = `Details for job code ${jobCode}`;
+        document.getElementById('engagementDetails').innerText = engagementDetails;
+        // Show the modal
+        var myModal = new bootstrap.Modal(document.getElementById('engagementModal'));
+        myModal.show();
+    }
+</script>
+
+
+{% endblock content %}

@@ -1,0 +1,90 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'src/demo.css' %}">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="card shadow border-0 mb-7">
+        <div class="card-header">
+            <h5 class="mb-0">รายการ</h5>
+        </div>
+        <div style="text-align: right;">
+            <a href="{% url 'taskcontrol:create_egagement' %}" class="btn btn-sm btn-success">เพิ่มรายการ <i class="bi bi-plus-circle-fill"></i></a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover table-nowrap">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">เลขที่</th>
+                        <th scope="col">รหัสลูกค้า</th>
+                        <th scope="col">ชื่อบริษัท</th>
+                        <th scope="col">เลขที่นิติ</th>
+                        <th scope="col">สถานะ</th>
+                        <th scope="col">บัญชี</th>
+                        <th scope="col">เงินเดือน</th>
+                        <th scope="col">ภาษี</th>
+                        <th scope="col">รายงาน</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                    {% for d in doc_details %}
+                        <tr>
+                            <td>{{ d.document_type__egagement__job_code }}</td>
+                            <td>{{ d.document_type__client__code }}</td>
+                            <td>{{ d.document_type__client__company_name }}</td>
+                            <td>{{ d.document_type__client__tax_id }}</td>
+                            <td>{{ d.document_type__client__status }}</td>
+                            <td>{{ d.document_type__account_category__name_th }}</td>
+                            <td>{{ d.type }}</td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <a href="{% url 'taskcontrol:update_client' pk=forloop.counter %}" class="btn btn-sm btn-neutral">แก้ไข</a>
+                                <a href="{% url 'taskcontrol:delete_client' pk=forloop.counter %}" onclick="deleted()"><button type="button" class="btn btn-sm btn-square btn-danger"><i class="bi bi-trash"></i>
+                            </button></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td>{{ count_type_doc_detail.count }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Document Type Counts</h2>
+            <table border="1">
+                <tr>
+                    <th>Document Type</th>
+                    <th>Count</th>
+                </tr>
+                <tr>
+                    <td>บัญชี</td>
+                    <td>{{ count_type_acc }}</td>
+                </tr>
+                <tr>
+                    <td>ภาษี</td>
+                    <td>{{ count_type_tax }}</td>
+                </tr>
+                <tr>
+                    <td>เงินเดือน</td>
+                    <td>{{ count_type_payroll }}</td>
+                </tr>
+                <tr>
+                    <td>รายงาน</td>
+                    <td>{{ count_type_report }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>
+
+

@@ -1,0 +1,120 @@
+{% load compress %}
+{% load static %}
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'src/tailwind.output.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.2/dist/full.css" rel="stylesheet" type="text/css" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="{% static 'js/jquery.mask.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js"></script>
+    <script src="{% static 'js/init-alpine.js' %}"></script>
+</head>
+<style>
+    html {
+        font-size: 62.5%;
+        font-family: serif;
+    }
+    body {
+        font-size: 1.8rem;
+        line-height: 1.618;
+        max-width: 38em;
+        margin: auto;
+        color: #4a4a4a;
+        background-color: #f9f9f9;
+        padding: 13px;
+    }
+    @media (max-width: 684px) 
+    {
+        body {
+            font-size: 1.53rem;
+        }
+        }@media (max-width: 382px) {
+        body {
+            font-size: 1.35rem;
+        }
+    }
+    h1, h2, h3, h4, h5, h6 {
+        line-height: 1.1;
+        font-family: Verdana, Geneva, sans-serif;
+        font-weight: 700;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        -ms-word-break: break-all;
+        word-break: break-word;
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+    }
+    h1 {
+        font-size: 2.35em;
+    }
+    h2 {
+        font-size: 2em;
+    }
+    h3 {
+        font-size: 1.75em;
+    }
+    h4 {
+        ont-size: 1.5em;
+    }
+    h5 {
+        font-size: 1.25em;
+    }
+    h6 {
+        font-size: 1em;
+    }
+
+    header, footer {
+        font-size: large;
+        text-align: center;
+        padding: 0.3em 0;
+        background-color: #4a4a4a;
+        color: #f9f9f9;
+    }
+    nav {
+        background: #eee;
+    }
+    main {
+        background: #f9f9f9;
+    }
+    aside {
+        background: #eee;
+    }
+</style>
+
+<body>
+    <header>นี่คือส่วนหัว</header>
+    <main>
+        <h1>นี่คือเนื้อหาหลัก</h1>
+        <p>...</p>
+    </main>
+    <nav>
+        <h4>นี่คือส่วนการนำทาง</h4>
+        <p>...</p>
+    </nav>
+    <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen}">
+        <aside class="z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0">
+            <h4>นี่คือส่วนอื่น ๆ</h4>
+            <a href="{% url 'taskcontrol:dashboard' %}"><i class="fa fa-user-o" aria-hidden="true"></i>dashboard</a>
+            <a href="{% url 'taskcontrol:Forms' %}"><i class="fa fa-laptop" aria-hidden="true"></i>Forms</a>
+            <a href="{% url 'taskcontrol:Cards' %}"><i class="fa fa-clone" aria-hidden="true"></i>Cards</a>
+            <a href="{% url 'taskcontrol:Charts' %}"><i class="fa fa-star-o" aria-hidden="true"></i>Charts</a>
+            <a href="{% url 'taskcontrol:Tables' %}"><i class="fa fa-trash-o" aria-hidden="true"></i>Tables</a>
+        </aside>
+    </div>
+
+    {% block content %}
+    {% endblock %}
+    <footer>นี่คือส่วนท้าย</footer>
+</body>
+
+</html>

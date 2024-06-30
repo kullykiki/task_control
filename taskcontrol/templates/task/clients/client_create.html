@@ -1,0 +1,445 @@
+{% extends 'task/index.html' %} 
+{% block content %}
+{% load static %}
+<style>
+    .card {
+        margin-top: 1rem;
+    }
+
+    .card, .card-body {
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+        background-color: #eaf4ff;
+        border-radius: 20px;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .mx-auto {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .pl-0 {
+        padding-left: 0;
+    }
+
+    .mt-3 {
+        margin-top: 2rem;
+    }
+
+    .d-none {
+        display: none;
+    }
+
+    .form-step {
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+        border-radius: 20px;
+        margin-top: 1rem;
+        padding: 2rem;
+        background-color: #fff;
+    }
+
+    ul.form-stepper {
+        counter-reset: section;
+        margin-bottom: 1.5rem;
+    }
+
+    ul.form-stepper .form-stepper-circle {
+        position: relative;
+    }
+
+    ul.form-stepper .form-stepper-circle span {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateY(-50%) translateX(-50%);
+    }
+
+    .form-stepper-horizontal {
+        position: relative;
+        display: flex;
+        justify-content: space-around;
+    }
+
+    ul.form-stepper>li:not(:last-of-type) {
+        margin-bottom: 0.625rem;
+        transition: margin-bottom 0.4s;
+    }
+
+    .form-stepper-horizontal>li:not(:last-of-type) {
+        margin-bottom: 0 !important;
+    }
+
+    .form-stepper-horizontal li {
+        position: relative;
+        display: flex;
+        flex: 1;
+        align-items: baseline;
+        flex-wrap: nowrap;
+        transition: 0.5s;
+    }
+
+    .form-stepper-horizontal li:not(:last-child):after {
+        position: relative;
+        flex: 1;
+        height: 1px;
+        content: "";
+        top: 32%;
+    }
+
+    .form-stepper-horizontal li:after {
+        background-color: #5d87ff;
+    }
+
+    .form-stepper-horizontal li.form-stepper-completed:after {
+        background-color: #0277ff;
+    }
+
+    .form-stepper-horizontal li:last-child {
+        flex: unset;
+    }
+
+    ul.form-stepper li a .form-stepper-circle {
+        display: inline-block;
+        margin-right: 0;
+        line-height: 1.7rem;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.38);
+        border-radius: 50%;
+    }
+
+    .form-stepper .form-stepper-active .form-stepper-circle {
+        background-color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-active .label {
+        color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-active .form-stepper-circle:hover {
+        background-color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-unfinished .form-stepper-circle {
+        background-color: #f5f5f5;
+
+    }
+
+    .form-stepper .form-stepper-completed .form-stepper-circle {
+        background-color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-completed .label {
+        color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-completed .form-stepper-circle:hover {
+        background-color: #0277ff !important;
+    }
+
+    .form-stepper .label {
+        font-size: 14.5px;
+        font-weight: 500;
+        margin-top: 0.5rem;
+    }
+
+    .form-stepper a {
+        cursor: default;
+    }
+
+    .number-lable {
+        color: #333944;
+        font-size: 12.5px;
+        font-weight: 600;
+    }
+
+    .number-step {
+        color: #205aff;
+        font-weight: 700;
+        font-size: 18px;
+    }
+
+    .text-muted {
+        --bs-text-opacity: 1;
+        color: #205aff !important;
+    }
+
+    .form-check-input:checked {
+        font-size: 16px;
+    }
+
+</style>
+
+<div class="card">
+    <div class="card-body">
+        <ul class="form-stepper form-stepper-horizontal text-center mx-auto pl-0 ">
+            <!-- Step 1 -->
+            <li class="form-stepper-unfinished text-center form-stepper-list">
+                <a class="mx-2">
+                    <span class="number-step"><i class="fi fi-sr-user-add"></i></span>
+                    <div class="number-lable">ข้อมูลลูกค้า</div>
+                    <span class="form-stepper-circle text-muted">
+                        <span><i class="fa-regular fa-circle-dot fa-lg"></i></span>
+                    </span>
+                </a>
+            </li>
+            <!-- Step 2 -->
+            <li class="form-stepper-unfinished text-center form-stepper-list">
+                <a class="mx-2">
+                    <span class="number-step"><i class="fi fi-sr-comment-user"></i></span>
+                    <div class="number-lable"> ผู้ติดต่อ</div>
+                    <span class="form-stepper-circle text-muted">
+                        <span><i class="fa-regular fa-circle fa-lg"></i></span>
+                    </span>
+                </a>
+            </li>
+            <!-- Step 3 -->
+            <li class="form-stepper-unfinished text-center form-stepper-list">
+                <a class="mx-2">
+                    <span class="number-step"><i class="fi fi-sr-user-lock"></i></span>
+                    <div class="number-lable">รหัสผ่าน</div>
+                    <span class="form-stepper-circle text-muted">
+                        <span><i class="fa-regular fa-circle fa-lg"></i></span>
+                    </span>
+                </a>
+            </li>
+            <!-- Step 4 -->
+            <li class="form-stepper-unfinished text-center form-stepper-list">
+                <a class="mx-2">
+                    <span class="number-step"><i class="fi fi-sr-document"></i></span>
+                    <div class="number-lable">แนบไฟล์</div>
+                    <span class="form-stepper-circle text-muted">
+                        <span><i class="fa-regular fa-circle fa-lg"></i></span>
+                    </span>
+                </a>
+            </li>
+        </ul>
+        <!-- Step 1 Content -->
+        <section id="step-1" class="form-step">
+            <div class="mt-1">
+                <form id="multi-step-form" method="post" action="{% url 'taskcontrol:client_create' %}">
+                    {% csrf_token %}
+                    <div class="mb-5">
+                        <h5 class="pb-2 mb-4 text-primary fw-semibold border-bottom border-primary"><i class="fi fi-sr-map-marker-plus" style="color: #53c536;"></i> เพิ่มลูกค้าใหม่ </h5>
+                        <div class="row mb-3">
+                            <div class="col-md-2">
+                                <label for="c_create_client_date" class="form-label">วันที่สร้าง
+                                    <i class="fa-solid fa-arrows-rotate"></i>
+                                </label>
+                                <input type="date" name="c_create_client_date" id="c_create_client_date" class="form-control" />
+                            </div>
+                            <div class="col-md-8"></div>
+                            <div class="col-md-2 text-end">
+                                <input class="form-check-input" type="checkbox" id="c_status" name="c_status" checked />
+                                <label class="form-label" id="statusLabel">สถานะ "เปิดใช้งาน"</label>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-2">
+                                <label for class="form-label">รหัสลูกค้า :</label>
+                                <input type="text" name="c_code" id="c_code" class="form-control" required/>
+                            </div>
+                            <div class="col-md-6">
+                                <label for class="form-label">ชื่อลูกค้า :</label>
+                                <input type="text" name="c_company_name" id class="form-control" required/>
+                            </div>
+                            <div class="col-md-4">
+                                <label for class="form-label">เลขที่นิติ :</label>
+                                <input type="text" name="c_tax_id" id="c_tax_id" class="form-control" maxlength="13" required/>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for class="form-label">ที่อยู่บริษัท :</label>
+                                <input type="text" name="c_address" id="company-address" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <select name="c_province" id="province" class="form-select" required/>
+                                    <option value selected disabled hidden>- กรุณาเลือกจังหวัด -</option>
+                                    {% for p in province %}
+                                    <option value="{{ p.id }}">{{ p.name_th }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <select name="c_district" id="district" class="form-select" required/>
+                                    <option value selected disabled hidden>อำเภอ/เขต</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <select name="c_subdistrict" id="subdistrict" class="form-select" required/>
+                                    <option value selected disabled hidden>ตำบล/แขวง/รหัสไปรษณีย์</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for class="form-label">ช่องทางรู้จักเรา :</label>
+                                <select class="form-select" name="c_channel" onchange="toggleTextInput()">
+                                    <option value selected disabled hidden>- กรุณาเลือก -</option>
+                                    {% for c in channels %}
+                                    <option value="{{ c.id }}">{{ c.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-8">
+                                <label for class="form-label">รายละเอียดเพิ่มเติม :</label>
+                                <input type="text" name="c_detail" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tax Register -->
+                    <div class="mb-4">
+                        <h5 class="pb-2 mb-4 text-primary fw-semibold border-bottom border-primary"><i class="fi fi-sr-map-marker-plus" style="color: #53c536;"></i> จดทะเบียน</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">จดทะเบียนบริษัท :</label>
+                                <div class="form-check">
+                                    <input type="radio" name="r_company" class="form-check-input" value="True" id="r_company_true" required/>
+                                    <label class="form-check-label" for="r_company_true">ใช่</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" name="r_company" class="form-check-input" value="False" id="r_company_false" required/>
+                                    <label class="form-check-label" for="r_company_false">ไม่ใช่</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="r_company_date">วันที่จด :</label>
+                                <input type="date" class="form-control" id="r_company_date" name="r_company_date" disabled required/>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="r_company_period_date">รอบบัญชี (วันที่/เดือน) :</label>
+                                <input type="date" class="form-control" id="r_company_period_date" name="r_company_period_date" disabled required/>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">จดทะเบียนภาษีมูลค่าเพิ่ม :</label>
+                                <div class="form-check">
+                                    <input type="radio" name="r_vat" class="form-check-input" value="True">
+                                    <label class="form-check-label" for="r_vat">ใช่</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" name="r_vat" class="form-check-input" value="False">
+                                    <label class="form-check-label" for="r_vat">ไม่ใช่</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label"  for="r_vat_date">วันที่จด :</label>
+                                <input type="date" class="form-control" id="r_vat_date" name="r_vat_date" disabled>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">จดทะเบียนภาษีธุรกิจเฉพาะ :</label>
+                                <div class="form-check">
+                                    <input type="radio" name="r_sbt" class="form-check-input" value="True">
+                                    <label class="form-check-label" for="r_sbt">ใช่</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" name="r_sbt" class="form-check-input" value="False">
+                                    <label class="form-check-label" for="r_sbt">ไม่ใช่</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="r_sbt_date">วันที่จด :</label>
+                                <input type="date" class="form-control" id="r_sbt_date" name="r_sbt_date" disabled>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">จดทะเบียนนายจ้าง :</label>
+                                <div class="form-check">
+                                    <input type="radio" name="r_sso" class="form-check-input" value="True">
+                                    <label class="form-check-label" for="r_sso">ใช่</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" name="r_sso" class="form-check-input" value="False">
+                                    <label class="form-check-label" for="r_sso">ไม่ใช่</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="r_sso_date">วันที่จด :</label>
+                                <input type="date" class="form-control" id="r_sso_date" name="r_sso_date" disabled>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">จดทะเบียนยื่นภาษีออนไลน์ :</label>
+                                <div class="form-check">
+                                    <input type="radio" name="r_dbd_e_filling" class="form-check-input" value="True">
+                                    <label class="form-check-label" for="r_dbd_e_filling">ใช่</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" name="r_dbd_e_filling" class="form-check-input" value="False">
+                                    <label class="form-check-label" for="r_dbd_e_filling">ไม่ใช่</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="r_dbd_e_filling_date">วันที่จด :</label>
+                                <input type="date" class="form-control" id="r_dbd_e_filling_date" name="r_dbd_e_filling_date" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-2 mt-3">
+                        <button type="reset" class="btn btn-secondary">ล้าง</button>
+                        <a href="{% url 'taskcontrol:client_list' %}" class="btn btn-outline-danger"><i class="fa-solid fa-xmark"></i> ยกเลิก</a>
+                        <button class="btn btn-primary btn-navigate-form-step" type="submit"><i class="fa-solid fa-plus"></i> <span>เพิ่มลูกค้าใหม่</span></button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    const getDistrictUrl = "{% url 'taskcontrol:GetDistrict' %}";
+    const getSubdistrictUrl= "{% url 'taskcontrol:GetSubdistrict' %}";
+</script>
+<script src="{% static 'assets/js/create_client.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        function handleRadioChange(radioName, dateInputId) {
+            $('input[name="' + radioName + '"]').change(function () {
+                var isChecked = $(this).prop('checked');
+                var value = $(this).val();
+                var dateInput = $('#' + dateInputId);
+                if (isChecked && value === 'True') {
+                    dateInput.prop('disabled', false);
+                } else {
+                    dateInput.prop('disabled', true).val('');
+                }
+            });
+        }
+    
+        var radioGroups = [
+            { name: 'r_company', dateIds: ['r_company_date', 'r_company_period_date'] },
+            { name: 'r_vat', dateIds: ['r_vat_date'] },
+            { name: 'r_sbt', dateIds: ['r_sbt_date'] },
+            { name: 'r_sso', dateIds: ['r_sso_date'] },
+            { name: 'r_dbd_e_filling', dateIds: ['r_dbd_e_filling_date'] }
+        ];
+    
+        radioGroups.forEach(function (group) {
+            group.dateIds.forEach(function (dateId) {
+                handleRadioChange(group.name, dateId);
+            });
+        });
+    });
+    
+</script>
+
+{% endblock %}

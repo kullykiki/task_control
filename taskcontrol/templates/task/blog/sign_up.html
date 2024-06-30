@@ -1,0 +1,26 @@
+{% extends 'task/index.html' %}
+{% block content %}
+
+<div class="row">
+    <div class="card w-100">
+        <div class="card-body">
+            <h2>เพิ่มผู้ใช้งานใหม่</h2>
+            <form method="post" action="#">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">บันทึก</button>
+            </form>
+
+            {% if form.errors %}
+                <ul class="errors">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <li style="color: red;">{{ field }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'task/index.html' %} 
+{% block content %}
+<div class="row">
+    <div class="card w-100">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <form id="createRegisterTypeForm" method="post" action="{% url 'taskcontrol:manage_register_type' %}">
+                        {% csrf_token %}
+                        <div class="h5 pb-2 mb-4 text-primary fw-semibold border-bottom border-primary">
+                            เพิ่มข้อมูลจดทะเบียนใหม่
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="short_name" class="form-label">ชื่อย่อ:</label>
+                                <input type="text" class="form-control" id="short_name" name="short_name">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="name_th" class="form-label fw-semibold">ชื่อเต็มภาษาไทย:</label>
+                                <input type="text" class="form-control" id="name_th" name="name_th">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="name_en" class="form-label fw-semibold">ชื่อเต็มภาษาอังกฤษ:</label>
+                                <input type="text" class="form-control" id="name_en" name="name_en">
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                            <button type="submit" class="btn btn-primary">เพิ่ม</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-7">
+                    <div class="table-responsive">
+                        <table class="table mt-2">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>ชื่อย่อ</th>
+                                    <th>ชื่อเต็มภาษาไทย</th>
+                                    <th>ชื่อเต็มภาษาอังกฤษ</th>
+                                    <th>แก้ไข</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for r in register_type_list %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ r.short_name }}</td>
+                                    <td>{{ r.name_th }}</td>
+                                    <td>{{ r.name_en }}</td>
+                                    <td>
+                                        <a href="{% url 'taskcontrol:delete_register_type' register_type_id=r.id %}" class="delete-register-type" data-register-type-id="{{ r.id }}">
+                                             <i class="fa-solid fa-circle-xmark fa-lg" style="color: #f64c4c;"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     $(".delete-register-type").on("click", function() {
+          var registertypeId = $(this).data("register-type-id");
+          if (confirm("ต้องการลบรายการนี้?")) {
+               var createregistertypetUrl = "{% url 'taskcontrol:delete_register_type' register_type_id=0 %}".replace("0", registertypeId);
+
+              $.ajax({
+                  type: 'POST',
+                  url: createregistertypetUrl,
+                  data: {
+                      csrfmiddlewaretoken: '{{ csrf_token }}',
+                  },
+                  success: function() {
+                      location.reload();
+                  },
+                  error: function(xhr, status, error) {
+                      console.error(xhr.responseText);
+                  }
+              });
+          }
+      });
+</script>
+{% endblock content %}

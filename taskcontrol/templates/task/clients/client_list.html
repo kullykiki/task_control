@@ -1,0 +1,214 @@
+{% extends 'task/index.html' %}
+{% block content %}
+{% load humanize %}
+<style>
+    .status-open{
+        font-size: 12px;
+        font-weight: 600;
+        color: #fff;
+        background-color: #53c536;
+        border-radius: 8px;
+    }
+
+    .status-close{
+        font-size: 12px;
+        font-weight: 600;
+        color: #fff;
+        background-color: #ff5258;
+        border-radius: 8px;
+    }
+
+    .form-check-input-open:checked {
+        background-color: #53c536;
+        border-color: #53c536;
+    }
+
+    .form-check-input-close:checked {
+        background-color: #ff5258;
+        border-color: #ff5258;
+    }
+
+    .title-checkbox {
+        font-size: 13.5px;
+        font-weight: 500;
+    }
+
+    .table-sm>:not(caption)>*>* {
+        padding: 0.55rem 0.55rem;
+    }
+
+    .badge-primary {
+        background-color: #5d87ff;
+        color: white;
+        padding: 0.25em 0.4em;
+        border-radius: 0.25rem;
+    }
+    .badge-open {
+        background-color: #28a745;
+        color: white;
+        padding: 0.25em 0.4em;
+        border-radius: 0.25rem;
+    }
+    .badge-closed {
+        background-color: #dc3545;
+        color: white;
+        padding: 0.25em 0.4em;
+        border-radius: 0.25rem;
+    }
+    .custom-select {
+        width: 200px;
+        padding: 5px;
+    }
+
+</style>
+
+<div class="row">
+    <div class="card">
+        <div class="card-body mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-semibold text-dark">ข้อมูลลูกค้า</h5>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{% url 'taskcontrol:client_create'%}">
+                        <button type="button" class="btn btn-primary">
+                            <i class="fa-solid fa-circle-plus"></i> เพิ่มลูกค้าใหม่
+                        </button>
+                    </a>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-start mb-3">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input form-check-input-open" type="checkbox" id="statusOpenCheckbox" checked>
+                    <label class="form-check-label title-checkbox" for="statusOpenCheckbox">เปิดใช้งาน</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input form-check-input-close" type="checkbox" id="statusClosedCheckbox" checked>
+                    <label class="form-check-label title-checkbox" for="statusClosedCheckbox">ปิดใช้งาน</label>
+                </div>
+            </div>
+            
+            <div class="table-responsive">
+                <table id="client_datatable" class="table table-hover table-bordered" style="width:100%">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 5%;" class="text-start">#</th>
+                            <th style="width: 10%;">รหัสลูกค้า</th>
+                            <th style="width: 30%;" class="text-center">ชื่อบริษัท</th>
+                            <th style="width: 15%;" class="text-center">เลขที่นิติ</th>
+                            <th style="width: 10%;" class="text-center">สถานะ</th>
+                            <th style="width: 25%;" class="text-center">ผู้ติดต่อ</th>
+                            <th style="width: 5%;" class="text-center"><i class="fa-solid fa-gears"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in clients_list %}
+                        <tr>
+                            <td class="text-start">{{ forloop.counter }}</td>
+                            <td class="text-start fw-semibold"><a href="{% url 'taskcontrol:client_detail' c.id %}">{{ c.code }}</a></td>
+                            <td class="text-start fw-semibold"><a href="{% url 'taskcontrol:client_detail' c.id %}">{{ c.company_name }}</a></td>
+                            <td class="text-start">{{ c.tax_id }}</td>
+                            <td class="text-center">
+                                <span class="badge {% if c.status %}status-open{% else %}status-close{% endif %}">
+                                    {% if c.status %}เปิด{% else %}ปิด{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                {% for contact in contacts %}
+                                    {% if contact.client_id == c.id %}
+                                        คุณ {{ contact.name }} ({{ contact.position }}) - {{ contact.phone }}<br>
+                                    {% endif %}
+                                {% empty %}
+                                    ไม่มีข้อมูลผู้ติดต่อ
+                                {% endfor %}
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                    <a href="{% url 'taskcontrol:client_detail' c.id %}" class="btn btn-outline-primary btn-sm "><i class="fa-solid fa-eye"></i></a>
+                                    <button class="btn btn-outline-danger btn-sm delete-client-btn" data-client-id="{{ c.id }}"><i class="fa-regular fa-trash-can"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <input type="hidden" id="delete-client-url" value="{% url 'taskcontrol:client_delete' client_id=0 %}">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+         const dataTable = $("#client_datatable").DataTable({
+            "language": {
+                "search": "ค้นหา",
+                "lengthMenu": "แสดง _MENU_ รายการ",
+                "info": "แสดง _START_ ถึง _END_ จากทั้งหมด _TOTAL_ รายการ",
+                "paginate": {
+                    "previous": "ก่อนหน้า",
+                    "next": "ถัดไป"
+                }
+            }
+         });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".delete-client-btn").on("click", function() {
+            var clientId = $(this).data("client-id");
+            if (confirm("ต้องการลบผู้ติดต่อรายนี้?")) {
+                $.ajax({
+                    type: 'POST',
+                    url: $('#delete-client-url').val().replace("0", clientId),
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                    },
+                    success: function() {
+                        $('[data-client-id="' + clientId + '"]').closest("tr").remove();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Select checkboxes
+        const statusOpenCheckbox = document.getElementById("statusOpenCheckbox");
+        const statusClosedCheckbox = document.getElementById("statusClosedCheckbox");
+        
+        // Select all client data
+        const clients = document.querySelectorAll("#client_datatable tbody tr");
+        
+        // When checkboxes are changed
+        statusOpenCheckbox.addEventListener("change", updateFilter);
+        statusClosedCheckbox.addEventListener("change", updateFilter);
+    
+        function updateFilter() {
+            const showOpen = statusOpenCheckbox.checked;
+            const showClosed = statusClosedCheckbox.checked;
+    
+            clients.forEach(function(client) {
+                const statusCell = client.querySelector("td:nth-child(5)");
+                const status = statusCell.textContent.trim();
+    
+                if ((status === "เปิด" && showOpen) || (status === "ปิด" && showClosed)) {
+                    client.style.display = "";
+                } else {
+                    client.style.display = "none";
+                }
+            });
+        }
+    });
+</script>
+
+{% endblock content %}

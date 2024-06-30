@@ -1,0 +1,467 @@
+{% extends 'task/index.html' %}
+{% block content %}
+{% load static %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+    .card {
+        margin-top: 1rem;
+    }
+
+    .card, .card-body {
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+        background-color: #eaf4ff;
+        border-radius: 20px;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .mx-auto {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .pl-0 {
+        padding-left: 0;
+    }
+
+    .mt-3 {
+        margin-top: 2rem;
+    }
+
+    .d-none {
+        display: none;
+    }
+
+    .form-step {
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+        border-radius: 20px;
+        margin-top: 1rem;
+        padding: 2rem;
+        background-color: #fff;
+    }
+
+    ul.form-stepper {
+        counter-reset: section;
+        margin-bottom: 1.5rem;
+    }
+
+    ul.form-stepper .form-stepper-circle {
+        position: relative;
+    }
+
+    ul.form-stepper .form-stepper-circle span {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateY(-50%) translateX(-50%);
+    }
+
+    .form-stepper-horizontal {
+        position: relative;
+        display: flex;
+        justify-content: space-around;
+    }
+
+    ul.form-stepper>li:not(:last-of-type) {
+        margin-bottom: 0.625rem;
+        transition: margin-bottom 0.4s;
+    }
+
+    .form-stepper-horizontal>li:not(:last-of-type) {
+        margin-bottom: 0 !important;
+    }
+
+    .form-stepper-horizontal li {
+        position: relative;
+        display: flex;
+        flex: 1;
+        align-items: baseline;
+        flex-wrap: nowrap;
+        transition: 0.5s;
+    }
+
+    .form-stepper-horizontal li:not(:last-child):after {
+        position: relative;
+        flex: 1;
+        height: 1px;
+        content: "";
+        top: 32%;
+    }
+
+    .form-stepper-horizontal li:after {
+        background-color: #5d87ff;
+    }
+
+    .form-stepper-horizontal li.form-stepper-completed:after {
+        background-color: #0277ff;
+    }
+
+    .form-stepper-horizontal li:last-child {
+        flex: unset;
+    }
+
+    ul.form-stepper li a .form-stepper-circle {
+        display: inline-block;
+        margin-right: 0;
+        line-height: 1.7rem;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.38);
+        border-radius: 50%;
+    }
+
+    .form-stepper .form-stepper-active .form-stepper-circle {
+        background-color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-active .label {
+        color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-active .form-stepper-circle:hover {
+        background-color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-unfinished .form-stepper-circle {
+        background-color: #f5f5f5;
+
+    }
+
+    .form-stepper .form-stepper-completed .form-stepper-circle {
+        background-color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-completed .label {
+        color: #0277ff !important;
+    }
+
+    .form-stepper .form-stepper-completed .form-stepper-circle:hover {
+        background-color: #0277ff !important;
+    }
+
+    .form-stepper .label {
+        font-size: 14.5px;
+        font-weight: 500;
+        margin-top: 0.5rem;
+    }
+
+    .form-stepper a {
+        cursor: default;
+    }
+
+    .number-lable {
+        color: #333944;
+        font-size: 12.5px;
+        font-weight: 600;
+    }
+
+    .number-step {
+        color: #205aff;
+        font-weight: 700;
+        font-size: 18px;
+    }
+
+    .text-muted {
+        --bs-text-opacity: 1;
+        color: #205aff !important;
+    }
+
+    .status-open{
+        color: #fff;
+        font-weight: 600;
+        background-color: #53c536;
+        border-radius: 8px;
+    }
+    .status-close{
+        color: #fff;
+        font-weight: 600;
+        background-color: #ff5258;
+        border-radius: 8px;
+    }
+
+    .regis-true {
+        color: #53c536;
+    }
+
+    .regis-false{
+        color: #ff5258;
+    }
+</style>
+
+<div class="card">
+    <div class="card-body">
+        <ul class="form-stepper form-stepper-horizontal text-center mx-auto pl-0 ">
+            <!-- Step 1 -->
+            <li class="form-stepper-unfinished text-center form-stepper-list">
+                <a class="mx-2">
+                    <span class="number-step"><i class="fi fi-sr-skill-user"></i></span>
+                    <div class="number-lable">ข้อมูลลูกค้า</div>
+                    <span class="form-stepper-circle text-muted">
+                        <span><i class="fa-regular fa-circle-dot fa-lg"></i></span>
+                    </span>
+                </a>
+            </li>
+            <!-- Step 2 -->
+            <li class="form-stepper-unfinished text-center form-stepper-list">
+                <a class="mx-2">
+                    <span class="number-step"><i class="fi fi-sr-comment-user"></i></span>
+                    <div class="number-lable"> ผู้ติดต่อ</div>
+                    <span class="form-stepper-circle text-muted">
+                        <span><i class="fa-regular fa-circle fa-lg"></i></span>
+                    </span>
+                </a>
+            </li>
+            <!-- Step 3 -->
+            <li class="form-stepper-unfinished text-center form-stepper-list">
+                <a class="mx-2">
+                    <span class="number-step"><i class="fi fi-sr-user-lock"></i></span>
+                    <div class="number-lable">รหัสผ่าน</div>
+                    <span class="form-stepper-circle text-muted">
+                        <span><i class="fa-regular fa-circle fa-lg"></i></span>
+                    </span>
+                </a>
+            </li>
+            <!-- Step 4 -->
+            <li class="form-stepper-unfinished text-center form-stepper-list">
+                <a class="mx-2">
+                    <span class="number-step"><i class="fi fi-sr-document"></i></span>
+                    <div class="number-lable">แนบไฟล์</div>
+                    <span class="form-stepper-circle text-muted">
+                        <span><i class="fa-regular fa-circle fa-lg"></i></span>
+                    </span>
+                </a>
+            </li>
+        </ul>
+        <!-- Step 1 Content -->
+        <section id="step-1" class="form-step">
+            <div class="mt-1">
+                <form id="multi-step-form" method="post" action="#">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <h5 class="pb-2 mb-4 text-primary fw-semibold border-bottom border-primary"><i class="fi fi-ss-badge-check" style="color: #53c536;"></i> เพิ่มลูกค้าใหม่ </h5>
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <label for="c_create_client_date" class="form-label">วันที่สร้าง :</label>
+                            </div>
+                            <div class="col-md-2">
+                                <span>
+                                    {% if client.create_client_date %}
+                                    {{ client.create_client_date|date:"d/m/Y" }}
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="col-md-5"></div>
+                            <div class="col-md-2 text-end">
+                                <label class="form-label" id="statusLabel">สถานะ 
+                                    <span class="badge {% if client.status %}status-open{% else %}status-close{% endif %}">
+                                        {% if client.status %}เปิดใช้งาน{% else %}ปิดการใช้งาน{% endif %}
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <label for class="form-label">รหัสลูกค้า :</label>
+                            </div>
+                            <div class="col-md-9">
+                                <span>
+                                    {% if client.code %}
+                                    {{ client.code }}
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <label class="form-label">ชื่อลูกค้า :</label>
+                            </div>
+                            <div class="col-md-9">
+                                <span>
+                                    {% if client.tax_id %}
+                                    {{ client.company_name }}
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <label class="form-label">เลขที่นิติ :</label>
+                            </div>
+                            <div class="col-md-9">
+                                <span>
+                                    {% if client.tax_id %}
+                                        {{ client.tax_id }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+            
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <label class="form-label">ที่อยู่บริษัท :</label>
+                            </div>
+                            <div class="col-md-9">
+                                <span>
+                                    {{ client.company_address.address }}
+                                    {{ client.company_address.subdistrict.name_th }}
+                                    {{ client.company_address.district.name_th }}
+                                    {{ client.company_address.province.name_th }}
+                                    {{ client.company_address.subdistrict.zipcode }}
+                                </span>
+                            </div>
+                        </div>
+            
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <label class="form-label">ช่องทางรู้จักเรา :</label>
+                            </div>
+                            <div class="col-md-9">
+                                <span>
+                                    {% if client.channel.name %}
+                                        {{ client.channel.name }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <label class="form-label">รายละเอียดเพิ่มเติม :</label>
+                            </div>
+                            <div class="col-md-9">
+                                <span>
+                                    {% if client.detail %}{{ client.detail }}{% else %}-{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tax Register -->
+                    <div class="mb-4">
+                        <h5 class="pb-2 mb-4 text-primary fw-semibold border-bottom border-primary"><i class="fi fi-ss-badge-check" style="color: #53c536;"></i> จดทะเบียน</h5>
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <label class="form-label">จดทะเบียนบริษัท :</label>
+                            </div>
+                            <div class="col-md-1">
+                                <span class="{% if client.register_tax.company %}regis-true{% else %}regis-false{% endif %}">
+                                    {% if client.register_tax.company %}<i class="fa-solid fa-circle-check fa-lg"></i>{% else %}<i class="fa-solid fa-circle-xmark fa-lg"></i>{% endif %}
+                                </span>
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label" for="r_company_date">วันที่จด :</label>
+                            </div>
+                            <div class="col-md-2">
+                                <span>
+                                    {% if client.register_tax.company_date|date:"d/m/Y" %}{{ client.register_tax.company_date|date:"d/m/Y" }}{% else %}-{% endif %}
+                                </span>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label" for="r_company_period_date">รอบบัญชี (วันที่/เดือน) :</label>
+                            </div>
+                            <div class="col-md-3">
+                                <span>
+                                    {% if client.register_tax.company_period_date|date:"d/m/Y" %}{{ client.register_tax.company_period_date|date:"d/m/Y" }}{% else %}-{% endif %}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <label class="form-label">จดทะเบียนภาษีมูลค่าเพิ่ม :</label>
+                            </div>
+                            <div class="col-md-1">
+                                <span class="{% if client.register_tax.vat %}regis-true{% else %}regis-false{% endif %}">
+                                    {% if client.register_tax.vat %}<i class="fa-solid fa-circle-check fa-lg"></i>{% else %}<i class="fa-solid fa-circle-xmark fa-lg"></i>{% endif %}
+                                </span>
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label" for="r_vat_date">วันที่จด :</label>
+                            </div>
+                            <div class="col-md-2">
+                                <span>
+                                    {% if client.register_tax.vat_date|date:"d/m/Y" %}{{ client.register_tax.vat_date|date:"d/m/Y" }}{% else %}-{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <label class="form-label">จดทะเบียนภาษีธุรกิจเฉพาะ :</label>
+                            </div>
+                            <div class="col-md-1">
+                                <span class="{% if client.register_tax.sbt %}regis-true{% else %}regis-false{% endif %}">
+                                    {% if client.register_tax.sbt %}<i class="fa-solid fa-circle-check fa-lg"></i>{% else %}<i class="fa-solid fa-circle-xmark fa-lg"></i>{% endif %}
+                                </span>
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label" for="r_sbt_date">วันที่จด :</label>
+                            </div>
+                            <div class="col-md-2">
+                                <span>
+                                    {% if client.register_tax.sbt_date|date:"d/m/Y" %}{{ client.register_tax.sbt_date|date:"d/m/Y" }}{% else %}-{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <label class="form-label">จดทะเบียนนายจ้าง :</label>
+                            </div>
+                            <div class="col-md-1">
+                                <span class="{% if client.register_tax.sso %}regis-true{% else %}regis-false{% endif %}">
+                                    {% if client.register_tax.sso %}<i class="fa-solid fa-circle-check fa-lg"></i>{% else %}<i class="fa-solid fa-circle-xmark fa-lg"></i>{% endif %}
+                                </span>
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label" for="r_sso_date">วันที่จด :</label>
+                            </div>
+                            <div class="col-md-2">
+                                <span>
+                                    {% if client.register_tax.sso_date|date:"d/m/Y" %}{{ client.register_tax.sso_date|date:"d/m/Y" }}{% else %}-{% endif %}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <label class="form-label">จดทะเบียนยื่นภาษีออนไลน์ :</label>
+                            </div>
+                            <div class="col-md-1">
+                                <span class="{% if client.register_tax.dbd_e_filling %}regis-true{% else %}regis-false{% endif %}">
+                                    {% if client.register_tax.dbd_e_filling %}<i class="fa-solid fa-circle-check fa-lg"></i>{% else %}<i class="fa-solid fa-circle-xmark fa-lg"></i>{% endif %}
+                                </span>
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label" for="r_dbd_e_filling_date">วันที่จด :</label>
+                            </div>
+                            <div class="col-md-2">
+                                <span>
+                                    {% if client.register_tax.dbd_e_filling_date|date:"d/m/Y" %}{{ client.register_tax.dbd_e_filling_date|date:"d/m/Y" }}{% else %}-{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{% url 'taskcontrol:create_contact' client_id=client.id %}" class="btn btn-dark">ถัดไป <i class="fa-solid fa-angles-right"></i>
+                </a>
+            </div>
+        </section>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}

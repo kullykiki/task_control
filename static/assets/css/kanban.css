@@ -1,0 +1,199 @@
+@import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600&display=swap');
+
+body {
+    font-family: 'Bai Jamjuree', sans-serif;
+}
+
+.page-title-box .page-title {
+    font-size: 14px;
+    line-height: 75px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.page-title {
+    margin-left: 100px;
+}
+
+.board {
+    display: block;
+    white-space: nowrap;
+    overflow-x: auto;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+.tasks:not(:last-child) {
+    margin-right: 1.25rem;
+}
+
+.tasks {
+    display: inline-block;
+    width: 20rem;
+    padding: 0 1rem 1rem 1rem;
+    border: 1px solid #eef2f7;
+    vertical-align: top;
+    margin-bottom: 1.5rem;
+    border-radius: 0.25rem;
+}
+
+.tasks-todo {
+    display: inline-block;
+    padding: 0 1rem 1rem 1rem;
+    border: 1px solid #a0e9ff;
+    background-color: #e4f9ff;
+    vertical-align: top;
+    margin-bottom: 1.5rem;
+    border-radius: 0.25rem;
+}
+
+.tasks-pending {
+    display: inline-block;
+    padding: 0 1rem 1rem 1rem;
+    border: 1px solid #e5d1fa;
+    background-color: #f9f5fe;
+    vertical-align: top;
+    margin-bottom: 1.5rem;
+    border-radius: 0.25rem;
+}
+
+.tasks-review {
+    display: inline-block;
+    padding: 0 1rem 1rem 1rem;
+    border: 1px solid #fed867;
+    background-color: #fff8e2;
+    vertical-align: top;
+    margin-bottom: 1.5rem;
+    border-radius: 0.25rem;
+}
+
+.tasks-client {
+    display: inline-block;
+    padding: 0 1rem 1rem 1rem;
+    border: 1px solid #faaeae;
+    background-color: #fff2f2;
+    vertical-align: top;
+    margin-bottom: 1.5rem;
+    border-radius: 0.25rem;
+}
+
+.tasks-done {
+    display: inline-block;
+    padding: 0 1rem 1rem 1rem;
+    border: 1px solid #c8f2a4;
+    background-color: #f0ffe3;
+    vertical-align: top;
+    margin-bottom: 1.5rem;
+    border-radius: 0.25rem;
+}
+
+.tasks .task-header {
+    background-color: #f6f7fb;
+    padding: 1rem;
+    margin: 0 -1rem;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.task-header-todo {
+    background-color: #A0E9FF;
+    padding: 1rem;
+    margin: 0 -1rem;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.task-header-progress {
+    background-color: #E5D1FA;
+    padding: 1rem;
+    margin: 0 -1rem;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.task-header-review {
+    background-color: #FFD966;
+    padding: 1rem;
+    margin: 0 -1rem;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.task-header-client {
+    background-color: #FCAEAE;
+    padding: 1rem;
+    margin: 0 -1rem;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.task-header-done {
+    background-color: #C7F2A4;
+    padding: 1rem;
+    margin: 0 -1rem;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.task-list-items {
+    min-height: 200px;
+    position: relative;
+}
+
+.task-list-items:before {
+    content: "No Tasks";
+    position: absolute;
+    line-height: 110px;
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+    color: rgb(165, 165, 165);
+}
+
+.tasks .card {
+    white-space: normal;
+    margin-top: 1rem;
+    border: 1px solid #eee;
+    border-left-width: 0.25rem;
+    white-space: normal;
+    margin-top: 1rem;
+}
+
+.card {
+    -webkit-box-shadow: 0px 0px 35px 0px rgba(154, 161, 171, 0.15);
+    box-shadow: 0px 0px 35px 0px rgba(154, 161, 171, 0.15);
+    margin-bottom: 1.5rem;
+    margin-top: 1rem;
+}
+
+.card-body {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.5rem 1.5rem;
+    color: white !important;
+}
+
+.card-title {
+    margin-bottom: 10px !important;
+    font-weight: 500;
+    font-size: 16px !important;
+    cursor: pointer;
+}
+
+.title {
+    text-decoration: line-through;
+}
+
+.text-body {
+    opacity: 1;
+    color: rgba(108, 117, 125), 1 !important;
+}
+
+.dropdown-toggle {
+    display: none !important;
+    ;
+}

@@ -1,0 +1,76 @@
+{% extends 'tasks/base.html' %}
+{% block content %}
+
+<div class="card card-side shadow-xl  bg-white">
+  <div class="card-body">
+    <h1>ติดตามงาน</h1>
+
+    <!--Tab-->
+    <div class="join">
+      <button class="btn join-item">เดดไลน์</button>
+      <button class="btn join-item">คนดูแล</button>
+      <button class="btn join-item">ประเภทงาน</button>
+      <button class="btn join-item">Period</button>
+    </div>
+
+    <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+    <div class="relative">
+      <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+          fill="none" viewBox="0 0 20 20">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+        </svg>
+      </div>
+      <input type="search" id="default-search"
+        class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        placeholder="Search Mockups, Logos..." required>
+      <button type="submit"
+        class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
+    </div>
+
+    <!--Tasks Borad-->
+    <div class="grid grid-flow-col auto-cols-max">
+      <div class="board  bg-white bg-opacity-80" id="board1">
+        <header>เปิดงาน</header>
+        <div class="cards" id="b1">
+          <div class="card"><span class="cardtitle noselect">A great card #1</span></div>
+          <div class="card"><span class="cardtitle noselect">A great card #2</span></div>
+          <div class="card"><span class="cardtitle noselect">A great card #3</span></div>
+          <div class="card"><span class="cardtitle noselect">A great card #4</span></div>
+        </div>
+      </div>
+
+      <div class="board" id="board2">
+        <header>กำลังดำเนินงาน</header>
+        <div class="cards" id="b2">
+          <div class="card"><span class="cardtitle">A great card #5</span></div>
+        </div>
+      </div>
+
+      <div class="board" id="board3">
+        <header>รอตรวจทาน</header>
+        <div class="cards" id="b3">
+          <div class="card"><span class="cardtitle noselect">A great card #6</span></div>
+        </div>
+      </div>
+
+      <div class="board" id="board4">
+        <header>รอลูกค้า</header>
+        <div class="cards" id="b4">
+          <div class="card"><span class="cardtitle noselect">A great card #7</span></div>
+        </div>
+      </div>
+
+      <div class="board" id="board5">
+        <header>เรียบร้อย</header>
+        <div class="cards" id="b5">
+          <div class="card"><span class="cardtitle noselect">A great card #8</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,19 @@
+<div class="row">
+    <div class="col-8">
+        <div class="title">{{ task.client.company_name }}</div>
+        <div class="sub-title">{{ task.number }}</div>
+    </div>
+    <div class="col-4 text-end">
+        <i class="fi fi-sr-briefcase" style="color: #0d6efd;"></i>
+    </div>
+</div>
+<div class="date text-end">
+    <i class="fi fi-br-calendar-day"></i> {{ task.create_at|date:'d/m/Y' }}
+</div>
+<div class="detail">
+    <i class="fi fi-ss-thumbtack" style="color: #f42a2a;"></i> : {{ task.new_job }}
+</div>
+<div class="detail">{{ task.description }}</div>
+<div class="deadline text-end">
+    <i class="fi fi-br-clock-three"></i> {{ task.due_date|date:'d/m/Y' }}
+</div>
