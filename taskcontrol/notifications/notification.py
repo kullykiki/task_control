@@ -13,27 +13,27 @@ def notification(request):
     # Check auth
     if request.user.is_authenticated:
         # Filter
-        noti_result =   EngagementDetail.objects.filter(
+        noti_result =   EngagementDetail.objects.exclude(
+                             Q(status='DONE')
+                        ).filter(
                             Q(create_by=request.user) &
                             (
-                                Q(deadline__gte=datetime.now()) |
-                                Q(deadline__range=[datetime.now() - timedelta(days=1)*F('notification'),datetime.now()])
-                            ) |
-                                Q(engagement__reviewer= request.user) |
-                                Q(engagement__approver= request.user)  
-                        ).exclude(
-                            status='DONE'
+                                Q(deadline__lte=datetime.today()) |
+                                Q(deadline__range=(datetime.now() - timedelta(days=1)*(F('notification')),datetime.now()))
+                            ) 
+                            |
+                                (
+                                    Q(engagement__reviewer= request.user) |
+                                    Q(engagement__approver= request.user)  
+                                )
                         )
-        user_id = request.user.id
         return {
             'count': noti_result.count(),
             'notification_detail': noti_result,
-            'get_user': user_id
         }
     else :
         return {
             'count': 0,
             'notification_detail': [],
-            'get_user': 1
         }
     
