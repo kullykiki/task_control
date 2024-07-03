@@ -39,12 +39,16 @@ def notification(request):
         # Filter Result
         # noti_result = engagement_result.union(task_result)
         return {
-            'count': engagement_result.count(),
+            'count': engagement_result.count()+ task_result.count(),
             'notification_detail': engagement_result,
+            'tasks_list': task_result,
+            'today_now': datetime.now()
         }
     else :
         return {
             'count': 0,
             'notification_detail': [],
+            'tasks_list': [],
+            'today_now': datetime.now()
         }
     
