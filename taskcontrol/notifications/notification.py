@@ -12,8 +12,9 @@ def notification(request):
 
     # Check auth
     if request.user.is_authenticated:
-        # Filter
-        noti_result =   EngagementDetail.objects.exclude(
+
+        # Filter EngagementDetail
+        engagement_result =   EngagementDetail.objects.exclude(
                              Q(status='DONE')
                         ).filter(
                             Q(create_by=request.user) &
@@ -27,9 +28,19 @@ def notification(request):
                                     Q(engagement__approver= request.user)  
                                 )
                         )
+        # Filter Task
+        task_result =   Task.objects.exclude(
+                            Q(status='DONE')
+                        ).filter(
+                            Q(create_by=request.user) &
+                            Q(due_date__lte=datetime.today())
+                        )
+        
+        # Filter Result
+        # noti_result = engagement_result.union(task_result)
         return {
-            'count': noti_result.count(),
-            'notification_detail': noti_result,
+            'count': engagement_result.count(),
+            'notification_detail': engagement_result,
         }
     else :
         return {

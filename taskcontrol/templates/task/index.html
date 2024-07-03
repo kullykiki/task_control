@@ -156,26 +156,56 @@
                         <li class="nav-item me-4">
                             <a class="nav-link nav-icon-hover align-items-center " href="#" id="drop1" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fi fi-bs-bell fs-6"></i>
-                                <span class="number">{{ count }}</span>
+                                {% if count > 0%}
+                                    <span class="number">{{ count }}</span>
+                                {% endif %}
                                 <!-- <div class="notification bg-primary rounded-circle">{{ count }}</div> -->
                             </a>
-                            <div class="dropdown-menu dropdown-menu-end">
-                                <!-- <div class="dropdown-header">
-                                    <span class="heading fs-4">Notifications</span>
-                                </div> -->
-                                <span class="triangle"></span>
+                            <div class="dropdown-menu dropdown-menu-end overflow-scroll" style="max-height: 200px;" >
+                                <!-- <div class="dropdown-header" >Notification</div> -->
                                 {% if notification_detail %}
                                     {% for item in notification_detail %}
-                                        <a href="#" class="d-flex align-items-center gap-2 dropdown-item">
-                                            <i class="fa-solid fa-circle fa-2xs" style="color: #FFD43B;"></i>
-                                            <!-- <span class="">{{ item.engagement.job_code }}</span> -->
-                                            <!-- <span class="">{{ item.engagement.client.company_name}}</span> -->
-                                            <!-- <span class="">{{ item.engagement_category.name_th}}</span> -->
-                                            <span class="">{{ item.id }}</span>
-                                            <span class="">{{ item.engagement.job_code }}</span>
-                                            <span class="">{{ item.notification }}</span>
-                                            <span class="">{{ item.deadline}}</span>
-                                            <!-- <span class="">xx</span> -->
+                                        <a href="{% url 'taskcontrol:engagement_detail' engagement_id=item.engagement.id %}" class="d-flex align-items-center gap-2 dropdown-item dropdow-box-item">
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-2 p-0">
+                                                        {% if today|date <= item.deadline|date  %}
+                                                            <i class="fa-solid fa-circle fa-2xs" style="color: red;"></i>
+                                                        {% else %}
+                                                            <i class="fa-solid fa-circle fa-2xs" style="color: #FFD43B;"></i>
+                                                        {% endif %}
+                                                        <span class="ps-2 text-nowrap">{{ item.engagement.job_code }}</span>
+                                                    </div>
+                                                    <div class="col-10">
+                                                        <div class="row row-cols-2">
+                                                            <div class="col">
+                                                                <span class="">{{ item.engagement.client.company_name}}</span>
+                                                            </div>
+                                                            <div class="col">
+                                                                <span class="">{{ item.engagement_category.name_th}} / {{item.engagement_type.name_th}}</span>
+                                                            </div>
+                                                            <div class="col">
+                                                                <span class="">xxx{{ today|date:'d/m/Y' }}</span>
+                                                            </div>
+                                                            <div class="col ">
+                                                                {% if today|date <= item.deadline|date  %}
+                                                                    <i class="fi fi-br-clock-three pe-1 pt-2 mt-2" style="color:red;"></i><span class="" style="color:red;">{{ item.deadline }}</span>
+                                                                {% else %}
+                                                                    <i class="fi fi-br-clock-three pe-1 pt-2 mt-2" style="color:#FFD43B;"></i><span class="" style="color:#FFD43B;">{{ item.deadline }}</span>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                        <!-- <span class="">{{ item.engagement.job_code }}</span> -->
+                                                        <!-- <span class="">{{ item.engagement.client.company_name}}</span> -->
+                                                        <!-- <span class="">{{ item.engagement_category.name_th}}</span> -->
+                                                        <!-- <span class="">{{ item.id }}</span> -->
+                                                        <!-- <span class="">{{ item.engagement.job_code }}</span> -->
+                                                        <!-- <span class="">{{ item.notification }}</span> -->
+                                                       
+                                                        <!-- <span class="">xx</span> -->
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </a>
                                     {% endfor %}
                                 {% endif %}
